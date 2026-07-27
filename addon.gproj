@@ -1,0 +1,16 @@
+GameProject {
+ ID "M360Life"
+ GUID "69F4E91377BCC9A5"
+ TITLE "M360 Life"
+ Dependencies {
+  "58D0FB3206B6F859"
+ }
+ Configurations {
+  GameProjectConfig PC {
+   InputManagerSettings InputManagerSettings "{ADF987310AA5305D}" {
+    Default "{ADF987310AA5305C}Configs/System/M360_Input.conf"
+    UiMappings "{0AD37213EFEB0B61}Configs/System/chimeraMapping.conf"
+   }
+  }
+ }
+}

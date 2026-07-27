@@ -1,0 +1,54 @@
+GenericEntity : "{F4CA533A99B20DAE}Prefabs/Props/Civilian/SackUniversal_01.et" {
+ components {
+  M360_JobCollectSiteComponent "{61EE293AC4C75040}" {
+   m_Ayar M360_JobConfig {
+    m_sIsAdi "Pirinc"
+    m_bYasalMi 1
+    m_iTickSuresi 4
+    m_iTickVerim 2
+    m_iPartiBoyutu 20
+    m_iIslemeSuresi 10
+    m_fDonusumOrani 1
+    m_iSatisFiyati 600
+    m_iMaxTasima 40
+   }
+  }
+  ActionsManagerComponent "{61EE293AC4C75041}" {
+   ActionContexts {
+    UserActionContext "{61EE293AC4C75042}" {
+     UIInfo UIInfo "{61EE293AC4C75043}" {
+      Name "Pirinc Tarlasi"
+     }
+     ContextName "pirinc_collect"
+     Position PointInfo "{61EE293AC4C75044}" {
+      Offset 0 0.8 0
+     }
+     Radius 2
+     Omnidirectional 1
+    }
+   }
+   additionalActions {
+    M360_CollectAction "{61EE293AC4C75045}" {
+     ParentContextList {
+      "pirinc_collect"
+     }
+     UIInfo UIInfo "{61EE293AC4C75046}" {
+      Name "Topla / Durdur"
+     }
+     VisibilityRange 4
+     Duration 0
+    }
+    M360_JobStatusAction "{61EE293AC4C75047}" {
+     ParentContextList {
+      "pirinc_collect"
+     }
+     UIInfo UIInfo "{61EE293AC4C75048}" {
+      Name "Durum"
+     }
+     VisibilityRange 4
+     Duration 0
+    }
+   }
+  }
+ }
+}

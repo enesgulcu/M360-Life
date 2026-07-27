@@ -1,0 +1,54 @@
+GenericEntity : "{51D31AB07AE3C1C7}Prefabs/Props/Commercial/CashierShop_01.et" {
+ components {
+  M360_JobSellSiteComponent "{61EE293AC4C75060}" {
+   m_Ayar M360_JobConfig {
+    m_sIsAdi "Pirinc"
+    m_bYasalMi 1
+    m_iTickSuresi 4
+    m_iTickVerim 2
+    m_iPartiBoyutu 20
+    m_iIslemeSuresi 10
+    m_fDonusumOrani 1
+    m_iSatisFiyati 600
+    m_iMaxTasima 40
+   }
+  }
+  ActionsManagerComponent "{61EE293AC4C75061}" {
+   ActionContexts {
+    UserActionContext "{61EE293AC4C75062}" {
+     UIInfo UIInfo "{61EE293AC4C75063}" {
+      Name "Pirinc Alicisi"
+     }
+     ContextName "pirinc_sell"
+     Position PointInfo "{61EE293AC4C75064}" {
+      Offset 0 1.2 0
+     }
+     Radius 2
+     Omnidirectional 1
+    }
+   }
+   additionalActions {
+    M360_SellAction "{61EE293AC4C75065}" {
+     ParentContextList {
+      "pirinc_sell"
+     }
+     UIInfo UIInfo "{61EE293AC4C75066}" {
+      Name "Sat"
+     }
+     VisibilityRange 4
+     Duration 0
+    }
+    M360_JobStatusAction "{61EE293AC4C75067}" {
+     ParentContextList {
+      "pirinc_sell"
+     }
+     UIInfo UIInfo "{61EE293AC4C75068}" {
+      Name "Durum"
+     }
+     VisibilityRange 4
+     Duration 0
+    }
+   }
+  }
+ }
+}

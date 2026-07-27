@@ -1,0 +1,35 @@
+# M360 Life — git ignore (Workbench addon)
+
+# OS / editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*~
+.vscode/
+.idea/
+
+# Cursor local (isteğe bağlı; konuşma notları repoda tutulabilir)
+# .cursor/
+
+# Secrets
+.env
+.env.*
+*.pem
+credentials.json
+
+# Workbench / build junk
+*.tmp
+*.bak
+*.log
+~$*
+
+# Large binary caches (varsa)
+*.pdb
+*.ilk
+*.obj
+
+# Workbench regenerated
+resourceDatabase.rdb
+*.rdb
+

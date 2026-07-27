@@ -1,0 +1,54 @@
+GenericEntity : "{95D947E744336F78}Prefabs/Props/Industrial/Workbench_01.et" {
+ components {
+  M360_JobProcessSiteComponent "{61EE293AC4C75050}" {
+   m_Ayar M360_JobConfig {
+    m_sIsAdi "Pirinc"
+    m_bYasalMi 1
+    m_iTickSuresi 4
+    m_iTickVerim 2
+    m_iPartiBoyutu 20
+    m_iIslemeSuresi 10
+    m_fDonusumOrani 1
+    m_iSatisFiyati 600
+    m_iMaxTasima 40
+   }
+  }
+  ActionsManagerComponent "{61EE293AC4C75051}" {
+   ActionContexts {
+    UserActionContext "{61EE293AC4C75052}" {
+     UIInfo UIInfo "{61EE293AC4C75053}" {
+      Name "Pirinc Degirmeni"
+     }
+     ContextName "pirinc_process"
+     Position PointInfo "{61EE293AC4C75054}" {
+      Offset 0 1.0 0
+     }
+     Radius 2
+     Omnidirectional 1
+    }
+   }
+   additionalActions {
+    M360_ProcessAction "{61EE293AC4C75055}" {
+     ParentContextList {
+      "pirinc_process"
+     }
+     UIInfo UIInfo "{61EE293AC4C75056}" {
+      Name "Isle"
+     }
+     VisibilityRange 4
+     Duration 0
+    }
+    M360_JobStatusAction "{61EE293AC4C75057}" {
+     ParentContextList {
+      "pirinc_process"
+     }
+     UIInfo UIInfo "{61EE293AC4C75058}" {
+      Name "Durum"
+     }
+     VisibilityRange 4
+     Duration 0
+    }
+   }
+  }
+ }
+}
