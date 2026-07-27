@@ -11,6 +11,7 @@ GenericEntity : "{95D947E744336F78}Prefabs/Props/Industrial/Workbench_01.et" {
     m_fDonusumOrani 1
     m_iSatisFiyati 600
     m_iMaxTasima 40
+    m_fIptalMesafesi 4
    }
   }
   ActionsManagerComponent "{61EE293AC4C75051}" {

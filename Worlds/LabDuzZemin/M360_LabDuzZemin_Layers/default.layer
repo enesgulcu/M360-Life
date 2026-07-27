@@ -27,13 +27,13 @@ GenericEntity M360_CantaHud {
 SCR_SpawnPoint M360_PlayerSpawn : "{5392C4D80E4B18F8}Prefabs/MP/Spawning/SpawnPoint_FFA.et" {
  coords 18 0.5 20
 }
-GenericEntity M360_PirincTopla : "{ADF987310AA53059}Prefabs/M360/Jobs/M360_JobCollect_Pirinc.et" {
+GenericEntity M360_PirincTopla : "{ADF987310AA53059}Prefabs/M360/Isler/Pirinc/M360_Topla_Pirinc.et" {
  coords 19.922 0.1 20.104
 }
-GenericEntity M360_PirincIsle : "{ADF987310AA5305A}Prefabs/M360/Jobs/M360_JobProcess_Pirinc.et" {
+GenericEntity M360_PirincIsle : "{ADF987310AA5305A}Prefabs/M360/Isler/Pirinc/M360_Isle_Pirinc.et" {
  coords 26 0.1 20
 }
-GenericEntity M360_PirincSat : "{ADF987310AA5305B}Prefabs/M360/Jobs/M360_JobSell_Pirinc.et" {
+GenericEntity M360_PirincSat : "{ADF987310AA5305B}Prefabs/M360/Isler/Pirinc/M360_Sat_Pirinc.et" {
  coords 31.514 0.1 20.174
 }
 SCR_LoadoutManager M360_LoadoutManager : "{B7E5D7F4864D81C0}Prefabs/MP/Managers/Loadouts/LoadoutManager_FFA.et" {

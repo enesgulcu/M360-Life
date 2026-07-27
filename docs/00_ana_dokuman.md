@@ -141,6 +141,7 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 | 14 | [Mevcut Modlar, Framework'ler & Geliştirme Araçları](./14_mevcut_modlar_araclar.md) | ✅ Güncel — enfusion-mcp = Cursor |
 | 15 | [Geliştirme Notları (AI oturum belleği / kanıtlanmış bulgular)](./15_gelistirme_notlari.md) | ✅ Canlı — her oturumda güncellenir |
 | 16 | [Dosya / İçerik Envanteri (ilişki kataloğu)](./16_dosya_envanteri.md) | ✅ Canlı — her yeni dosyada güncelle |
+| 17 | [Yerel tek cihaz kurulum (PG + Next + Dedicated)](./17_yerel_kurulum.md) | ✅ Rehber — adım adım |
 
 ---
 

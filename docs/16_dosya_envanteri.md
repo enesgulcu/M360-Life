@@ -1,146 +1,107 @@
 # Döküman 16 — Dosya / İçerik Envanteri (ilişki kataloğu)
 
-*Bağlı olduğu: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [15](./15_gelistirme_notlari.md)*
+*Bağlı: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [15](./15_gelistirme_notlari.md) · [17](./17_yerel_kurulum.md)*
 
-> **Amaç:** Projede **ne varsa** buraya yazılır: script, prefab, dünya, config, ileride API/sunucu/web dosyaları.  
-> Her satır: **ne işe yarar**, **ne ile birlikte kullanılır**, **nerede çalışır** (istemci / dedicated / API / sadece Workbench).  
-> **Kural:** Yeni dosya eklenince veya amacı değişince **bu döküman aynı oturumda güncellenir.** AI yeni sohbette `00` → ilgili tasarım → **16** → **15** okur.
+> Her yeni/değişen dosyada güncelle. Okuma: `00` → tasarım → **16** → **15**.
 
 ---
 
-## 0. Yetki hatırlatması (okumadan geçme)
+## 0. Yetki
 
 | Katman | Rol |
 |---|---|
-| **İstemci (oyuncunun indirdiği mod)** | Görüntü, girdi, talep (F menü, HUD, animasyon). **Kritik karar vermez.** |
-| **Dedicated oyun sunucusu** | Talebi doğrular, replication, anti-exploit kapısı |
-| **Next.js API + PostgreSQL** | Para, sahiplik, iş tanımı, audit — **kalıcı gerçeklik** |
-| **Workbench / enfusion-mcp** | Sadece geliştirme aracı; oyuncuya gitmez |
-
-Lab’daki `M360_IsOturumlari` (ham/nakit sayaç) **geçici stub**tur. Üründe aynı mantık sunucu + DB’ye taşınır; istemci “ben kazandım” diyemez.
-
-Detay: Döküman **11.1**.
+| İstemci mod | Görüntü / girdi / talep |
+| Dedicated | Doğrulama / replication |
+| Next.js + PostgreSQL | Kalıcı gerçeklik |
+| Workbench MCP | Sadece geliştirme |
 
 ---
 
-## 1. Bakım protokolü
+## 1. Senkron kuralı (kritik)
 
-Her işlemde kontrol listesi:
-
-1. Yeni / değişen dosya var mı?
-2. Bu tabloda satırı var mı? Yoksa ekle.
-3. İlişki (prefab ↔ script ↔ dünya ↔ API) doğru mu?
-4. `Durum` kolonu: `lab` | `urun-hedef` | `arac` | `taslak` | `silindi`
-
-Şablon satır:
-
-```
-| Yol | Amaç (1 cümle) | Birlikte | Çalıştığı yer | Durum |
-```
+- Workbench → GitHub: `tools/sync-addon-to-github.ps1`
+- **`robocopy /MIR` yasak** — `apps/` ve `packages/` silinir.
+- Platform kodu yalnız `Documents\GitHub\M360-Life\apps|packages`.
 
 ---
 
-## 2. Enfusion — ürün scriptleri (`Scripts/Game/M360/`)
+## 2. Enfusion script (`Scripts/Game/M360/`)
 
-| Yol | Amaç | Birlikte | Çalıştığı yer | Durum |
+| Yol | Amaç | Birlikte | Yer | Durum |
 |---|---|---|---|---|
-| `Jobs/M360_IsAyar.c` | İş parametreleri (adım, parti, fiyat…) | Üç site prefab `m_Ayar` | Prefab Attribute (istemci+sunucu aynı asset) | lab |
-| `Jobs/M360_IsOturumlari.c` | Oyuncu ham/işlenmiş/nakit **lab sayacı** | Tüm iş bilesenleri + HUD | Şimdilik yerel; **ürün → sunucu/DB** | lab stub |
-| `Jobs/M360_ToplamaAlaniBileseni.c` | Toplama ilerleme + ham ekleme | Collect prefab, `ToplaAksiyonu` | Lab: yerel; ürün: sunucu onaylı | lab |
-| `Jobs/M360_IslemeMakinesiBileseni.c` | Parti işleme | Process prefab, `IsleAksiyonu` | aynı | lab |
-| `Jobs/M360_SatisNoktasiBileseni.c` | İşlenmiş → nakit | Sell prefab, `SatAksiyonu` | aynı | lab |
-| `Jobs/M360_ToplaAksiyonu.c` | F menü Topla/Durdur | Collect prefab `additionalActions` | UserAction | lab |
-| `Jobs/M360_IsleAksiyonu.c` | F menü İşle | Process prefab | UserAction | lab |
-| `Jobs/M360_SatAksiyonu.c` | F menü Sat | Sell prefab | UserAction | lab |
-| `Jobs/M360_DurumAksiyonu.c` | F menü Envanter/durum | Üç site + `CantaHudBileseni` | UserAction | lab |
-| `UI/M360_CantaHudBileseni.c` | I tuşu çanta ipucu + ilerleme | `IsOturumlari`, dünya `M360_CantaHud` | Lab yerel UI | lab |
-
-Boş klasörler (`Core/`, `Economy/`, `Net/`, …): iskelet — satır eklenince doldurulur.
-
----
-
-## 3. Prefab’lar (`Prefabs/M360/`)
-
-| Yol | Amaç | Birlikte | Çalıştığı yer | Durum |
-|---|---|---|---|---|
-| `Jobs/M360_JobCollect_Pirinc.et` | Pirinç toplama çuvalı | `ToplamaAlaniBileseni` + aksiyonlar | Haritada yerleştirilir | lab |
-| `Jobs/M360_JobProcess_Pirinc.et` | Pirinç işleme tezgâhı | `IslemeMakinesiBileseni` | Harita | lab |
-| `Jobs/M360_JobSell_Pirinc.et` | Pirinç satış kasiyeri | `SatisNoktasiBileseni` | Harita | lab |
-| `Jobs/README.md` | Prefab klasör notu | — | geliştirici | lab |
-| `Markets/ Vehicles/ World/` | İleride | — | — | taslak |
-
-> Dosya adında `JobCollect` GUID path için kalabilir; **iç class Türkçe** (`M360_ToplamaAlaniBileseni`).
+| `Isler/M360_IsAyar.c` | İş parametreleri (+ `m_fIptalMesafesi`) | Üç site prefab | Attribute | lab |
+| `Isler/M360_IsOturumlari.c` | Lab ham/işlenmiş/nakit sayaç | Siteler + HUD | yerel stub | lab |
+| `Isler/M360_ToplamaAlaniBileseni.c` | Toplama + **mesafe iptal** | Topla prefab | lab | lab |
+| `Isler/M360_IslemeMakinesiBileseni.c` | İşleme + **mesafe iptal** | Isle prefab | lab | lab |
+| `Isler/M360_SatisNoktasiBileseni.c` | Satış anlık | Sat prefab | lab | lab |
+| `Isler/M360_ToplaAksiyonu.c` | F Topla/Durdur | Collect | UserAction | lab |
+| `Isler/M360_IsleAksiyonu.c` | F Isle | Process | UserAction | lab |
+| `Isler/M360_SatAksiyonu.c` | F Sat | Sell | UserAction | lab |
+| `Isler/M360_DurumAksiyonu.c` | F Envanter | HUD | UserAction | lab |
+| `Arayuz/M360_CantaHudBileseni.c` | I çanta + ilerleme | Oturum | lab UI | lab |
+| `WorkbenchGame/EnfusionMCP/*` | MCP köprü | Cursor | WB only | arac |
 
 ---
 
-## 4. Dünya / harita (`Worlds/`)
+## 3. Prefab
 
-| Yol | Amaç | Birlikte | Çalıştığı yer | Durum |
-|---|---|---|---|---|
-| `TestWorld/M360_TestWorld.ent` | Lab dünya kökü | Layer + terrain + FFA | Workbench Play | lab |
-| `TestWorld/M360_TestWorld_Layers/default.layer` | Entity yerleşimi | Pirinç siteleri, spawn, HUD entity | Play | lab |
-| `TestWorld/M360_Terrain/` | Lab arazi verisi | GenericTerrain | Play | lab |
+| Yol | Amaç | Birlikte | Durum |
+|---|---|---|---|
+| `Prefabs/M360/Isler/Pirinc/M360_Topla_Pirinc.et` | Pirinç çuval | ToplamaAlaniBileseni | lab |
+| `.../M360_Isle_Pirinc.et` | Tezgâh | IslemeMakinesiBileseni | lab |
+| `.../M360_Sat_Pirinc.et` | Kasiyer | SatisNoktasiBileseni | lab |
+| `Prefabs/M360/Isler/README.md` | Klasör notu | — | lab |
+| `Prefabs/M360/Arayuz/` | İleride layout | — | taslak |
+| `Prefabs/M360/Dunya/` | İleride spawn prefab | — | taslak |
+| `Prefabs/M360/Pazarlar/` `Araclar/` | İleride | — | taslak |
 
-**Layer’daki önemli entity’ler:** `M360_PirincTopla` / `PirincIsle` / `PirincSat` / `M360_CantaHud` / `M360_PlayerSpawn` + FFA managers.
-
----
-
-## 5. Config / proje
-
-| Yol | Amaç | Birlikte | Çalıştığı yer | Durum |
-|---|---|---|---|---|
-| `addon.gproj` | Addon kimliği, bağımlılık, input Default | Tüm kaynaklar | Workbench/oyun | lab |
-| `Configs/System/M360_Input.conf` | Input denemeleri (Inventory→I tutmadı) | gproj InputManagerSettings | lab deneme | lab (I artık `Debug.KeyState`) |
+Harita değişince: aynı `Isler/*` prefab’ları yerleştir.
 
 ---
 
-## 6. Geliştirme araçları (oyuncuya gitmez)
-
-| Yol | Amaç | Birlikte | Çalıştığı yer | Durum |
-|---|---|---|---|---|
-| `Scripts/WorkbenchGame/EnfusionMCP/*.c` | Cursor MCP ↔ Workbench köprüsü | enfusion-mcp sunucusu | Sadece Workbench | arac |
-
-Ürün mantığı buraya yazılmaz.
-
----
-
-## 7. Dokümanlar (`docs/`)
+## 4. Dünya
 
 | Yol | Amaç | Durum |
 |---|---|---|
-| `00` … `14` | Tasarım + prosedür | hazır |
-| `15_gelistirme_notlari.md` | Kanıt / tuzak / tercih belleği | canlı |
-| `16_dosya_envanteri.md` (bu dosya) | Dosya ilişki kataloğu | canlı |
+| `Worlds/LabDuzZemin/M360_LabDuzZemin.ent` | Düz zemin lab kök | lab |
+| `.../M360_LabDuzZemin_Layers/default.layer` | Pirinç + spawn + HUD | lab |
+| `.../M360_Terrain/` | GenericTerrain data | lab |
 
-Kök `README.md`: GitHub giriş + lab özeti.
+Entity: `M360_PirincTopla` (~20,20) · `PirincIsle` (26,20) · `PirincSat` (~31,20) · `M360_CantaHud` · FFA managers.
 
 ---
 
-## 8. Henüz yok — yer tutucu (eklenince satır aç)
+## 5. Platform (GitHub — Workbench dışı)
 
-| Beklenen | Amaç | Çalışacağı yer |
+| Yol | Amaç | Durum |
 |---|---|---|
-| `apps/game-api` (Next.js) | Oyun sunucusunun HTTP API’si | sunucu makinesi |
-| `apps/admin-web` | Admin panel | tarayıcı / sunucu |
-| `packages/db` | PostgreSQL şema / migration | sunucu |
-| Dedicated server config / mission | Canlı oyun host | dedicated |
-| `.layout` HUD dosyaları | Ürün Life HUD | istemci asset (veri sunucudan) |
+| `apps/game-api` | Next.js API :3100 (`/api/health`, `/api/jobs`) | iskelet |
+| `apps/admin-web` | Admin panel | yer tutucu |
+| `packages/db/migrations/001_job_definitions.sql` | İş tanım tablosu | iskelet |
+| `tools/sync-addon-to-github.ps1` | Güvenli senkron | canlı |
 
 ---
 
-## 9. Hızlı ilişki özeti (Pirinç lab)
+## 6. Doküman
 
-```
-Oyuncu (F / I)
-    ↓
-Prefab (çuval / tezgâh / kasiyer)  ←→  Aksiyon .c  ←→  Site bileseni .c
-                                              ↓
-                                    M360_IsAyar (sayılar)
-                                              ↓
-                                    M360_IsOturumlari (lab sayaç)  ←→  CantaHud
-```
-
-Ürün hedefi: site bileseni **talep üretir** → dedicated doğrular → API/DB yazar → istemci sonucu görür.
+| Dosya | Amaç |
+|---|---|
+| `00`–`14` | Tasarım |
+| `15` | Kanıt / tuzak |
+| `16` | Bu envanter |
+| `17` | Yerel kurulum rehberi |
+| `docs/arsiv/` | Eski konuşma notları |
 
 ---
-*Önceki: [15](./15_gelistirme_notlari.md) · Bu döküman canlıdır — her dosya değişiminde güncelle.*
+
+## 7. Pirinç ilişki özeti
+
+```
+Oyuncu F/I → Prefab Isler/Pirinc → Aksiyon → Bilesen (+ mesafe iptal)
+                         ↓
+                   M360_IsAyar (dinamik)
+                         ↓
+                   IsOturumlari (lab) → CantaHud
+```
+
+Ürün: bilesen talep → dedicated → game-api → PostgreSQL.

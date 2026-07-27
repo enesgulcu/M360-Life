@@ -51,8 +51,9 @@ Yeni sohbette okuma sırası: **`docs/00` → ilgili konu → `docs/15` + `docs/
 | 12 | [12_lisans_roadmap.md](docs/12_lisans_roadmap.md) | Lisans / roadmap |
 | 13 | [13_enfusion_prefab_prosedur.md](docs/13_enfusion_prefab_prosedur.md) | Prefab / script — **üç site** (Collect/Process/Sell) |
 | 14 | [14_mevcut_modlar_araclar.md](docs/14_mevcut_modlar_araclar.md) | Araçlar / referans; enfusion-mcp = Cursor |
-| **15** | [15_gelistirme_notlari.md](docs/15_gelistirme_notlari.md) | **AI oturum belleği — kanıtlar, tuzaklar** |
-| **16** | [16_dosya_envanteri.md](docs/16_dosya_envanteri.md) | **Dosya ilişki kataloğu — her eklemede güncelle** |
+| **15** | [15_gelistirme_notlari.md](docs/15_gelistirme_notlari.md) | Kanıt / tuzak |
+| **16** | [16_dosya_envanteri.md](docs/16_dosya_envanteri.md) | Dosya ilişki kataloğu |
+| **17** | [17_yerel_kurulum.md](docs/17_yerel_kurulum.md) | Yerel PG + Next + Dedicated rehber |
 
 Konuşma geçmişi kaynak değildir. Güncel gerçek: bu dökümanlar + kod.
 
@@ -78,10 +79,10 @@ Topla (çuval) → İşle (tezgâh) → Sat (kasiyer)
 
 | Parça | Konum |
 |---|---|
-| Script | `Scripts/Game/M360/Jobs/` |
-| Prefab | `Prefabs/M360/Jobs/M360_Job{Collect,Process,Sell}_Pirinc.et` |
-| HUD | `Scripts/Game/M360/UI/M360_CantaHudBileseni.c` |
-| Test dünya | `Worlds/TestWorld/M360_TestWorld.ent` |
+| Script | `Scripts/Game/M360/Isler/` + `Arayuz/` |
+| Prefab | `Prefabs/M360/Isler/Pirinc/M360_{Topla,Isle,Sat}_Pirinc.et` |
+| HUD | `Scripts/Game/M360/Arayuz/M360_CantaHudBileseni.c` |
+| Lab dünya | `Worlds/LabDuzZemin/M360_LabDuzZemin.ent` |
 
 ### Lab sayıları (prefab Attribute — Play’de bunlar geçerli)
 

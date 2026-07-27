@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------------------------
 //! M360 Life — Isleme makinesi (Dokuman 5.1b Asama 3)
-//! Parti isler; 0→100 isleme ilerlemesi.
+//! Parti isler; 0→100 isleme ilerlemesi. Alandan uzaklasinca iptal (ham korunur).
 //------------------------------------------------------------------------------------------------
 [ComponentEditorProps(category: "M360/Isler", description: "Isleme makinesi")]
 class M360_IslemeMakinesiBileseniClass : ScriptComponentClass
@@ -98,6 +98,12 @@ class M360_IslemeMakinesiBileseni : ScriptComponent
 			return;
 		}
 
+		if (MesafeAsildiMi(m_IsleyenKullanici))
+		{
+			IslemeIptal();
+			return;
+		}
+
 		m_iIslemGecenMs += ILERLEME_ADIM_MS;
 		float yuzde = (m_iIslemGecenMs * 100.0) / m_iIslemMs;
 		if (yuzde > 100)
@@ -131,6 +137,41 @@ class M360_IslemeMakinesiBileseni : ScriptComponent
 		m_iBekleyenParti = 0;
 		m_IsleyenKullanici = null;
 		m_iIslemGecenMs = 0;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Alan terk — cikti yok, ham aynen kalir (Dokuman 5.1b)
+	protected void IslemeIptal()
+	{
+		GetGame().GetCallqueue().Remove(IslemeIlerlemeAdimi);
+		if (!m_IsleyenKullanici)
+			return;
+
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(m_IsleyenKullanici);
+		oturum.m_bIsliyor = false;
+		oturum.m_fIslemeIlerleme = 0;
+		MesajGoster("Tezgahdan uzaklastim — isleme iptal (ham korundu)");
+		m_iBekleyenParti = 0;
+		m_IsleyenKullanici = null;
+		m_iIslemGecenMs = 0;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected bool MesafeAsildiMi(IEntity kullanici)
+	{
+		if (!kullanici || !m_Ayar)
+			return true;
+
+		IEntity site = GetOwner();
+		if (!site)
+			return true;
+
+		float limit = m_Ayar.m_fIptalMesafesi;
+		if (limit < 0.5)
+			limit = 4.0;
+
+		float mesafe = vector.Distance(site.GetOrigin(), kullanici.GetOrigin());
+		return mesafe > limit;
 	}
 
 	//------------------------------------------------------------------------------------------------

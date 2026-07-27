@@ -176,7 +176,8 @@ Kaynak önceliği: **Play’de prefab Attribute** → lab. Ürün dengesi → bu
 | `m_iIslemeSuresi` | **10 sn** | **~180 sn** (~3 dk) |
 | `m_fDonusumOrani` | 1.0 | 1.0 |
 | `m_iSatisFiyati` | 600 | 600 |
-| Max taşıma | `m_iMaxTasima` **40** (stub) | kapasite puanı (5.6) |
+| `m_iMaxTasima` | **40** (stub) | kapasite puanı (5.6) |
+| `m_fIptalMesafesi` | **4** m | panelden |
 | ~Sefer kazancı | **12.000** (20×600) | **60.000** (100×600) |
 
 `M360_IsAyar.c` sınıf varsayılanları üretim hedefine yakındır (parti 100, işleme 180); lab `.et` dosyaları bilerek hızlıdır. Karıştırma.

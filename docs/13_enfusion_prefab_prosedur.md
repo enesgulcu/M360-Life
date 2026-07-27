@@ -67,17 +67,20 @@ Her birinde `m_Ayar` → `M360_IsAyar`. Aksiyonlar: `M360_ToplaAksiyonu` / `Isle
 ## 13.5 Script / Prefab Klasör Yapısı (gerçek addon)
 
 ```
-addons/M360 Life/          (Workbench)  ≈  Documents/GitHub/M360-Life (Git)
+addons/M360 Life/
 ├── addon.gproj
 ├── Scripts/Game/M360/
-│   ├── Jobs/              # Config, Sessions, Collect/Process/Sell + Action’lar
-│   ├── UI/                # JobHud (lab)
+│   ├── Isler/             # IsAyar, Oturum, Topla/Isle/Sat bilesen + aksiyon
+│   ├── Arayuz/            # CantaHud
 │   ├── Core/ Economy/ …   # iskelet
 │   └── Net/
-├── Prefabs/M360/Jobs/     # Collect/Process/Sell_Pirinc.et (+ ileride Gumus…)
+├── Prefabs/M360/
+│   ├── Isler/Pirinc/      # Topla / Isle / Sat .et
+│   ├── Arayuz/ Dunya/ Pazarlar/ Araclar/
+├── Worlds/LabDuzZemin/    # duz zemin lab
 ├── Configs/
-├── Worlds/TestWorld/      # lab dünya + terrain
-└── docs/
+├── docs/                  # 00–17
+└── tools/sync-addon-to-github.ps1
 ```
 
 `Scripts/WorkbenchGame/EnfusionMCP/` — MCP Workbench handler’ları (ürün değil, araç).

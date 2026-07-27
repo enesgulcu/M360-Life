@@ -31,4 +31,7 @@ class M360_IsAyar
 
 	[Attribute("40", desc: "Oyuncu uzeri max ham tasima (lab sayac)")]
 	int m_iMaxTasima;
+
+	[Attribute("4", desc: "Toplama/isleme iptal mesafesi (metre) — site merkezinden uzaklasinca iptal")]
+	float m_fIptalMesafesi;
 }

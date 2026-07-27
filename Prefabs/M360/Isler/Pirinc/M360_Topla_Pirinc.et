@@ -11,6 +11,7 @@ GenericEntity : "{F4CA533A99B20DAE}Prefabs/Props/Civilian/SackUniversal_01.et" {
     m_fDonusumOrani 1
     m_iSatisFiyati 600
     m_iMaxTasima 40
+    m_fIptalMesafesi 4
    }
   }
   ActionsManagerComponent "{61EE293AC4C75041}" {

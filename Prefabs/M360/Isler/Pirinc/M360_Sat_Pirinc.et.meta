@@ -1,5 +1,5 @@
-MetaFileClass {
- Name "{ADF987310AA53059}Prefabs/M360/Jobs/M360_JobCollect_Pirinc.et"
+﻿MetaFileClass {
+ Name "{ADF987310AA5305B}Prefabs/M360/Isler/Pirinc/M360_Sat_Pirinc.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }

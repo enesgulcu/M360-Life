@@ -19,17 +19,20 @@ Desktop.ini
 credentials.json
 
 # Workbench / build junk
+build/
 *.tmp
 *.bak
 *.log
 ~$*
 
-# Large binary caches (varsa)
-*.pdb
-*.ilk
-*.obj
-
 # Workbench regenerated
 resourceDatabase.rdb
 *.rdb
+
+# Node / Next (platform apps — GitHub kökünde)
+node_modules/
+.next/
+apps/**/.env
+apps/**/.env.local
+packages/**/.env
 

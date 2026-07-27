@@ -11,6 +11,7 @@ GenericEntity : "{51D31AB07AE3C1C7}Prefabs/Props/Commercial/CashierShop_01.et" {
     m_fDonusumOrani 1
     m_iSatisFiyati 600
     m_iMaxTasima 40
+    m_fIptalMesafesi 4
    }
   }
   ActionsManagerComponent "{61EE293AC4C75061}" {

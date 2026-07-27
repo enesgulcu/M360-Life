@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{1DFE4990BDFA58CB}Worlds/TestWorld/M360_Terrain/M360_Terrain.terr"
+ Name "{1DFE4990BDFA58CB}Worlds/LabDuzZemin/M360_Terrain/M360_Terrain.terr"
  Configurations {
   TerrainResourceClass PC {
    BlocksPerTile 4

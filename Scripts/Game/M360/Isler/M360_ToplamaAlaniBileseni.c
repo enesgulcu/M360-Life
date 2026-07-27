@@ -113,6 +113,13 @@ class M360_ToplamaAlaniBileseni : ScriptComponent
 			return;
 		}
 
+		if (MesafeAsildiMi(m_ToplayanKullanici))
+		{
+			ToplamaDurdur(m_ToplayanKullanici);
+			MesajGoster("Alandan uzaklastim — toplama iptal");
+			return;
+		}
+
 		m_iIlerlemeGecenMs += ILERLEME_ADIM_MS;
 		float yuzde = (m_iIlerlemeGecenMs * 100.0) / m_iAdimMs;
 		if (yuzde > 100)
@@ -167,6 +174,25 @@ class M360_ToplamaAlaniBileseni : ScriptComponent
 	{
 		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		return oturum.m_bTopluyor && m_ToplayanKullanici == kullanici;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Site merkezinden uzaklik — m_fIptalMesafesi asilirsa true
+	protected bool MesafeAsildiMi(IEntity kullanici)
+	{
+		if (!kullanici || !m_Ayar)
+			return true;
+
+		IEntity site = GetOwner();
+		if (!site)
+			return true;
+
+		float limit = m_Ayar.m_fIptalMesafesi;
+		if (limit < 0.5)
+			limit = 4.0;
+
+		float mesafe = vector.Distance(site.GetOrigin(), kullanici.GetOrigin());
+		return mesafe > limit;
 	}
 
 	//------------------------------------------------------------------------------------------------
