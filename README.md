@@ -143,14 +143,14 @@ Detay: [docs/15](docs/15_gelistirme_notlari.md).
 
 ```
 M360-Life/
-├── README.md                 ← buradasın
-├── addon.gproj
-├── docs/                     ← 00–15 tasarım + lab belleği
-├── Scripts/Game/M360/        ← ürün scriptleri (Jobs, UI, …)
-├── Scripts/WorkbenchGame/    ← enfusion-mcp Workbench handler’ları
-├── Prefabs/M360/Jobs/        ← Pirinç site prefab’ları
-├── Configs/                  ← input vb.
-└── Worlds/TestWorld/         ← lab dünyası + terrain
+├── README.md / MONOREPO.md
+├── apps/game-api/            ← Next.js API :3100
+├── packages/db/              ← PostgreSQL migration
+├── tools/sync-addon-to-github.ps1
+├── docs/                     ← 00–17
+├── Scripts/Game/M360/Isler/  ← is scriptleri
+├── Prefabs/M360/Isler/Pirinc/
+└── Worlds/LabDuzZemin/       ← duz zemin lab
 ```
 
 ---
