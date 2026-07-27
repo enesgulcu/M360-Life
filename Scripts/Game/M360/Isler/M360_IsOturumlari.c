@@ -13,6 +13,8 @@ class M360_IsOturumVerisi
 	bool m_bIsliyor;
 	float m_fToplamaIlerleme; // 0..100 — tek adim icinde
 	float m_fIslemeIlerleme; // 0..100 — isleme suresi icinde
+	float m_fAclik; // 0..100 lab stub (docs 5.5)
+	float m_fSusuzluk; // 0..100 lab stub
 }
 
 class M360_IsOturumlari
@@ -49,9 +51,29 @@ class M360_IsOturumlari
 		{
 			veri = new M360_IsOturumVerisi();
 			veri.m_iMaxTasima = 40;
+			veri.m_iNakit = 2750499; // lab: genis sayi ile HUD pill kayma testi
+			veri.m_fAclik = 100;
+			veri.m_fSusuzluk = 100;
 			s_mOturumlar.Insert(oyuncuId, veri);
 		}
 		return veri;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Lab: ~5-6 saatlik tuketim (docs 5.5) — gorunur demo icin hafif decay
+	static void VitalTick(M360_IsOturumVerisi veri, float timeSlice)
+	{
+		if (!veri || timeSlice <= 0)
+			return;
+
+		// 100 / (5.5 * 3600) ≈ 0.00505 birim/sn
+		float azalma = timeSlice * 0.00505;
+		veri.m_fAclik = veri.m_fAclik - azalma;
+		veri.m_fSusuzluk = veri.m_fSusuzluk - azalma * 1.05;
+		if (veri.m_fAclik < 0)
+			veri.m_fAclik = 0;
+		if (veri.m_fSusuzluk < 0)
+			veri.m_fSusuzluk = 0;
 	}
 
 	//------------------------------------------------------------------------------------------------

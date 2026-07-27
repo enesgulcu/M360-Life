@@ -1,0 +1,7 @@
+MetaFileClass {
+ Name "{C8A10001D0E1002A}UI/Textures/M360/m360_panel_cBL_UI.edds"
+ Configurations {
+  PNGResourceClass PC : "{3549C665CAA9A8EA}Configs/System/ResourceTypes/PC/TextureUI.conf" {
+  }
+ }
+}

@@ -1,0 +1,79 @@
+FrameWidgetClass "{E1541A0848BA7167}" {
+ Name "M360_CantaPanelRoot"
+ Slot FrameWidgetSlot "{1171199574E73921}" {
+  Anchor "0.5 0.5 0.5 0.5"
+  Offset "-240 -180 240 180"
+ }
+ TextWidgetClass "{9C1DE7EDA561CB42}" {
+  Name "m_wBaslik"
+  Text "M360 Oyuncu Cantasi"
+  ExactFontSize 18
+  Bold 1
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{F50305B54D45C217}" {
+   Anchor "0 0 1 0"
+   Offset "16 12 -16 40"
+  }
+ }
+ TextWidgetClass "{DBA2B109374533B1}" {
+  Name "m_wAgirlik"
+  Text "Agirlik: 0/40"
+  ExactFontSize 15
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{8B08A997C36D60FF}" {
+   Anchor "0 0 1 0"
+   Offset "16 44 -16 68"
+  }
+ }
+ TextWidgetClass "{8B9D359D1E49024A}" {
+  Name "m_wSatir1"
+  Text "[0] - ham"
+  ExactFontSize 17
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{2F7C5C33DF5D9495}" {
+   Anchor "0 0 1 0"
+   Offset "16 88 -16 116"
+  }
+ }
+ TextWidgetClass "{DDB8ECF88DC34DE1}" {
+  Name "m_wSatir2"
+  Text "[0] - islenmis"
+  ExactFontSize 17
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{3FE0DBB762346817}" {
+   Anchor "0 0 1 0"
+   Offset "16 124 -16 152"
+  }
+ }
+ TextWidgetClass "{FA4943C8564BCB6D}" {
+  Name "m_wSatir3"
+  Text "[0] - Nakit"
+  ExactFontSize 17
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{46B19D7B5CD23DF5}" {
+   Anchor "0 0 1 0"
+   Offset "16 160 -16 188"
+  }
+ }
+ TextWidgetClass "{0BFDC0A153244D78}" {
+  Name "m_wSatir4"
+  Text "[*] - Hazir"
+  ExactFontSize 17
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{1A9FCDBA3EA5C2D3}" {
+   Anchor "0 0 1 0"
+   Offset "16 196 -16 224"
+  }
+ }
+ TextWidgetClass "{2DEECFFFB0A03C97}" {
+  Name "m_wKapatIpucu"
+  Text "KAPAT (I)"
+  ExactFontSize 16
+  Bold 1
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{43126F45DA4999E6}" {
+   Anchor "0 1 1 1"
+   Offset "16 -40 -16 -12"
+  }
+ }
+}

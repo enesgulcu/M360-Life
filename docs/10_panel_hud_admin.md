@@ -102,9 +102,10 @@ Sistem sahibi admin seviyelerini, her seviyenin görebileceği ekranları ve ça
 
 ### Lab durumu (şimdi)
 
-- Kanıtlanan: `SCR_Hint` ile envanter listesi + toplama yüzde sayacı.
-- Tuş: **I** = M360 çanta (`Debug.KeyState(KC_I)`); **Tab** = BI native Inventory (M360’ye bağlı değil). Eski “Inventory remap / modded ActionOpenInventory” yolu **kullanılmıyor** (Play’de tutmadı) — bkz. Döküman 15 §7b.
-- Henüz yok: gerçek `.layout` Life HUD çerçevesi. Sonraki UI diliminde başlanır.
+- **Lab HUD v9 + Canta v3 soft9:** Status rings + oval nakit pill; I canta = 9-slice oval panel, ağırlık barı, ikonlu dinamik satırlar (Kapat yok). `CreateWidget` only — `CreateWidgets` yasak. Çıkarımlar: `docs/15` §7c–7d + `.cursor/rules/m360-reforger-hud.mdc`.
+
+### Lab notu (kamera)
+- Enter 3. şahıs zoom/kayma labda görüldü → M360 kamera kodu yok; lab testte 1. şahıs tercih et (docs/15 §7d).
 
 ### İhtiyaç duyulacak HUD noktaları (ürün — örnek)
 

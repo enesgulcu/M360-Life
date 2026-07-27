@@ -30,7 +30,7 @@
 | Yol | Amaç | Birlikte | Yer | Durum |
 |---|---|---|---|---|
 | `Isler/M360_IsAyar.c` | İş parametreleri (+ `m_fIptalMesafesi`) | Üç site prefab | Attribute | lab |
-| `Isler/M360_IsOturumlari.c` | Lab ham/işlenmiş/nakit sayaç | Siteler + HUD | yerel stub | lab |
+| `Isler/M360_IsOturumlari.c` | Lab ham/işlenmiş/nakit + aclik/susuzluk stub | Siteler + HUD | yerel stub | lab |
 | `Isler/M360_ToplamaAlaniBileseni.c` | Toplama + **mesafe iptal** | Topla prefab | lab | lab |
 | `Isler/M360_IslemeMakinesiBileseni.c` | İşleme + **mesafe iptal** | Isle prefab | lab | lab |
 | `Isler/M360_SatisNoktasiBileseni.c` | Satış anlık | Sat prefab | lab | lab |
@@ -38,10 +38,26 @@
 | `Isler/M360_IsleAksiyonu.c` | F Isle | Process | UserAction | lab |
 | `Isler/M360_SatAksiyonu.c` | F Sat | Sell | UserAction | lab |
 | `Isler/M360_DurumAksiyonu.c` | F Envanter | HUD | UserAction | lab |
-| `Arayuz/M360_CantaHudBileseni.c` | I çanta + ilerleme | Oturum | lab UI | lab |
+| `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + I canta | CreateWidget + oturum | lab UI | lab |
+| `Arayuz/M360_CekirdekHudWidgetlari.c` | Circle rings + nakit pill + saat + iş barı | CantaHudBileseni | lab UI | lab |
+| `Arayuz/M360_HudIkonlari.c` | Texture ResourceName + Yukle/MaskYukle | YuvarlakBar / Canta / Cekirdek | lab UI | lab |
+| `Arayuz/M360_YuvarlakBar.c` | Badge + maskeli progress ring | CekirdekHud | lab UI | lab |
+| `Arayuz/M360_CantaPanelWidgetlari.c` | I canta v3 soft9 (9-slice + satır havuzu) | CantaHudBileseni | lab UI | lab |
+| `Arayuz/M360_HudYazi.c` | NakitFormat (binlik nokta) | Cekirdek + Canta | lab UI | lab |
 | `WorkbenchGame/EnfusionMCP/*` | MCP köprü | Cursor | WB only | arac |
 
 ---
+
+## 2b. UI texture / tools
+
+| Yol | Amaç | Birlikte | Durum |
+|---|---|---|---|
+| `UI/Textures/M360/m360_*_UI.png` / `.edds` | Badge, radial, pill, panel 9-slice, item ikon | HudIkonlari | lab |
+| `UI/layouts/M360/*.layout` | Diskte; **runtime yüklenmez** (CreateWidgets yasak) | — | bekleyen |
+| `tools/gen_circle_hud_textures.py` | Badge/radial DDS üretici | Textures | lab |
+| `tools/icon_src/` | MDI/Iconify SVG+PNG kaynak (`node_modules` ignore) | gen script | lab |
+| `tools/sync-addon-to-github.ps1` | Workbench → GitHub (MIR yasak) | GitHub repo | canlı |
+| `.cursor/rules/m360-reforger-hud.mdc` | Agent HUD kuralları | Cursor | canlı |
 
 ## 3. Prefab
 
@@ -51,7 +67,7 @@
 | `.../M360_Isle_Pirinc.et` | Tezgâh | IslemeMakinesiBileseni | lab |
 | `.../M360_Sat_Pirinc.et` | Kasiyer | SatisNoktasiBileseni | lab |
 | `Prefabs/M360/Isler/README.md` | Klasör notu | — | lab |
-| `Prefabs/M360/Arayuz/` | İleride layout | — | taslak |
+| `Prefabs/M360/Arayuz/` | İleride prefab HUD | layout’lar `UI/layouts/M360/` | taslak |
 | `Prefabs/M360/Dunya/` | İleride spawn prefab | — | taslak |
 | `Prefabs/M360/Pazarlar/` `Araclar/` | İleride | — | taslak |
 

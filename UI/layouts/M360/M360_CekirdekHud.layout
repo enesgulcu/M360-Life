@@ -1,0 +1,40 @@
+FrameWidgetClass "{F21261CE5B87B5B8}" {
+ Name "M360_CekirdekHudRoot"
+ Slot FrameWidgetSlot "{B78E19811615FDDF}" {
+  Anchor "0 0 1 1"
+  Offset "0 0 0 0"
+ }
+ TextWidgetClass "{174F36289736F0DC}" {
+  Name "m_wNakitEtiket"
+  Text "NAKIT"
+  ExactFontSize 14
+  Bold 1
+  Color "0.85 0.85 0.85 1"
+  Slot FrameWidgetSlot "{DAE209328D28541C}" {
+   Anchor "0 0 0 0"
+   Offset "20 12 160 32"
+  }
+ }
+ TextWidgetClass "{AA3BCBF2D4988677}" {
+  Name "m_wNakit"
+  Text "0"
+  ExactFontSize 26
+  Bold 1
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{46EFE7AFA1589DE6}" {
+   Anchor "0 0 0 0"
+   Offset "20 32 280 72"
+  }
+ }
+ TextWidgetClass "{763C2C505D570892}" {
+  Name "m_wIlerlemeYazi"
+  Text ""
+  ExactFontSize 16
+  Bold 1
+  Color "1 1 1 1"
+  Slot FrameWidgetSlot "{71BF8999DA8281AA}" {
+   Anchor "0.5 1 0.5 1"
+   Offset "-200 -90 200 -60"
+  }
+ }
+}

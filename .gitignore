@@ -9,8 +9,17 @@ Desktop.ini
 .vscode/
 .idea/
 
-# Cursor local (isteğe bağlı; konuşma notları repoda tutulabilir)
+# Cursor — rules tutulur; lokal cache degil
 # .cursor/
+
+# Icon pipeline local deps (tools/icon_src)
+tools/icon_src/node_modules/
+tools/icon_src/package-lock.json
+tools/icon_src/package.json
+tools/__pycache__/
+**/__pycache__/
+*.pyc
+
 
 # Secrets
 .env

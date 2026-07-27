@@ -12,14 +12,14 @@ if (-not (Test-Path $src)) { throw "Kaynak yok: $src" }
 if (-not (Test-Path $dst)) { New-Item -ItemType Directory -Force -Path $dst | Out-Null }
 
 # Sadece Enfusion addon klasor/dosyalari (platform apps dokunulmaz)
-$includeDirs = @("Configs", "docs", "Prefabs", "Scripts", "Worlds")
+$includeDirs = @("Configs", "docs", "Prefabs", "Scripts", "Worlds", "UI", "tools", ".cursor")
 $includeFiles = @("addon.gproj", "README.md", ".gitignore")
 
 foreach ($d in $includeDirs) {
   $from = Join-Path $src $d
   $to = Join-Path $dst $d
   if (Test-Path $from) {
-    robocopy $from $to /E /XD .git /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+    robocopy $from $to /E /XD .git node_modules /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
     Write-Host "OK $d"
   }
 }

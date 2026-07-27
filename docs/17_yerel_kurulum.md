@@ -112,12 +112,12 @@ Detaylı JSON alanları BI wiki: `Arma_Reforger:Server_Hosting` / Server Config.
 
 ## 5. Sıra özeti
 
-| Sıra | Sen | AI |
-|---|---|---|
-| 1 | PG kur + migration | Rehber (bu dosya) |
-| 2 | `npm install` + `npm run dev` | Kod iskeleti hazır |
-| 3 | Dedicated ilk deneme | Log okuma / config düzeltme |
-| 4 | Play mesafe testi | Script düzeltme |
+| Sıra | Sen | AI | Durum |
+|---|---|---|---|
+| 0 | Play mesafe testi | Script / lab dünya | **OK** (2026-07-27) |
+| 1 | PG kur + migration | Rehber (bu dosya) | sıradaki |
+| 2 | `npm install` + `npm run dev` | Kod iskeleti hazır | — |
+| 3 | Dedicated ilk deneme | Log okuma / config düzeltme | — |
 
 ---
 *Önceki: [16](./16_dosya_envanteri.md)*

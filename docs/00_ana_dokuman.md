@@ -102,7 +102,8 @@ Temel fark: yazılı kurallara mümkün olduğunca oyun içi karşılık üretme
 - **İş sistemi mikro-mekaniği netleşti:** toplama (tick-tabanlı, alet gerektirir, alan sınırsız/herkese açık) → işleme (kişiye özel oturum, batch sınırlı, makine paylaşılan state tutmaz) → satış (anlık). Detay Döküman 5.
 - **Denge felsefesi netleşti:** yapay tavan/kısıtlama yok; denge nüfus/risk katsayısı, klan gideri ve doğal oyun mekaniğiyle kendiliğinden oluşur. Detay Döküman 4.8.
 - **Somut ekonomi ölçeği kesinleşti:** başlangıç parası 500.000, pasif vatandaşlık maaşı 2.500/15dk (güvenlik ağı rolü), iş geliri 60.000-120.000/sefer (aktif çalışmanın pasif maaştan bariz üstün olması için), araç fiyatları 100.000'den (motor) 10.000.000'a (üst tır) kademeli. Detay Döküman 4.9, 5, 7, 8.
-- **Oyun içi HUD teknik yolu kesinleşti:** Life tarzı kenar HUD’lar `.layout` + ikon + script ile; HTML değil. Admin web paneli ayrı (Next.js). Detay Döküman 10.8.
+- **Oyun içi HUD teknik yolu kesinleşti:** Life tarzı kenar HUD’lar. **Lab (kanıtlı 2026-07-27):** `CreateWidget` + alpha texture; elle `.layout`/`CreateWidgets` donuyor → yasak. Ürün hedefi Layout Editor. HTML değil. Admin web = Next.js. Detay Döküman 10.8 + 15 §7c.
+- **Circle HUD + Canta lab dilimi kapandı:** status rings, nakit pill (dinamik genişlik), I canta v3 soft9 (9-slice). Çıkarımlar docs/15 §7c–7d.
 
 ---
 

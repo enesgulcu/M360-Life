@@ -1,0 +1,26 @@
+# M360 HUD / UI — Lab Çıkarımları (2026-07, dilim sonu)
+
+## Yasak / güvenli yol
+- **Elle `.layout` + `CreateWidgets` = donma.** Lab: `CreateWidget` + `FrameSlot` only.
+- Ürün hedefi: Layout Editor’dan üretilmiş layout.
+
+## Texture / görünüm
+- Alpha zorunlu; opak ikon = beyaz kare. İkon: Iconify/MDI → raster.
+- **Köşeyi esnetme** (9-slice panel / L+mid+R pill). Stretch = piksel merdiven. Soft AA.
+- Lab FPS’te mouse yok → tıklanır Kapat koyma; **I** toggle.
+
+## Widget
+- Stretch `(0,0)-(1,1)` + SetPos metin çakışması → mutlak `(0,0)`.
+- Dinamik nakit: `NakitSeritYerles`. Dinamik liste: satır havuzu `MAX_SATIR`.
+- `M360_HudYazi.NakitFormat` binlik nokta. ASCII `-` (özel glif yok).
+
+## Canta v3 soft9 (son)
+- 9-slice panel + header/satır pill + ağırlık barı + ikonlu satırlar.
+- `M360_CantaPanelWidgetlari.c` · `M360_CantaSatirUi`.
+
+## Lab kamera
+- 3. şahıs zoom labda → M360 değil; labda 1. şahıs (docs/15 §7d).
+
+## Dosyalar
+- Arayuz scripts · `UI/Textures/M360/*` · `tools/gen_circle_hud_textures.py` · `tools/icon_src/`
+- `docs/15` §7c–7d · `docs/10` §10.8

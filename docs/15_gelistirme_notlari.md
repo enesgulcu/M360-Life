@@ -4,7 +4,7 @@
 >
 > **Yeni sohbette zorunlu okuma sırası:** `docs/00`–`14` → **bu dosya (15)** → sonra işe başla.
 >
-> **Son güncelleme:** 2026-07-27 gün sonu — docs toparlandı (13 üç-site, 5.7b tablo, 14 mcp, README)
+> **Son güncelleme:** 2026-07-27 — HUD/Canta lab dilimi kapatıldı (§7c v3 soft9); kamera notu §7d; kritik özet §B güncellendi.
 
 ---
 
@@ -32,7 +32,9 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | **Kapsam büyüdü ama acele yok** | MVP geniş (15 iş, polis/doktor, klan); süre esnek. Faz sırası önemli. |
 | **Life envanter tuşu** | Arma 3 Life = **I**. Reforger `"Inventory"` ≈ **Tab**. **Kanıtlı lab yolu (2026-07-27):** `Debug.KeyState(KeyCode.KC_I)` + `ClearKey` → M360 aç/kapa. Tab’ı `ActionOpenInventory` ile M360’ye **bağlama**. Input.conf / runtime remap Play’de **tutmadı** — ayrıntı **7b**. |
 | **Kod dili / isim (ANA DÜSTUR)** | Değiştirilebilir her şey **Türkçe ASCII**: class, metod, üye, Attribute, dosya adı, oyuncu metni. **Yorumlar Türkçe**. Motor override/API İngilizce dokunulmaz. Prefab + `.et` birlikte. `EnfusionMCP` araç kodu hariç. Bkz. **11.2.1 / 13.2**. |
-| **Oyun içi HUD** | Hedef: Life tarzı kenar HUD (Narcos benzeri kalite). Yol: **`.layout` + ikon (.edds) + script**. HTML yok. Hint = lab. Detay: **docs 10.8** + Bölüm 7c. |
+| **Oyun içi HUD** | Hedef: Life tarzı kenar HUD. **Lab yolu (kanıtlı):** `CreateWidget` + `FrameSlot` + alpha texture. Elle `.layout` + `CreateWidgets` = **Play/WB donması** — yasak. Ürün hedefi ileride Layout Editor. HTML/NUI yok. Detay: **10.8** + **7c**. |
+| **Özen / tekrar etme** | Aynı UI ayarını 5 kez deneme. Önce doğru teknik (9-slice, soft AA, CreateWidgets yasak), sonra bir net sonuç. Kullanıcı güven + yol arkadaşı ister. |
+| **Lab 3. şahıs kamera** | Lab düz zeminde Enter sonrası zoom/kayma → **M360 kamera kodu yok**; vanilla 3P collision + lab. Lab testte **1. şahıs** kullan. |
 
 ### Kullanıcının dikkat ettiği şeyler (gözlem)
 - Titreyen / bozuk hissettiren sahne → kabul etmez; kök nedeni sorar.
@@ -64,7 +66,8 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | Cursor MCP | `C:\Users\enesg\.cursor\mcp.json` → sunucu adı oturumda `user-enfusion-mcp` |
 | Workbench | `...\Arma Reforger Tools\Workbench\ArmaReforgerWorkbenchSteamDiag.exe` |
 | Oyun | `...\Steam\steamapps\common\Arma Reforger` (veri `.pak`) |
-| Terrain data | `Worlds/TestWorld/M360_Terrain/` (Create new terrain sonrası oluştu) |
+| Terrain data | `Worlds/LabDuzZemin/` (+ `M360_LabDuzZemin_Layers/`); eski TestWorld kaldırıldı |
+| Lab world | `Worlds/LabDuzZemin/M360_LabDuzZemin.ent` — **boş .ent = boş harita** (bkz. §8e) |
 | Eski Claude MCP | `~/.claude.json` (artık birincil değil) |
 
 ---
@@ -217,15 +220,66 @@ Kullanıcı Play: **yüzde sayacı** + **I ile M360 çanta listesi** çalıştı
 
 ---
 
-## 7c. Oyun içi HUD omurgası (ürün hedefi)
+## 7c. Oyun içi HUD omurgası — LAYOUT DİLİMİ (2026-07-27)
 
 | Madde | Not |
 |---|---|
-| Hedef | Köşe/kenar Life HUD (para, vitals, iş barı, envanter paneli, rol…) — birden fazla nokta, **aynı teknik** |
-| Yol | `.layout` (Display) + anchor + Image/Text widget + script güncelleme |
-| İkon/bar | `.edds` texture; daire/bar = texture/mask veya dolgu boyutu — HTML değil |
-| Lab şimdi | Hint + **I = Debug.KeyState** kanıtlandı |
-| Sonraki | `UI/layouts/M360/` gerçek çerçeve; docs **10.8** |
+| Hedef | Köşe/kenar Life HUD — aynı teknik, birden fazla nokta |
+| Yol | Lab: `CreateWidget` + `FrameSlot`. Ürün hedefi: Workbench `.layout` + `CreateWidgets` (elle layout yasak — donuyor) |
+| Dosyalar | Script: `M360_CantaHudBileseni` + widget helper’lar. Diskteki `.layout` runtime’da **yüklenmez**. |
+| Script | `M360_CantaHudBileseni` · `M360_CekirdekHudWidgetlari` · `M360_YuvarlakBar` · `M360_CantaPanelWidgetlari` |
+| Tuş | I = canta toggle; nakit/saat/vitals her zaman; iş barı sadece topla/isle |
+| İkon | `UI/Textures/M360/*` — gerçek alpha; MDI/Iconify → `tools/gen_circle_hud_textures.py` |
+| Play kontrol | spawn → nakit pill + vitals rings → F topla → alt bar → I panel |
+| Layout sözdizimi | **`Slot FrameWidgetSlot "{GUID}"`** (vanilla). MCP `layout_create` Children/tırnaklı Slot **YANLIŞ** |
+| Play kilidi (2026-07-27) | `CreateWidgets` **donuyor**. Elle `.layout` + Layout Editor açmak WB’yi dondürebilir. |
+| Lab HUD (şimdi) | **Circle HUD v9** + **Canta v3 soft9** (9-slice panel, L/mid/R satır, soft AA, Kapat yok — I). `CreateWidgets` yasak. |
+
+### Circle HUD dilimi — çıkarımlar (2026-07-27, dilim kapatıldı)
+
+| # | Ders |
+|---|---|
+| 1 | Opak/alpha’sız ikon DDS → **beyaz kare**; ayrı ikon ImageWidget kırılgan → **tek badge texture** + maskeli ring |
+| 2 | Stretch anchor’lı TextWidget → para ikonuyla **üst üste binme**; mutlak `(0,0)` pos/size kullan |
+| 3 | Sayı uzayınca kutu: `NakitSeritYerles` — metin genişliği tahmini → şerit `SetSize` → pill **mid** uzar |
+| 4 | Dikdörtgen `SetColor` arka plan çirkin; **L+mid+R pill** texture ile oval |
+| 5 | FiveM Circle HUD = HTML/NUI; Reforger’da yok — rings+pill yaklaşımı |
+| 6 | Kalınlık/ikon scale aşırı kaçmasın; ring içinde padding şart |
+| 7 | Lab’da mouse cursor yok → tıklanır Kapat/buton koyma; **I** toggle |
+| 8 | Canta: **köşeyi stretch etme** (9-slice / L+mid+R) yoksa piksel merdiven |
+| 9 | Soft AA (supersample); `·` glifleri kutu basabilir → ASCII `-` |
+| 10 | İkon: Iconify/MDI indir → raster; elle çizme |
+| 11 | Agent notu: `.cursor/rules/m360-reforger-hud.mdc` |
+
+*UI lab omurgası kanıtlandı. Sonraki HUD: Layout Editor / daha iyi asset pipeline.*
+
+---
+
+## 7d. Lab kamera (3. şahıs) — NOT (2026-07-27)
+
+| Madde | Not |
+|---|---|
+| Belirti | Enter ile dış görünüş → yürüyünce kayma / aşırı zoom |
+| 1. şahıs | Sorun yok |
+| M360 kod | **Kamera/Enter/zoom kodu yok** — HUD sebep değil |
+| Muhtemel | Vanilla 3P camera collision + `LabDuzZemin` düz grid / az geometri; Workbench Play |
+| Lab pratik | Testlerde **1. şahıs** kullan |
+| Doğrulama | İleride Everon/FFA’da M360 kapalı vs açık karşılaştır |
+
+---
+
+## B. Kritik özet kartı (hızlı bakış — 2026-07-27)
+
+| Konu | Kural |
+|---|---|
+| `CreateWidgets` + elle `.layout` | **YASAK** (Play/WB donar) |
+| Lab UI | `CreateWidget` + `FrameSlot` |
+| Texture | Gerçek alpha; köşe **sabit** (9-slice / pill L-mid-R); soft AA |
+| I tuşu | `Debug.KeyState(KC_I)` canta; Tab’a bağlama |
+| HUD stil | Circle rings + nakit pill + canta panel; HTML yok |
+| Lab 3P kamera | M360 değil; labda 1. şahıs |
+| Git | Workbench addon → `sync-addon-to-github.ps1` → `Documents\GitHub\M360-Life` push (`/MIR` yasak) |
+| Kod isim | Türkçe ASCII (11.2.1) |
 
 ---
 
@@ -290,7 +344,7 @@ Wiki: `Action_Context_Setup`.
 - [x] JobStation Topla/İşle/Sat F menüsü — lab’a yerleştirildi
 - [x] HUD: yüzde sayacı + M360 envanter listesi (Play teyidi)
 - [x] Inventory tuşu **I** — `Debug.KeyState(KC_I)` kanıtlandı; Tab M360 açmaz
-- [ ] Life tarzı `.layout` HUD çerçevesi (docs 10.8 / 7c — ürün hedefi)
+- [x] Life tarzı `.layout` HUD çerçevesi lab v1 (CekirdekHud + CantaPanel — docs 10.8 / 7c)
 - [ ] Dedicated server ilk çalıştırma
 
 ---
@@ -321,6 +375,31 @@ Wiki: `Action_Context_Setup`.
 - **Türkçe ASCII class rename:** `Job*` → `IsAyar` / `ToplamaAlaniBileseni` / `CantaHudBileseni`…; Attribute `m_iAdim*`; docs **11.2.1 ANA DÜSTUR**; son push.
 - **Docs 16:** Dosya/içerik envanteri açıldı (script+prefab+dünya+ileride API). Her işlemde güncelleme kuralı; sunucu-yetkili hatırlatma §0.
 - **Yerel lab planı uygulandı:** klasör `Isler/` + `LabDuzZemin`; mesafe iptali (`m_fIptalMesafesi`); docs 17; GitHub `apps/game-api` + `packages/db`; sync MIR yasak.
+- **Play lab onay (2026-07-27):** Pirinç topla/işle/sat + mesafe iptali OK. Boş harita kök nedeni §8e.
+- **Layout HUD lab v1:** `UI/layouts/M360/` + CreateWidgets; hint panel yolu kaldırıldı (§7c). MCP `layout_create` Children/tırnaklı Slot **yanlış** — vanilla `Slot FrameWidgetSlot "{GUID}"`. Play teyidi: kullanıcı (WB Play).
+
+---
+
+## 8e. Dünya `.ent` kabuğu (KRİTİK — 2026-07-27)
+
+**Belirti:** Layer dosyasında entity’ler var ama World Editor / Play’de harita boş (entity count 0).
+
+**Kök neden:** `Something.ent` **0 byte / boş**. Entity’ler `Something_Layers/default.layer` içindedir; Workbench `.ent` olmadan katmanı bağlayamaz.
+
+**Minimum geçerli `.ent` içeriği** (BI `SCR_WorldFilesHelper.CreateWorld`):
+
+```
+Layer default {
+ Index 0
+}
+```
+
+**Kurallar:**
+- Rename / git move sırasında `.ent` kaybolursa layer dolu kalsa bile dünya boş açılır.
+- Düzeltince: resource rebuild + `M360_LabDuzZemin.ent`’i yeniden aç; `wb_entity_list` ile `M360_Pirinc*` doğrula.
+- Sync/MIR: world dosyalarını ezme; `.ent` boyutu 0 olmamalı.
+
+**Kanıt:** Boş `.ent` → entity 0; kabuk yazıldı → 11 entity (terrain, spawn, 3 Pirinç, HUD, FFA).
 
 ---
 
