@@ -10,7 +10,7 @@
 | Marka/Stüdyo adı | **Geçici**: "Medyanes 360 / M360 Life" — kesinleşmedi, ileride değişebilir |
 | Kaynak döküman | M360 Life Ana Proje Tasarım ve Uygulama Dokümanı v2.0 (23 Temmuz 2026) |
 | Bu sürüm | Parçalanmış döküman seti — v1 |
-| Ekip | Tek kişi (sen) + AI (Claude) teknik ortak olarak |
+| Ekip | Tek kişi (sen) + AI teknik ortak (şimdi **Cursor + enfusion-mcp**; önceki Claude Code oturumları) |
 | İlk hedef | Kendi/topluluk sunucusu; lisans satışı ileride ikinci aşama |
 | Geliştirme ortamı | Başlangıçta local cihaz (test/deneme); büyüdükçe uygun hosting'e taşınacak |
 
@@ -156,4 +156,4 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 
 ---
 
-*Sıradaki adım: Döküman 1 — Dünya, Harita & İçerik Paket Stratejisi.*
+*Sıradaki adım: tasarım seti tamam — lab/ürün için [15](./15_gelistirme_notlari.md) + kök [README](../README.md).*

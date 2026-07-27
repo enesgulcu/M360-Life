@@ -102,8 +102,9 @@ Sistem sahibi admin seviyelerini, her seviyenin görebileceği ekranları ve ça
 
 ### Lab durumu (şimdi)
 
-- Kanıtlanan: `SCR_Hint` ile envanter listesi + toplama yüzde sayacı; Inventory → **I** remap + `modded ActionOpenInventory`.
-- Henüz yok: gerçek `.layout` Life HUD çerçevesi. Sonraki UI diliminde başlanır (Döküman 15 açık madde).
+- Kanıtlanan: `SCR_Hint` ile envanter listesi + toplama yüzde sayacı.
+- Tuş: **I** = M360 çanta (`Debug.KeyState(KC_I)`); **Tab** = BI native Inventory (M360’ye bağlı değil). Eski “Inventory remap / modded ActionOpenInventory” yolu **kullanılmıyor** (Play’de tutmadı) — bkz. Döküman 15 §7b.
+- Henüz yok: gerçek `.layout` Life HUD çerçevesi. Sonraki UI diliminde başlanır.
 
 ### İhtiyaç duyulacak HUD noktaları (ürün — örnek)
 

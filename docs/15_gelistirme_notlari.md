@@ -315,6 +315,7 @@ Wiki: `Action_Context_Setup`.
 - Kod stili: Türkçe ASCII isim + metod + yorum → docs 00 / 11.2.1 / 13.2 / 15-A.
 - HUD ürün yolu net: **layout+ikon+script** (HTML yok) → **docs 10.8** + Bölüm **7c**; Narcos tarzı kenar HUD hedef.
 - Repo: Workbench addon → `Documents\GitHub\M360-Life` → GitHub `enesgulcu/M360-Life` ilk push.
+- Kök `README.md` eklendi; docs denetimi: lab 12k vs hedef 60k, Doc 13 eski tek-istasyon, kapasite 100 vs 300 sefer — README “Bilinen tutarsızlıklar” + 10.8/00/12.6 düzeltmeleri.
 
 ---
 

@@ -73,7 +73,7 @@ Bu kriterler, kapsam ne kadar genişlerse genişlesin **değişmiyor** — "kaç
 
 ## 12.6 Bir Sonraki Somut Adım
 
-Tasarım dökümanları (0-12) tamamlandı. Sıradaki adım Döküman 11.11'de belirtilen: **dedicated server'ı ilk kez yerel olarak çalıştırmak.**
+Tasarım dökümanları (0-12) tamamlandı. Sıradaki adım Döküman **11.12**’de belirtilen: **dedicated server’ı ilk kez yerel olarak çalıştırmak** (11.11 log politikasıdır — karıştırma).
 
 ---
 *Önceki: [11 - Teknik Mimari](./11_teknik_mimari.md) · Sıradaki: Döküman 13 — Enfusion Prefab & Script Yapılandırma Prosedürü*
