@@ -95,27 +95,27 @@ EveronLife bir **Workshop öğesi** (yani Arma Reforger'ın kendi mod mağazası
 | **P27 Economy & Spawn Points System** | Workshop (yeni keşfedildi) | Server-authoritative güvenlik deseni bizimkiyle birebir aynı prensip: *"oyuncu karşılayamadığı bir aracı spawn etmeye çalışırsa, araç anında silinir"* — Döküman 11.9'daki güvenlik senaryolarımızla doğrudan örtüşüyor | Güvenlik deseni referansı — kod kopyalanmayacak ama yaklaşım doğrulaması olarak değerli |
 | **Enfusion Database Framework** (Arkensor) | MIT (açık kaynak) | Bkz. 14.2 | Bağımlılık olarak kullanılmayacak, mimari referans olarak kullanıldı |
 
-## 14.5 Geliştirme Araçları — enfusion-mcp
+## 14.5 Geliştirme Araçları — enfusion-mcp (güncel: Cursor)
 
-Araştırma sırasında bulundu: **enfusion-mcp**, Claude'un Arma Reforger modlamasına doğrudan yardımcı olabilmesi için yazılmış bir MCP (Model Context Protocol) sunucusu.
+**enfusion-mcp** = Model Context Protocol sunucusu; AI’nin Enfusion/Reforger API’sini tahmin etmek yerine aramasını ve Workbench’i uzaktan kullanmasını sağlar.
 
 | Özellik | Açıklama |
 |---|---|
-| `api_search` | 8.693 Enfusion/Arma Reforger API sınıfı ve metodunu arayabilir — Claude'un "kafadan tahmin" yerine gerçek API'yi bulmasını sağlar |
-| `wiki_search` | 250+ resmi tutorial/rehberi arayabilir |
-| Workbench kontrolü | Proje iskeleti oluşturma, script/prefab/config üretme, Workbench'i başlatma, oyun içi test moduna geçme |
-| Durum | Kullanıcı onayı ile bağlanabilir bir MCP connector; şu an bağlı değil — **not: bu araç Claude'un resmi bağlantı dizininde (connector listesi) yer almıyor, bunun yerine Claude Code veya Claude Desktop (bilgisayara kurulan uygulama) üzerinden elle kurulması gerekiyor. Modlama aşamasına geçildiğinde kurulum adımlarıyla birlikte ele alınacak.** |
+| `api_search` | Enfusion/Arma Reforger API sınıf/metod araması |
+| `wiki_search` / BI wiki | Resmi tutorial/rehber |
+| Workbench | `wb_connect`, reload, entity, resource, script… (açık WB varken `wb_launch` yasak — docs 15) |
+| **Durum (2026-07-27)** | **Cursor IDE** içinde bağlı ve kullanılıyor. Önceki “Claude Desktop connector dizini / henüz bağlı değil” notu **eski**. Kurulum: Cursor MCP ayarları + Workbench NET API. |
 
-**Bu, Döküman 13'teki "ilk prosedür taslağı, Faz 0'da doğrulanacak" notuyla doğrudan ilişkili** — bu araç bağlanırsa, Döküman 13'ün açık maddeleri (tam component API'leri, tag çakışma kontrolü) çok daha hızlı ve güvenilir şekilde doğrulanabilir.
+Yeni sohbetlerde birincil ortam: **Cursor + enfusion-mcp**; kanıtlar Döküman 15’e yazılır.
 
 ## 14.6 Açık Maddeler
 
-- [x] ~~EveronLife'ın bağımlılık mı referans mı olacağı~~ — netleşti: yalnızca referans, Workbench'e bağımlılık olarak eklenmeyecek (14.3b)
-- [ ] Resmi persistence sistemi (14.1) ile bizim PostgreSQL katmanımızın Faz 0'da birlikte nasıl çalışacağının test edilmesi
-- [ ] BasicBanking / Zeliks Persistent Banking mod lisanslarının tam kontrolü (Döküman 12.1 ilkesine göre)
-- [ ] enfusion-mcp bağlantısı — kullanıcı onayına bağlı, henüz bağlanmadı
-- [ ] Narcos Life Roleplay üzerine daha derin rakip analizi — istenirse ayrı bir araştırma turu olarak yapılabilir
-- [ ] **Sürekli radar:** Bu döküman tek seferlik değil — Faz 0-2 boyunca "EveronLife gibi bizi hızlandıracak yeni bir şey çıktı mı" diye periyodik olarak tekrar bakılacak
+- [x] ~~EveronLife bağımlılık mı referans mı~~ — yalnızca referans (14.3b)
+- [ ] Resmi persistence + PostgreSQL birlikte test (Faz 0 dedicated sonrası)
+- [ ] BasicBanking / Zeliks lisans kontrolü (12.1)
+- [x] ~~enfusion-mcp bağlantısı~~ — Cursor’da bağlı (14.5)
+- [ ] Narcos derin rakip analizi — isteğe bağlı
+- [ ] **Sürekli radar:** Faz 0–2 boyunca periyodik güncelle
 
 ---
-*Önceki: [13 - Enfusion Prefab Prosedürü](./13_enfusion_prefab_prosedur.md) · Bu, döküman setinin son parçasıdır.*
+*Önceki: [13 - Enfusion Prefab Prosedürü](./13_enfusion_prefab_prosedur.md) · Bu, döküman setinin son parçasıdır (15 = canlı lab belleği).*

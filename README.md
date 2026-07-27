@@ -49,8 +49,8 @@ Yeni sohbette okuma sırası: **`docs/00` → ilgili konu dosyası → `docs/15`
 | 10 | [10_panel_hud_admin.md](docs/10_panel_hud_admin.md) | Panel / HUD / admin |
 | 11 | [11_teknik_mimari.md](docs/11_teknik_mimari.md) | Teknik mimari |
 | 12 | [12_lisans_roadmap.md](docs/12_lisans_roadmap.md) | Lisans / roadmap |
-| 13 | [13_enfusion_prefab_prosedur.md](docs/13_enfusion_prefab_prosedur.md) | Prefab / script prosedürü *(§13.3 eski tek-istasyon metni — lab artık üç site; 15’e bak)* |
-| 14 | [14_mevcut_modlar_araclar.md](docs/14_mevcut_modlar_araclar.md) | Araçlar / referans modlar |
+| 13 | [13_enfusion_prefab_prosedur.md](docs/13_enfusion_prefab_prosedur.md) | Prefab / script — **üç site** (Collect/Process/Sell) |
+| 14 | [14_mevcut_modlar_araclar.md](docs/14_mevcut_modlar_araclar.md) | Araçlar / referans; enfusion-mcp = Cursor |
 | **15** | [15_gelistirme_notlari.md](docs/15_gelistirme_notlari.md) | **AI oturum belleği — kanıtlar, tuzaklar, tercihler** |
 
 Konuşma geçmişi kaynak değildir. Güncel gerçek: bu dökümanlar + kod.
@@ -123,17 +123,17 @@ Aynı işin dengesi: World Editor’da entity seç → Object Properties → `m_
 
 ---
 
-## Bilinen tutarsızlıklar (bilinçli takip)
+## Bilinen ayrımlar (lab vs ürün — bilinçli)
 
-Bunlar “unutulmuş hata” değil; lab/tasarım ayrımı veya güncellenmesi gereken eski metinler:
+Bunlar hata değil; karıştırılmaması gereken katmanlar:
 
-1. **Doc 13** hâlâ eski tek `JobStation` iskeletini anlatabiliyor → gerçek lab = **üç site** (Collect/Process/Sell). Kanıt: docs 15 §6.
-2. **Sefer kazancı:** lab 12k vs tasarım 60k — batch farkı (20 vs 100).
-3. **Kapasite:** oyuncu temel 100 alan; Pirinç sefer 100 birim × 3 alan = 300 → araç/çok tur şart (ürün envanteri gelince).
-4. **Alet şartı** (docs 5) lab’da henüz yok.
-5. **Doc 14** mcp “bağlı değil” ifadeleri eski olabilir → güncel: Cursor + enfusion-mcp (docs 15).
+1. **Lab sefer ~12k** (batch 20) vs **üretim 60k** (batch 100) — tek tablo: [docs/05 §5.7b](docs/05_isler_envanter.md).
+2. **Sefer** = ekonomik hedef batch; kapasite 100 alan ile 300 alanlık ham yük **araç/çok tur** ister (5.7a).
+3. **Alet şartı** (docs 5) lab’da henüz yok.
+4. **HUD:** lab = hint + I; ürün = `.layout` (docs 10.8).
+5. Doc 13 artık üç site; eski tek-istasyon = tarihçe.
 
-Detaylı denetim notları oturumda `docs/15` içine işlenir.
+Detay: [docs/15](docs/15_gelistirme_notlari.md).
 
 ---
 

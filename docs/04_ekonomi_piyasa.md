@@ -161,7 +161,7 @@ Buraya kadarki tüm kurallar (K-katsayısı, vergi, ticaret aralığı) **oransa
 | Orta ölçekli (araba-sınıfı işler) | **60.000** | Pirinç, tarım, balıkçılık, bakır |
 | Büyük/tır ölçekli (tır-sınıfı işler) | **120.000** (aracaya göre tam 2 kat — kesin karar) | Petrol, taş/mermer, gümüş |
 
-**Karşılaştırma (neden iş kazanır):** Pasif maaşla sıradan arabaya (500.000) ulaşmak yaklaşık 3 hafta sürer (haftada ~250.000 pasif gelir varsayımıyla). Aktif çalışan biri aynı hedefe birkaç saatlik yoğun oyunla (yaklaşık 8-9 orta ölçek sefer) ulaşır. Bu fark, tam istediğin gibi: iş her zaman çok daha hızlı.
+**Karşılaştırma (neden iş kazanır):** Pasif maaşla sıradan arabaya (500.000) ulaşmak ≈ **2 hafta** sürer (haftada ~250.000 pasif ≈ 10.000/saat × ~25 saat). Aktif çalışan biri aynı hedefe birkaç saatlik yoğun oyunla (yaklaşık 8–9 orta ölçek sefer) ulaşır. İş her zaman çok daha hızlı.
 
 ### Standart Oyuncu Personası ve Zaman Çizelgesi
 
@@ -171,8 +171,8 @@ Günde ~4-5 saat, haftada 5 gün → haftalık ~20-25 saat aktif süre (Döküma
 |---|---|---|
 | Gün 1 | Yeni Oyuncu başlangıcı (0 saat) | Lisans + eski/püskü araba (başlangıç parasıyla, iş yapmadan) |
 | Gün 2-5 | Yeni Oyuncu (~4-16 saat) | Birkaç iş seferiyle sıradan/bagajlı araba |
-| **Hafta 1 sonu (~20-25 saat)** | Yeni Oyuncu biter → Yerleşik başlar | İlk tır (1.5M sınıfı), düzenli iş rutini oturmuş |
-| Ay 1-2 (~80-150 saat) | Yerleşik sonu → Gelişmiş'e geçiş | Üst segment araç/tır, ev/garaj düşüncesi, polis/doktor kariyerine giriş |
+| **Hafta 1 sonu (~20-25 saat)** | Yeni Oyuncu biter → Yerleşik | Sıradan/bagajlı araba oturmuş; **ilk küçük tır (1.5M) mümkün** (yoğun iş + birikim) |
+| Ay 1-2 (~80-150 saat) | Yerleşik → Gelişmiş | Üst segment araç/tır, ev/garaj, polis/doktor girişi |
 | Ay 5-6 (~500 saat) | Gelişmiş sonu → Kıdemli eşiği | İçeriğin %70'i açık, üst segment tırlara (10M'a yaklaşan) yaklaşıyor, klan liderliği |
 | Ay 10-12+ (~1000+ saat) | Kıdemli | Prestij hedefleri, mentorluk, wipe ile yeniden yarış |
 

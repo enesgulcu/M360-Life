@@ -110,8 +110,8 @@ Oyuncu bir tuşa saldırgan rol profili atar. Profil, sunucunun izin verdiği ba
 
 ## 8.9 Açık Maddeler
 
-- [ ] Polis/Doktor'un MVP Core'a alınması → Döküman 12 roadmap süresine yansıtılacak
-- [ ] Saldırgan profil sisteminin faz içi konumu (MVP Core ortası) → Döküman 12'de detaylandırılacak
-
+- [x] ~~Polis/Doktor MVP Core~~ — Döküman 12 Faz 3’e yansıtıldı
+- [ ] Saldırgan profil detayları (eşikler, UI) — Faz 3 içerik üretimi
+- [ ] Rütbe / çağrı paneli somut wireframe — Faz 1–3
 ---
 *Önceki: [07 - Araç & Mülk](./07_arac_mulk.md) · Sıradaki: Döküman 9 — Klan Sistemi*

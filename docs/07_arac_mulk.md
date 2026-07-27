@@ -15,7 +15,7 @@ Oyuncunun sahip olabileceği araç sayısına sabit üst sınır konmaz — para
 | Sıradan araba | 500.000 | Gün 2-5 (birkaç iş seferi) |
 | Bagajlı araba | 750.000 | Hafta 1 |
 | Minibüs | 1.250.000 | Hafta 1-2 |
-| Tır (5 alt sınıf) | 1.500.000 — 10.000.000 arası kademeli | Hafta 2-3'ten itibaren, üst tırlar Gelişmiş/Kıdemli kademe hedefi |
+| Tır (5 alt sınıf) | 1.500.000 — 10.000.000 arası kademeli | **Hafta 1 sonu** küçük tır (1.5M) mümkün; orta/üst tırlar Hafta 2+ / Gelişmiş–Kıdemli |
 
 Araç ve tır satış noktaları **ayrı lokasyonlarda** olacak. Bagaj kapasitesi ve hız gibi özellikler, sınıf/fiyata göre kademeli olarak artacak — tam değerler Faz 2'de içerik üretilirken netleşecek.
 

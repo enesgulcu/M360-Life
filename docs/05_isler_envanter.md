@@ -29,7 +29,7 @@ Bu bölüm, 5.1'deki "tek çekirdek" fikrini somut bir mekanik şablona döküyo
 
 1. Oyuncu işleme tesisine (makineye) gider ve etkileşime girer.
 2. Sistem lisans, girdi miktarı ve rolü kontrol eder.
-3. Oyuncu "işle" der; makine, oyuncunun üzerindeki/yakınındaki ham maddeyi **tanımlı üst sınıra kadar** (örn. varsayılan max 60 birim) kendi işlem penceresinde işler. Bu üst sınır iş bazında config'ten ayarlanır (**batch boyutu**).
+3. Oyuncu "işle" der; makine, oyuncunun üzerindeki/yakınındaki ham maddeyi **tanımlı üst sınıra kadar** (varsayılan **100** birim — Döküman 5.7) kendi işlem penceresinde işler. Bu üst sınır iş bazında config'ten ayarlanır (**batch / `m_iPartiBoyutu`**).
 4. 0-100 ilerleme çubuğu gösterilir; **işleme süresi** boyunca (config'ten ayarlanır) oyuncunun ilgili envanteri kilitli kalır — transfer/satış yapılamaz.
 5. İşlem tamamlanınca **dönüşüm oranına** göre (işe göre değişir — bazıları 1:1, bazıları kayıplı örn. 3 ham:2 işlenmiş) işlenmiş ürün otomatik olarak oyuncunun envanterine döner.
 6. **Aynı anda başka bir oyuncu da aynı makineye gidip kendi işlemini başlatabilir** — işlemler birbirinden bağımsızdır çünkü state makineye değil, oyuncu-oturumuna bağlıdır. Bu, "slot sayısı yönetme" ihtiyacını ortadan kaldırır.
@@ -147,49 +147,75 @@ Dayanıklılık sistemi ilk sürümde yoktur. Eşyalar sınırsız kullanılabil
 
 ### Kazanç Çapası ve Referans İş Örnekleri (kesinleşti — bu oturumda somutlaştırıldı)
 
-**Genel mikro-parametreler (tüm işler için varsayılan başlangıç):**
+### 5.7a “Sefer” tanımı (net)
+
+**Sefer** = hedeflenen bir batch’i toplayıp işleyip satmak (kazanç hesabı bu birime bağlıdır).
+
+- **Üretim hedefi:** Sefer = batch kadar işlenmiş ürünün satışı (Pirinç: 100 birim × 600 = 60.000).
+- **Kapasite gerçeği:** Oyuncu temel kapasite **100 alan**; Pirinç ham **3 alan/birim** → 100 birim ham = **300 alan**. Yani tam sefer genelde **araç + birden fazla taşıma turu** ister. “Sefer kazancı” ekonomik hedeftir; “tek envanter doldurma” değildir.
+- **Lab:** Hızlı test için küçük batch / kısa süre / `m_iMaxTasima` sayacı kullanılır (aşağıdaki tablo). Gerçek kapasite puanı ürün envanterinde gelir.
+
+**Genel mikro-parametreler (üretim varsayılanı — panelden değişir):**
 
 | Parametre | Değer |
 |---|---|
 | Tick süresi | 3-5 saniye (ortalama ~4 sn) |
 | Tick başı verim | 2-3 birim (ortalama ~2.5) |
-| Varsayılan batch boyutu (işleme) | 100 birim — **iş bazında admin tarafından değiştirilebilir** |
+| Varsayılan batch boyutu (işleme) | **100** birim — iş bazında değiştirilebilir |
+
+### 5.7b Pirinç — tek sayı tablosu (lab | üretim)
+
+Kaynak önceliği: **Play’de prefab Attribute** → lab. Ürün dengesi → bu tablonun “Üretim” sütunu + ileride DB.
+
+| Parametre | Lab (prefab, 2026-07-27) | Üretim hedefi |
+|---|---|---|
+| `m_sIsAdi` | Pirinc | Pirinc |
+| `m_iTickSuresi` | 4 sn | ~4 sn |
+| `m_iTickVerim` | 2 | ~2–3 |
+| `m_iPartiBoyutu` | **20** | **100** |
+| `m_iIslemeSuresi` | **10 sn** | **~180 sn** (~3 dk) |
+| `m_fDonusumOrani` | 1.0 | 1.0 |
+| `m_iSatisFiyati` | 600 | 600 |
+| Max taşıma | `m_iMaxTasima` **40** (stub) | kapasite puanı (5.6) |
+| ~Sefer kazancı | **12.000** (20×600) | **60.000** (100×600) |
+
+`M360_JobConfig.c` sınıf varsayılanları üretim hedefine yakındır (parti 100, işleme 180); lab `.et` dosyaları bilerek hızlıdır. Karıştırma.
 
 **Referans iş örneği 1 — Pirinç (orta ölçek, hedef: 60.000/sefer)**
 
-| Parametre | Değer |
+| Parametre | Değer (üretim) |
 |---|---|
 | Kapasite maliyeti (ham / işlenmiş) | 3 alan / 2 alan |
 | Batch boyutu | 100 birim |
-| Dönüşüm oranı | 1:1 (kayıpsız) |
+| Dönüşüm oranı | 1:1 |
 | İşleme süresi | ~3 dakika/batch |
 | Birim satış fiyatı | 600 |
-| **Sefer kazancı** | 100 × 600 = **60.000** ✅ hedefle uyumlu |
+| **Sefer kazancı** | 100 × 600 = **60.000** |
 
 **Referans iş örneği 2 — Gümüş (tır ölçek, hedef: 120.000/sefer)**
 
-| Parametre | Değer |
+| Parametre | Değer (üretim) |
 |---|---|
 | Kapasite maliyeti (ham / işlenmiş) | 3 alan / 2 alan |
-| Batch boyutu | 90 birim *(iş-özel override — genel varsayılandan farklı, admin panelden ayarlanmış örnek)* |
-| Dönüşüm oranı | 3:2 (kayıplı — 90 ham → 60 işlenmiş) |
-| İşleme süresi | ~5 dakika/batch (daha değerli, daha uzun) |
+| Batch boyutu | 90 birim |
+| Dönüşüm oranı | 3:2 (90 ham → 60 işlenmiş) |
+| İşleme süresi | ~5 dakika/batch |
 | Birim satış fiyatı | 2.000 |
-| **Sefer kazancı** | 60 × 2.000 = **120.000** ✅ hedefle uyumlu (araba-sınıfının tam 2 katı) |
+| **Sefer kazancı** | 60 × 2.000 = **120.000** |
 
-> Bu iki örnek, Faz 2'de ilk prototip yapılırken **doğrudan kullanılacak başlangıç config değerleridir.** Diğer 13 iş (Döküman 5.2) bu iki örneğin sektöre göre uyarlanmış versiyonları olacak — kazanç hedefi hangi ölçeğe (orta/tır) girdiğine göre belirlenip, tick/batch/fiyat oradan geriye doğru hesaplanacak.
+> Faz 2 prototipinde üretim sütunu başlangıç config’tir. Lab sayıları Play hızı içindir.
 
 | İş ölçeği | 1 sefer kazancı | Örnek işler |
 |---|---|---|
-| Orta ölçekli (araba-sınıfı işler) | **60.000** | Pirinç (referans), tarım, balıkçılık, bakır |
-| Büyük/tır ölçekli (tır-sınıfı işler) | **120.000** | Gümüş (referans), petrol, taş/mermer |
+| Orta ölçekli (araba-sınıfı) | **60.000** | Pirinç, tarım, balıkçılık, bakır |
+| Büyük/tır ölçekli | **120.000** | Gümüş, petrol, taş/mermer |
 
 ## 5.8 Açık Maddeler
 
-- [ ] 6 yeni yasal + 3 yeni yasa dışı sektörün isim/lokasyon/denge detayları — Faz 2'den itibaren tek tek tasarlanacak
-- [ ] Genişletilmiş iş sayısının roadmap süresine etkisi → Döküman 12'de güncellenecek
-- [x] ~~İş akışı mikro-mekaniği (toplama/işleme/satış detayları)~~ — bu oturumda 5.1b'de netleşti
-- [x] ~~Her iş için tick süresi, tick verimi, batch boyutu, işleme süresi ve dönüşüm oranının gerçek sayısal değerleri~~ — bu oturumda 2 referans iş örneğiyle (pirinç, gümüş) somutlaştırıldı
-
+- [ ] 6 yeni yasal + 3 yeni yasa dışı sektörün isim/lokasyon/denge detayları — Faz 2’den itibaren
+- [x] ~~Genişletilmiş iş sayısının roadmap etkisi~~ — Döküman 12’ye yansıtıldı
+- [x] ~~İş akışı mikro-mekaniği~~ — 5.1b
+- [x] ~~Pirinç/gümüş referans sayıları~~ — 5.7b (lab | üretim ayrımı eklendi)
+- [ ] Alet şartı + gerçek kapasite envanteri — ürün fazı (lab stub’da yok)
 ---
 *Önceki: [04 - Ekonomi & Piyasa](./04_ekonomi_piyasa.md) · Sıradaki: Döküman 6 — Sağlık, Ölüm & Sigorta*

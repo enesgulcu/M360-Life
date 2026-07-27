@@ -4,7 +4,7 @@
 >
 > **Yeni sohbette zorunlu okuma sırası:** `docs/00`–`14` → **bu dosya (15)** → sonra işe başla.
 >
-> **Son güncelleme:** 2026-07-27 (I tusu = Debug.KeyState; GitHub depo)
+> **Son güncelleme:** 2026-07-27 gün sonu — docs toparlandı (13 üç-site, 5.7b tablo, 14 mcp, README)
 
 ---
 
@@ -316,6 +316,7 @@ Wiki: `Action_Context_Setup`.
 - HUD ürün yolu net: **layout+ikon+script** (HTML yok) → **docs 10.8** + Bölüm **7c**; Narcos tarzı kenar HUD hedef.
 - Repo: Workbench addon → `Documents\GitHub\M360-Life` → GitHub `enesgulcu/M360-Life` ilk push.
 - Kök `README.md` eklendi; docs denetimi: lab 12k vs hedef 60k, Doc 13 eski tek-istasyon, kapasite 100 vs 300 sefer — README “Bilinen tutarsızlıklar” + 10.8/00/12.6 düzeltmeleri.
+- **Gün sonu final:** Doc 13 üç-site rewrite; 5.7a/b sefer+lab|üretim tablosu; 14 mcp=Cursor; 04/07 zaman hizası; 08/09 stale checkbox; README güncellendi; GitHub push.
 
 ---
 

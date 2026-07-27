@@ -44,8 +44,9 @@ Haritada sınırlı klan noktaları bulunur. Uygun klan 3, 5 veya 7 günlük sü
 
 ## 9.4 Açık Maddeler
 
-- [ ] Klan'ın MVP Core'a alınması → Döküman 12 roadmap süresine yansıtılacak (3. kapsam genişletmesi)
-- [ ] Klan noktalarının haritadaki sayısı/lokasyonu → Döküman 1 (Dünya) ile birlikte netleşecek
+- [x] ~~Klan MVP Core~~ — Döküman 12 Faz 3’e yansıtıldı
+- [ ] Klan gider tablosu somut sayılar — denge turu
+- [ ] Kiralık nokta prefab prosedürü — Faz 3- [ ] Klan noktalarının haritadaki sayısı/lokasyonu → Döküman 1 (Dünya) ile birlikte netleşecek
 
 ---
 *Önceki: [08 - Roller & Çatışma](./08_roller_catisma.md) · Sıradaki: Döküman 10 — Oyuncu Paneli, HUD & Admin Panel*

@@ -18,22 +18,20 @@
 
 ## 1. Ürün Vizyonu
 
-### Çalışma Protokolü (yeni bir sohbette bu dökümanı okuyan Claude için — bu oturumda eklendi)
+### Çalışma Protokolü (yeni sohbette — Cursor + enfusion-mcp)
 
-Bu proje, kullanıcı ile Claude arasında şu şekilde yürüyor — yeni bir konuşmaya başlanırsa bu düzen aynen korunmalı:
+Bu proje, kullanıcı ile AI arasında şu şekilde yürüyor:
 
-- **Kullanıcı yönetici pozisyonunda**, kararları o veriyor; Claude teknik ortak/rehber pozisyonunda — soruyor, seçenek sunuyor, kullanıcı onaylıyor/düzeltiyor.
-- Kullanıcı scripting/kod yazmayı öğrenmeyecek — Claude kod yazacak, adım adım ne yapılacağını (hangi dosya, hangi tuş) söyleyecek, kullanıcı uygulayacak ve sonucu (hata mesajı, ekran görüntüsü) Claude'a aktaracak.
-- Belirsizlik/varsayım tespit edildiğinde Claude soru sorar, kafadan karar vermez.
-- Enfusion/Arma Reforger teknik konularında **resmi Bohemia Interactive dökümantasyonu birincil kaynaktır** — varsayımla yazılmaz.
-- **EveronLife** ve **Narcos Life Roleplay**, sürekli gözetilen iki dış referans (bkz. Döküman 14) — EveronLife kod/mimari fikir kaynağı (asla bağımlılık değil), Narcos Life pazar/denge gözlem kaynağı.
-- Teknik terimler basit Türkçe ile açıklanır, teknik terim parantez içinde yazılır.
-- **Kod isimlendirme (Enforce / script):** Değişken, üye, yerel isim ve **fonksiyon/metod** adları **Türkçe anlam** taşır; **Türkçe karakter kullanılmaz** (ş→s, ı→i, ğ→g, ü→u, ö→o, ç→c). Örnek: `araba`, `bicak`, `m_iNakit`, `ToplamaBaslat`, `EnvanterAcKapa`. BI / motor override ve API İngilizce kalır (`OnPostInit`, `PerformAction`, `GetGame()`…). **Yorum satırları Türkçe** yazılır (yorumda Türkçe karakter serbest). Prefab’a gömülü `[Attribute]` alanları yeniden adlandırılırken `.et` dosyaları da birlikte güncellenir. Ayrıntı: Döküman 11.2.1 + 13.2 + 15.
-- Her büyük kararda bu döküman seti (0-15) güncellenir — döküman güncel tutulan tek gerçek referans kaynağıdır, konuşma geçmişi değil.
-- Kanıtlanmış teknik bulgular ve tuzaklar **Döküman 15** (`15_gelistirme_notlari.md`) içine yazılır — yeni sohbette unutulmaması için.
-- Test/kalite kontrolü kullanıcı ve Claude birlikte yapar; pazarlama/topluluk büyütme tamamen kullanıcının sorumluluğu, en son öncelik.
+- **Kullanıcı yönetici**, kararları o verir; AI teknik ortak/rehber — sorar, seçenek sunar, onay ister.
+- Kullanıcı scripting öğrenmez — AI kod yazar, Türkçe adım adım rehber verir; kullanıcı Play sonucu / hata aktarır.
+- Belirsizlikte AI varsaymaz, sorar.
+- Enfusion/Reforger’da **resmi BI dökümantasyonu** birincil kaynak.
+- **EveronLife** / **Narcos Life** sürekli referans (asla dependency değil) — Döküman 14.
+- Kod isimlendirme: Türkçe anlam, ASCII; BI override İngilizce — 11.2.1 / 13.2 / 15-A.
+- Kanıtlanmış bulgular **Döküman 15**’e yazılır.
+- Ortam: **Cursor + enfusion-mcp** (önceki Claude Code oturumları arşiv). GitHub: `enesgulcu/M360-Life`.
 
-**Yeni bir sohbette hızlı devam etmek için:** Kullanıcı bu 15 dökümanı (bir Claude Projesi'ne yüklenmiş haliyle) paylaşırsa, yeni konuşma bu dökümanları okuyarak kaldığımız yerden devam edebilir — konuşma geçmişini tekrar anlatmaya gerek kalmaz.
+**Hızlı devam:** `docs/00`–`14` + **`15`** + kök `README.md` okunur; konuşma geçmişi gerekmez.
 
 M360 Life; para kazanma, araç kullanma ve çatışma eklentilerinin yan yana getirildiği bir mod değildir. Oyuncu ekonomisini, rol geçişlerini, kayıpları, kamu hizmetlerini, klanları ve yönetim kurallarını **aynı veri ve yetki omurgasında** çalıştıran bir Life platformudur.
 
@@ -88,7 +86,7 @@ Temel fark: yazılı kurallara mümkün olduğunca oyun içi karşılık üretme
 - Genel level sistemi yok; aktif süre + para + lisans + rol + bağlam birlikte erişimi belirler.
 - Kapasite tabanlı envanter (ağırlık/slot değil, puan sistemi).
 - NPC sabit referans fiyat; oyuncu ticareti varsayılan %50–%400 aralığında.
-- İşler tek "topla-işle-sat" prefab çekirdeğinden üretilir.
+- İşler **üç site prefab çekirdeğinden** üretilir (Collect / Process / Sell + paylaşılan `M360_JobConfig`) — kod değil config.
 - Yılda bir tam global wipe.
 - Sınırsız araç/ev sahipliği; yalnızca dünyadaki aktif entity sayısı yönetilir.
 - Polis kotası aktif nüfusun max %20'si, doktor %15'i (ihtiyaç eşikleri %10/%5 başlangıç).
@@ -139,8 +137,8 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 | 10 | [Oyuncu Paneli, HUD & Admin Panel](./10_panel_hud_admin.md) | ✅ Hazır |
 | 11 | [Teknik Mimari (Arma Reforger + Web)](./11_teknik_mimari.md) | ✅ Hazır |
 | 12 | [Lisans, Ticari Model & Roadmap](./12_lisans_roadmap.md) | ✅ Hazır |
-| 13 | [Enfusion Prefab & Script Yapılandırma Prosedürü](./13_enfusion_prefab_prosedur.md) | ✅ Hazır (Faz 0'da doğrulanacak) |
-| 14 | [Mevcut Modlar, Framework'ler & Geliştirme Araçları](./14_mevcut_modlar_araclar.md) | ✅ Hazır (canlı araştırma, periyodik güncellenmeli) |
+| 13 | [Enfusion Prefab & Script Yapılandırma Prosedürü](./13_enfusion_prefab_prosedur.md) | ✅ Güncel — **üç site** model (2026-07-27) |
+| 14 | [Mevcut Modlar, Framework'ler & Geliştirme Araçları](./14_mevcut_modlar_araclar.md) | ✅ Güncel — enfusion-mcp = Cursor |
 | 15 | [Geliştirme Notları (AI oturum belleği / kanıtlanmış bulgular)](./15_gelistirme_notlari.md) | ✅ Canlı — her oturumda güncellenir |
 
 ---
