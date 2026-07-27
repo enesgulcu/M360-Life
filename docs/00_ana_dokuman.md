@@ -31,7 +31,7 @@ Bu proje, kullanıcı ile AI arasında şu şekilde yürüyor:
 - Kanıtlanmış bulgular **Döküman 15**’e yazılır.
 - Ortam: **Cursor + enfusion-mcp** (önceki Claude Code oturumları arşiv). GitHub: `enesgulcu/M360-Life`.
 
-**Hızlı devam:** `docs/00`–`14` + **`15`** + kök `README.md` okunur; konuşma geçmişi gerekmez.
+**Hızlı devam:** `docs/00`–`14` + **`15`** + **`16` (dosya envanteri)** + kök `README.md` okunur; konuşma geçmişi gerekmez.
 
 M360 Life; para kazanma, araç kullanma ve çatışma eklentilerinin yan yana getirildiği bir mod değildir. Oyuncu ekonomisini, rol geçişlerini, kayıpları, kamu hizmetlerini, klanları ve yönetim kurallarını **aynı veri ve yetki omurgasında** çalıştıran bir Life platformudur.
 
@@ -140,6 +140,7 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 | 13 | [Enfusion Prefab & Script Yapılandırma Prosedürü](./13_enfusion_prefab_prosedur.md) | ✅ Güncel — **üç site** model (2026-07-27) |
 | 14 | [Mevcut Modlar, Framework'ler & Geliştirme Araçları](./14_mevcut_modlar_araclar.md) | ✅ Güncel — enfusion-mcp = Cursor |
 | 15 | [Geliştirme Notları (AI oturum belleği / kanıtlanmış bulgular)](./15_gelistirme_notlari.md) | ✅ Canlı — her oturumda güncellenir |
+| 16 | [Dosya / İçerik Envanteri (ilişki kataloğu)](./16_dosya_envanteri.md) | ✅ Canlı — her yeni dosyada güncelle |
 
 ---
 

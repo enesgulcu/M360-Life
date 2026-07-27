@@ -23,7 +23,8 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | **Resmi döküman hakimiyeti** | Enfusion/Reforger’da varsayım yasak. `api_search` / `wiki_search` / BI wiki. EveronLife yalnızca fikir; bağımlılık değil. |
 | **Basit Türkçe** | Teknik terim varsa parantez içinde; açıklama anlaşılır olsun. |
 | **Ekran görüntüsü / hata** | Kullanıcı Play sonucu ve VM exception gönderir → önce kök neden, sonra net adım. |
-| **Öğrenme notları** | Her önemli keşif **bu dosyaya** yazılır. Kullanıcı özellikle istedi. |
+| **Öğrenme notları** | Her önemli keşif **docs/15**’e yazılır. |
+| **Dosya envanteri** | Her yeni/değişen dosya **docs/16**’ya işlenir (amaç, ilişki, istemci/sunucu/API). İşlem bitince kontrol et. |
 | **Test konumu** | Spawn/spawner/istasyon **0,0’da olmasın** — X/Z ~20 civarı (kenar/dip hissi olmasın). |
 | **Play’e odak** | Mümkünse AI script reload + dünya hazırlığını yapsın; kullanıcı sadece Play ile test etsin. NET API yoksa AI uzaktan reload yapamaz — kullanıcıya tek adım bırak. |
 | **Önceki süreç** | Tasarım + ilk kod **Claude Agent / Claude Code** ile yapıldı. Şimdi çalışma ortamı **Cursor + enfusion-mcp**. Klasör aynı: `...\addons\M360 Life`. |
@@ -318,7 +319,8 @@ Wiki: `Action_Context_Setup`.
 - Kök `README.md` eklendi; docs denetimi: lab 12k vs hedef 60k, Doc 13 eski tek-istasyon, kapasite 100 vs 300 sefer — README “Bilinen tutarsızlıklar” + 10.8/00/12.6 düzeltmeleri.
 - **Gün sonu final:** Doc 13 üç-site rewrite; 5.7a/b sefer+lab|üretim tablosu; 14 mcp=Cursor; 04/07 zaman hizası; 08/09 stale checkbox; README güncellendi; GitHub push.
 - **Türkçe ASCII class rename:** `Job*` → `IsAyar` / `ToplamaAlaniBileseni` / `CantaHudBileseni`…; Attribute `m_iAdim*`; docs **11.2.1 ANA DÜSTUR**; son push.
+- **Docs 16:** Dosya/içerik envanteri açıldı (script+prefab+dünya+ileride API). Her işlemde güncelleme kuralı; sunucu-yetkili hatırlatma §0.
 
 ---
 
-*İlgili: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [14](./14_mevcut_modlar_araclar.md)*
+*İlgili: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [14](./14_mevcut_modlar_araclar.md) · [16](./16_dosya_envanteri.md)*

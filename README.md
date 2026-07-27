@@ -35,7 +35,7 @@ Remote: https://github.com/enesgulcu/M360-Life
 
 ## Doküman haritası
 
-Yeni sohbette okuma sırası: **`docs/00` → ilgili konu dosyası → `docs/15` (zorunlu)**.
+Yeni sohbette okuma sırası: **`docs/00` → ilgili konu → `docs/15` + `docs/16`**.
 
 | # | Dosya | Konu |
 |---|---|---|
@@ -51,7 +51,8 @@ Yeni sohbette okuma sırası: **`docs/00` → ilgili konu dosyası → `docs/15`
 | 12 | [12_lisans_roadmap.md](docs/12_lisans_roadmap.md) | Lisans / roadmap |
 | 13 | [13_enfusion_prefab_prosedur.md](docs/13_enfusion_prefab_prosedur.md) | Prefab / script — **üç site** (Collect/Process/Sell) |
 | 14 | [14_mevcut_modlar_araclar.md](docs/14_mevcut_modlar_araclar.md) | Araçlar / referans; enfusion-mcp = Cursor |
-| **15** | [15_gelistirme_notlari.md](docs/15_gelistirme_notlari.md) | **AI oturum belleği — kanıtlar, tuzaklar, tercihler** |
+| **15** | [15_gelistirme_notlari.md](docs/15_gelistirme_notlari.md) | **AI oturum belleği — kanıtlar, tuzaklar** |
+| **16** | [16_dosya_envanteri.md](docs/16_dosya_envanteri.md) | **Dosya ilişki kataloğu — her eklemede güncelle** |
 
 Konuşma geçmişi kaynak değildir. Güncel gerçek: bu dökümanlar + kod.
 
