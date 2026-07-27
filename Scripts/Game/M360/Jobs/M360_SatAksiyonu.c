@@ -1,19 +1,19 @@
 //------------------------------------------------------------------------------------------------
-//! M360 Life — Isle (parti) aksiyonu
+//! M360 Life — Sat aksiyonu (islenmis → nakit)
 //------------------------------------------------------------------------------------------------
-class M360_ProcessAction : ScriptedUserAction
+class M360_SatAksiyonu : ScriptedUserAction
 {
 	override void PerformAction(IEntity pOwnerEntity, IEntity pUserEntity)
 	{
-		M360_JobProcessSiteComponent makine = M360_JobProcessSiteComponent.Cast(
-			pOwnerEntity.FindComponent(M360_JobProcessSiteComponent));
-		if (makine)
-			makine.IslemeBaslat(pUserEntity);
+		M360_SatisNoktasiBileseni satis = M360_SatisNoktasiBileseni.Cast(
+			pOwnerEntity.FindComponent(M360_SatisNoktasiBileseni));
+		if (satis)
+			satis.HepsiniSat(pUserEntity);
 	}
 
 	override bool GetActionNameScript(out string outName)
 	{
-		outName = "Isle";
+		outName = "Sat";
 		return true;
 	}
 

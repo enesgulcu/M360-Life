@@ -170,8 +170,8 @@ Kaynak önceliği: **Play’de prefab Attribute** → lab. Ürün dengesi → bu
 | Parametre | Lab (prefab, 2026-07-27) | Üretim hedefi |
 |---|---|---|
 | `m_sIsAdi` | Pirinc | Pirinc |
-| `m_iTickSuresi` | 4 sn | ~4 sn |
-| `m_iTickVerim` | 2 | ~2–3 |
+| `m_iAdimSuresi` | 4 sn | ~4 sn |
+| `m_iAdimVerim` | 2 | ~2–3 |
 | `m_iPartiBoyutu` | **20** | **100** |
 | `m_iIslemeSuresi` | **10 sn** | **~180 sn** (~3 dk) |
 | `m_fDonusumOrani` | 1.0 | 1.0 |
@@ -179,7 +179,7 @@ Kaynak önceliği: **Play’de prefab Attribute** → lab. Ürün dengesi → bu
 | Max taşıma | `m_iMaxTasima` **40** (stub) | kapasite puanı (5.6) |
 | ~Sefer kazancı | **12.000** (20×600) | **60.000** (100×600) |
 
-`M360_JobConfig.c` sınıf varsayılanları üretim hedefine yakındır (parti 100, işleme 180); lab `.et` dosyaları bilerek hızlıdır. Karıştırma.
+`M360_IsAyar.c` sınıf varsayılanları üretim hedefine yakındır (parti 100, işleme 180); lab `.et` dosyaları bilerek hızlıdır. Karıştırma.
 
 **Referans iş örneği 1 — Pirinç (orta ölçek, hedef: 60.000/sefer)**
 

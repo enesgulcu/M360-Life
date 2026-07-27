@@ -2,15 +2,15 @@
 //! M360 Life — Isleme makinesi (Dokuman 5.1b Asama 3)
 //! Parti isler; 0→100 isleme ilerlemesi.
 //------------------------------------------------------------------------------------------------
-[ComponentEditorProps(category: "M360/Jobs", description: "Isleme makinesi")]
-class M360_JobProcessSiteComponentClass : ScriptComponentClass
+[ComponentEditorProps(category: "M360/Isler", description: "Isleme makinesi")]
+class M360_IslemeMakinesiBileseniClass : ScriptComponentClass
 {
 }
 
-class M360_JobProcessSiteComponent : ScriptComponent
+class M360_IslemeMakinesiBileseni : ScriptComponent
 {
 	[Attribute(desc: "Is ayarlari")]
-	ref M360_JobConfig m_Ayar;
+	ref M360_IsAyar m_Ayar;
 
 	protected IEntity m_IsleyenKullanici;
 	protected int m_iBekleyenParti;
@@ -48,7 +48,7 @@ class M360_JobProcessSiteComponent : ScriptComponent
 		if (!m_Ayar || !kullanici)
 			return;
 
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(kullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		if (oturum.m_bIsliyor)
 		{
 			MesajGoster("Zaten isleniyor...");
@@ -91,7 +91,7 @@ class M360_JobProcessSiteComponent : ScriptComponent
 			return;
 		}
 
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(m_IsleyenKullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(m_IsleyenKullanici);
 		if (!oturum.m_bIsliyor)
 		{
 			GetGame().GetCallqueue().Remove(IslemeIlerlemeAdimi);
@@ -117,7 +117,7 @@ class M360_JobProcessSiteComponent : ScriptComponent
 		if (!m_Ayar || !m_IsleyenKullanici)
 			return;
 
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(m_IsleyenKullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(m_IsleyenKullanici);
 		oturum.m_bIsliyor = false;
 		oturum.m_fIslemeIlerleme = 0;
 
@@ -136,7 +136,7 @@ class M360_JobProcessSiteComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	bool IslemeYapilabilirMi(IEntity kullanici)
 	{
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(kullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		return oturum.m_iHam > 0 && !oturum.m_bIsliyor && !oturum.m_bTopluyor;
 	}
 

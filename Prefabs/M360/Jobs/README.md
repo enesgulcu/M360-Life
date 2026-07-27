@@ -1,7 +1,7 @@
-#! Prefabs/M360/Jobs — Topla → İşle → Sat (üç site)
+#! Prefabs/M360/Jobs — Topla → Isle → Sat (uc site)
 #
-# Pirinç lab (Play Attribute — docs 5.7b):
-#   tick=4, yield=2, batch=20, process=10sn, fiyat=600, maxCarry=40 → ~12k/sefer
-# Üretim hedefi (docs 5.7):
-#   batch=100, process~180sn, fiyat=600 → 60k/sefer
-# Yeni iş: bu üç .et dosyasını kopyala, m_Ayar + UIInfo.Name değiştir (script yok).
+# Class: M360_ToplamaAlaniBileseni / IslemeMakinesiBileseni / SatisNoktasiBileseni
+# Ayar: M360_IsAyar (m_iAdimSuresi, m_iAdimVerim, m_iPartiBoyutu, ...)
+# Lab Pirinc: adim=4, verim=2, parti=20, isleme=10sn, fiyat=600, maxTasima=40 → ~12k/sefer
+# Uretim hedefi (docs 5.7): parti=100, isleme~180sn → 60k/sefer
+# Yeni is: uc .et kopyala, m_Ayar + UIInfo.Name degistir (script yok).

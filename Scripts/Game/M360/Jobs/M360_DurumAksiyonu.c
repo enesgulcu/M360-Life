@@ -1,19 +1,25 @@
 //------------------------------------------------------------------------------------------------
-//! M360 Life — Sat aksiyonu (islenmis → nakit)
+//! M360 Life — Envanter / durum aksiyonu (F menu yedek)
 //------------------------------------------------------------------------------------------------
-class M360_SellAction : ScriptedUserAction
+class M360_DurumAksiyonu : ScriptedUserAction
 {
 	override void PerformAction(IEntity pOwnerEntity, IEntity pUserEntity)
 	{
-		M360_JobSellSiteComponent satis = M360_JobSellSiteComponent.Cast(
-			pOwnerEntity.FindComponent(M360_JobSellSiteComponent));
-		if (satis)
-			satis.HepsiniSat(pUserEntity);
+		M360_CantaHudBileseni canta = M360_CantaHudBileseni.Al();
+		if (canta)
+		{
+			canta.EnvanterAcKapa();
+			return;
+		}
+
+		M360_IsOturumVerisi veri = M360_IsOturumlari.AlVeyaOlustur(pUserEntity);
+		string satir = M360_IsOturumlari.DurumMetni(veri);
+		SCR_HintManagerComponent.ShowCustomHint(satir, "M360 Durum", 5);
 	}
 
 	override bool GetActionNameScript(out string outName)
 	{
-		outName = "Sat";
+		outName = "Envanter";
 		return true;
 	}
 

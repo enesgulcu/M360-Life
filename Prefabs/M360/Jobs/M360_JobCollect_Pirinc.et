@@ -1,11 +1,11 @@
 GenericEntity : "{F4CA533A99B20DAE}Prefabs/Props/Civilian/SackUniversal_01.et" {
  components {
-  M360_JobCollectSiteComponent "{61EE293AC4C75040}" {
-   m_Ayar M360_JobConfig {
+  M360_ToplamaAlaniBileseni "{61EE293AC4C75040}" {
+   m_Ayar M360_IsAyar {
     m_sIsAdi "Pirinc"
     m_bYasalMi 1
-    m_iTickSuresi 4
-    m_iTickVerim 2
+    m_iAdimSuresi 4
+    m_iAdimVerim 2
     m_iPartiBoyutu 20
     m_iIslemeSuresi 10
     m_fDonusumOrani 1
@@ -28,7 +28,7 @@ GenericEntity : "{F4CA533A99B20DAE}Prefabs/Props/Civilian/SackUniversal_01.et" {
     }
    }
    additionalActions {
-    M360_CollectAction "{61EE293AC4C75045}" {
+    M360_ToplaAksiyonu "{61EE293AC4C75045}" {
      ParentContextList {
       "pirinc_collect"
      }
@@ -38,7 +38,7 @@ GenericEntity : "{F4CA533A99B20DAE}Prefabs/Props/Civilian/SackUniversal_01.et" {
      VisibilityRange 4
      Duration 0
     }
-    M360_JobStatusAction "{61EE293AC4C75047}" {
+    M360_DurumAksiyonu "{61EE293AC4C75047}" {
      ParentContextList {
       "pirinc_collect"
      }

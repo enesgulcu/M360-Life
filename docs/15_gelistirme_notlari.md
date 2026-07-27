@@ -30,7 +30,7 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | **Docker istemiyor** | PostgreSQL native (Döküman 11). |
 | **Kapsam büyüdü ama acele yok** | MVP geniş (15 iş, polis/doktor, klan); süre esnek. Faz sırası önemli. |
 | **Life envanter tuşu** | Arma 3 Life = **I**. Reforger `"Inventory"` ≈ **Tab**. **Kanıtlı lab yolu (2026-07-27):** `Debug.KeyState(KeyCode.KC_I)` + `ClearKey` → M360 aç/kapa. Tab’ı `ActionOpenInventory` ile M360’ye **bağlama**. Input.conf / runtime remap Play’de **tutmadı** — ayrıntı **7b**. |
-| **Kod dili / isim** | Değişken + üye + **fonksiyon/metod** anlamı **Türkçe**, isimde **Türkçe karakter yok** (`bicak`, `m_iNakit`, `IslemeBaslat`). **Yorumlar Türkçe**. Motor override İngilizce. Prefab Attribute rename = `.et` birlikte. Bkz. docs 00 / 11.2.1 / 13.2. |
+| **Kod dili / isim (ANA DÜSTUR)** | Değiştirilebilir her şey **Türkçe ASCII**: class, metod, üye, Attribute, dosya adı, oyuncu metni. **Yorumlar Türkçe**. Motor override/API İngilizce dokunulmaz. Prefab + `.et` birlikte. `EnfusionMCP` araç kodu hariç. Bkz. **11.2.1 / 13.2**. |
 | **Oyun içi HUD** | Hedef: Life tarzı kenar HUD (Narcos benzeri kalite). Yol: **`.layout` + ikon (.edds) + script**. HTML yok. Hint = lab. Detay: **docs 10.8** + Bölüm 7c. |
 
 ### Kullanıcının dikkat ettiği şeyler (gözlem)
@@ -148,23 +148,23 @@ Wiki: `Arma_Reforger:New_Terrain_Setup`, Terrain Preparation Tutorial.
 
 | Parça | Dosya / prefab |
 |---|---|
-| Config | `M360_JobConfig` (+ `m_iMaxCarry`) |
-| Oturum stub | `M360_JobSessions` (playerId → ham/işlenmiş/nakit) |
-| Siteler | `M360_JobCollectSiteComponent` / `Process` / `Sell` |
-| Actions | `M360_CollectAction`, `ProcessAction`, `SellAction`, `JobStatusAction` |
-| Prefab | `M360_JobCollect_Pirinc` (Sack) · `Process_Pirinc` (Workbench) · `Sell_Pirinc` (CashierShop) |
-| Lab dünya | `M360_PirincCollect` @22,18 · Process @26,20 · Sell @30,22 |
+| Config | `M360_IsAyar` (`m_iMaxTasima`, `m_iAdimSuresi`…) |
+| Oturum sayac | `M360_IsOturumlari` (oyuncuId → ham/islenmis/nakit) |
+| Siteler | `M360_ToplamaAlaniBileseni` / `IslemeMakinesiBileseni` / `SatisNoktasiBileseni` |
+| Aksiyonlar | `M360_ToplaAksiyonu`, `IsleAksiyonu`, `SatAksiyonu`, `DurumAksiyonu` |
+| Prefab dosya | `M360_JobCollect/Process/Sell_Pirinc.et` (GUID path; icerik Turkce class) |
+| Lab dunya | `M360_PirincTopla` · `PirincIsle` · `PirincSat` · `M360_CantaHud` |
 
-**Lab config (Play için):** tick=4, yield=2, batch=20, process=**10sn**, fiyat=600, maxCarry=40.  
-Üretim Pirinç (docs 5.7): process~180, batch~100 — Attribute ile yükseltilir.
+**Lab config (Play):** adim=4, verim=2, parti=20, isleme=**10sn**, fiyat=600, maxTasima=40.  
+Uretim Pirinc (docs 5.7): isleme~180, parti~100 — Attribute ile yukseltilir.
 
-**UserAction:** her prefab’da `additionalActions` + `ParentContextList` (Bölüm 7 dersleri).
+**UserAction:** her prefab’da `additionalActions` + `ParentContextList` (Bolum 7).
 
-**HUD:** `M360_JobHudComponent` — Life listesi hint; yüzde sayacı; **I** = `Debug.KeyState(KC_I)`. İsimler: Türkçe ASCII (docs 11.2.1).
+**HUD:** `M360_CantaHudBileseni` — Life listesi ipucu; yuzde sayaci; **I** = `Debug.KeyState(KC_I)`.
 
-**Henüz yok:** gerçek envanter, banka ledger, replication, DB override. Oturum stub bunların yerine geçer; sonra değiştirilir.
+**Henuz yok:** gercek envanter, banka ledger, replication, DB. Oturum sayac bunlarin yerine gecer.
 
-**Silinen eski:** tek `M360_JobStationComponent` + `M360_JobStation_Base.et` (üç site modeline geçildi).
+**Silinen eski:** tek JobStation; Ingilizce `M360_Job*` class adlari (2026-07-27 Turkce ASCII).
 
 ---
 
@@ -202,9 +202,9 @@ Kullanıcı Play: **yüzde sayacı** + **I ile M360 çanta listesi** çalıştı
 
 | Parça | Dosya |
 |---|---|
-| HUD + I tusu | `M360_JobHudComponent.ITusunuKontrolEt` (`Debug.KeyState(KC_I)`) |
+| HUD + I tusu | `M360_CantaHudBileseni.ITusunuKontrolEt` (`Debug.KeyState(KC_I)`) |
 | Action hook | ~~`M360_PlayerController`~~ kaldırıldı — Tab M360 açmaz |
-| F yedek | `M360_JobStatusAction` → `Envanter` |
+| F yedek | `M360_DurumAksiyonu` → `Envanter` |
 
 ### İlke (sonraki UI / input işleri) — KRİTİK ÖZET
 
@@ -317,6 +317,7 @@ Wiki: `Action_Context_Setup`.
 - Repo: Workbench addon → `Documents\GitHub\M360-Life` → GitHub `enesgulcu/M360-Life` ilk push.
 - Kök `README.md` eklendi; docs denetimi: lab 12k vs hedef 60k, Doc 13 eski tek-istasyon, kapasite 100 vs 300 sefer — README “Bilinen tutarsızlıklar” + 10.8/00/12.6 düzeltmeleri.
 - **Gün sonu final:** Doc 13 üç-site rewrite; 5.7a/b sefer+lab|üretim tablosu; 14 mcp=Cursor; 04/07 zaman hizası; 08/09 stale checkbox; README güncellendi; GitHub push.
+- **Türkçe ASCII class rename:** `Job*` → `IsAyar` / `ToplamaAlaniBileseni` / `CantaHudBileseni`…; Attribute `m_iAdim*`; docs **11.2.1 ANA DÜSTUR**; son push.
 
 ---
 

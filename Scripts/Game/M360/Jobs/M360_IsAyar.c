@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------------------------
 //! M360 Life — Is ayarlari (Dokuman 5.1b / 13.3)
-//! Prefab varsayilan degerleri; ileride PostgreSQL override (13.4).
+//! Prefab varsayilan degerleri; ileride PostgreSQL uzerinden guncelleme (13.4).
 //------------------------------------------------------------------------------------------------
 [BaseContainerProps()]
-class M360_JobConfig
+class M360_IsAyar
 {
 	[Attribute("Pirinc", desc: "Is adi (Dokuman 5.2)")]
 	string m_sIsAdi;
@@ -11,11 +11,11 @@ class M360_JobConfig
 	[Attribute("1", desc: "Yasal is mi?")]
 	bool m_bYasalMi;
 
-	[Attribute("4", desc: "Tick suresi (sn)")]
-	int m_iTickSuresi;
+	[Attribute("4", desc: "Toplama adim suresi (sn)")]
+	int m_iAdimSuresi;
 
-	[Attribute("2", desc: "Tick basi ham verim")]
-	int m_iTickVerim;
+	[Attribute("2", desc: "Adim basi ham verim")]
+	int m_iAdimVerim;
 
 	[Attribute("100", desc: "Isleme parti ust siniri")]
 	int m_iPartiBoyutu;
@@ -29,6 +29,6 @@ class M360_JobConfig
 	[Attribute("600", desc: "Islenmis birim satis fiyati")]
 	int m_iSatisFiyati;
 
-	[Attribute("40", desc: "Oyuncu uzeri max ham tasima (lab envanter stub)")]
+	[Attribute("40", desc: "Oyuncu uzeri max ham tasima (lab sayac)")]
 	int m_iMaxTasima;
 }

@@ -16,7 +16,7 @@ Bu repo yalnızca “topla-sat eklentisi” değil; sunucu yetkili, panelden aya
 | HUD lab | **I** = M360 çanta hint; yüzde sayacı; gerçek `.layout` HUD henüz yok |
 | Dedicated / Next.js / PostgreSQL | Henüz yok — sıradaki büyük kapı |
 
-**Lab ≠ ürün.** Lab’da para/envanter stub (`M360_JobSessions`), yerel action, hint UI vardır. Ürün hedefi: sunucu yetkili ledger, gerçek envanter, replication, admin panel.
+**Lab ≠ ürün.** Lab’da para/envanter stub (`M360_IsOturumlari`), yerel action, hint UI vardır. Ürün hedefi: sunucu yetkili ledger, gerçek envanter, replication, admin panel.
 
 ---
 
@@ -79,7 +79,7 @@ Topla (çuval) → İşle (tezgâh) → Sat (kasiyer)
 |---|---|
 | Script | `Scripts/Game/M360/Jobs/` |
 | Prefab | `Prefabs/M360/Jobs/M360_Job{Collect,Process,Sell}_Pirinc.et` |
-| HUD | `Scripts/Game/M360/UI/M360_JobHudComponent.c` |
+| HUD | `Scripts/Game/M360/UI/M360_CantaHudBileseni.c` |
 | Test dünya | `Worlds/TestWorld/M360_TestWorld.ent` |
 
 ### Lab sayıları (prefab Attribute — Play’de bunlar geçerli)
@@ -101,7 +101,7 @@ Lab bilerek hızlı; denge sayıları docs’taki üretim hedefidir. Karıştır
 Yeni iş (ör. Gümüş) için script gerekmez:
 
 1. Üç prefabı kopyala (Collect / Process / Sell)
-2. `m_Ayar` (`M360_JobConfig`) alanlarını doldur: isim, tick, verim, batch, süre, oran, fiyat, max taşıma
+2. `m_Ayar` (`M360_IsAyar`) alanlarını doldur: isim, adim, verim, parti, süre, oran, fiyat, max taşıma
 3. F menü `UIInfo.Name` + isteğe bağlı model (parent prefab)
 4. Dünyaya yerleştir
 
@@ -162,6 +162,12 @@ M360-Life/
 5. Admin panel ile iş parametresi override  
 
 Roadmap: [docs/12](docs/12_lisans_roadmap.md).
+
+---
+
+## Kod stili (ANA DÜSTUR)
+
+Değiştirilebilir her şey **Türkçe ASCII** (class, metod, üye, Attribute, oyuncu metni). Motor API/override İngilizce dokunulmaz. Detay: [docs/11.2.1](docs/11_teknik_mimari.md).
 
 ---
 

@@ -1,25 +1,19 @@
 //------------------------------------------------------------------------------------------------
-//! M360 Life — Envanter / durum aksiyonu (F menü yedek)
+//! M360 Life — Isle (parti) aksiyonu
 //------------------------------------------------------------------------------------------------
-class M360_JobStatusAction : ScriptedUserAction
+class M360_IsleAksiyonu : ScriptedUserAction
 {
 	override void PerformAction(IEntity pOwnerEntity, IEntity pUserEntity)
 	{
-		M360_JobHudComponent hud = M360_JobHudComponent.Al();
-		if (hud)
-		{
-			hud.EnvanterAcKapa();
-			return;
-		}
-
-		M360_JobSessionData veri = M360_JobSessions.AlVeyaOlustur(pUserEntity);
-		string satir = M360_JobSessions.DurumMetni(veri);
-		SCR_HintManagerComponent.ShowCustomHint(satir, "M360 Durum", 5);
+		M360_IslemeMakinesiBileseni makine = M360_IslemeMakinesiBileseni.Cast(
+			pOwnerEntity.FindComponent(M360_IslemeMakinesiBileseni));
+		if (makine)
+			makine.IslemeBaslat(pUserEntity);
 	}
 
 	override bool GetActionNameScript(out string outName)
 	{
-		outName = "Envanter";
+		outName = "Isle";
 		return true;
 	}
 

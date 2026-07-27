@@ -27,7 +27,7 @@ Bu proje, kullanıcı ile AI arasında şu şekilde yürüyor:
 - Belirsizlikte AI varsaymaz, sorar.
 - Enfusion/Reforger’da **resmi BI dökümantasyonu** birincil kaynak.
 - **EveronLife** / **Narcos Life** sürekli referans (asla dependency değil) — Döküman 14.
-- Kod isimlendirme: Türkçe anlam, ASCII; BI override İngilizce — 11.2.1 / 13.2 / 15-A.
+- Kod isimlendirme **ANA DÜSTUR:** değiştirilebilir her şey Türkçe ASCII; motor API dokunulmaz — **11.2.1**.
 - Kanıtlanmış bulgular **Döküman 15**’e yazılır.
 - Ortam: **Cursor + enfusion-mcp** (önceki Claude Code oturumları arşiv). GitHub: `enesgulcu/M360-Life`.
 
@@ -86,7 +86,7 @@ Temel fark: yazılı kurallara mümkün olduğunca oyun içi karşılık üretme
 - Genel level sistemi yok; aktif süre + para + lisans + rol + bağlam birlikte erişimi belirler.
 - Kapasite tabanlı envanter (ağırlık/slot değil, puan sistemi).
 - NPC sabit referans fiyat; oyuncu ticareti varsayılan %50–%400 aralığında.
-- İşler **üç site prefab çekirdeğinden** üretilir (Collect / Process / Sell + paylaşılan `M360_JobConfig`) — kod değil config.
+- İşler **üç site** + `M360_IsAyar` (Türkçe ASCII class’lar) — kod değil config.
 - Yılda bir tam global wipe.
 - Sınırsız araç/ev sahipliği; yalnızca dünyadaki aktif entity sayısı yönetilir.
 - Polis kotası aktif nüfusun max %20'si, doktor %15'i (ihtiyaç eşikleri %10/%5 başlangıç).

@@ -1,15 +1,15 @@
 //------------------------------------------------------------------------------------------------
 //! M360 Life — Envanter popup + toplama/isleme ilerleme cubugu
-//! Acilis: Debug.KeyState(KeyCode.KC_I) — Inventory/Tab action'ina bagli DEGIL
+//! Acilis: Debug.KeyState(KeyCode.KC_I) — BI Envanter/Tab aksiyonuna bagli DEGIL
 //------------------------------------------------------------------------------------------------
-[ComponentEditorProps(category: "M360/UI", description: "M360 envanter popup (I)")]
-class M360_JobHudComponentClass : ScriptComponentClass
+[ComponentEditorProps(category: "M360/Arayuz", description: "M360 envanter popup (I)")]
+class M360_CantaHudBileseniClass : ScriptComponentClass
 {
 }
 
-class M360_JobHudComponent : ScriptComponent
+class M360_CantaHudBileseni : ScriptComponent
 {
-	protected static M360_JobHudComponent s_Ornek;
+	protected static M360_CantaHudBileseni s_Ornek;
 
 	protected bool m_bBaslatildi;
 	protected bool m_bAcik;
@@ -35,7 +35,7 @@ class M360_JobHudComponent : ScriptComponent
 	protected int m_iSonIpucuYuzde;
 
 	//------------------------------------------------------------------------------------------------
-	static M360_JobHudComponent Al()
+	static M360_CantaHudBileseni Al()
 	{
 		return s_Ornek;
 	}
@@ -46,7 +46,7 @@ class M360_JobHudComponent : ScriptComponent
 		super.OnPostInit(owner);
 		s_Ornek = this;
 		SetEventMask(owner, EntityEvent.FRAME);
-		Print("[M360] JobHud OnPostInit — FRAME maske kuruldu", LogLevel.NORMAL);
+		Print("[M360] CantaHud OnPostInit — kare maske kuruldu", LogLevel.NORMAL);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ class M360_JobHudComponent : ScriptComponent
 		ITusunuKontrolEt();
 
 		IEntity oyuncu = YerelOyuncuyuAl();
-		M360_JobSessionData veri = M360_JobSessions.AlVeyaOlustur(oyuncu);
+		M360_IsOturumVerisi veri = M360_IsOturumlari.AlVeyaOlustur(oyuncu);
 		IlerlemeCubugunuGuncelle(veri);
 		if (m_bAcik)
 			EnvanterYenile(veri);
@@ -89,11 +89,11 @@ class M360_JobHudComponent : ScriptComponent
 		m_iSonIpucuYuzde = -1;
 
 		GetGame().GetCallqueue().CallLater(GirisIpucuGoster, 2000, false);
-		Print("[M360] JobHud baslat — I tusu = Debug.KeyState(KC_I), Tab = Inventory (native)", LogLevel.NORMAL);
+		Print("[M360] CantaHud baslat — I = Debug.KeyState(KC_I), Tab = BI envanter", LogLevel.NORMAL);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Ham klavye — ActionManager / Input.conf / remap bagimsiz (BI SCR_DebugEditorComponent deseni)
+	//! Ham klavye — girdi yoneticisi / conf / remap bagimsiz (BI SCR_DebugEditorComponent deseni)
 	protected void ITusunuKontrolEt()
 	{
 		if (!Debug.KeyState(KeyCode.KC_I))
@@ -151,11 +151,11 @@ class M360_JobHudComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! I basinca kesin gorunen Life listesi (hint). Widget panel de denenir.
-	protected void EnvanterIpucuGoster(M360_JobSessionData veri)
+	//! I basinca kesin gorunen Life listesi (ipucu). Widget panel de denenir.
+	protected void EnvanterIpucuGoster(M360_IsOturumVerisi veri)
 	{
 		if (!veri)
-			veri = M360_JobSessions.AlVeyaOlustur(YerelOyuncuyuAl());
+			veri = M360_IsOturumlari.AlVeyaOlustur(YerelOyuncuyuAl());
 		if (!veri)
 			return;
 
@@ -186,13 +186,13 @@ class M360_JobHudComponent : ScriptComponent
 		if (m_bAcik)
 			return;
 
-		M360_JobSessionData veri = M360_JobSessions.AlVeyaOlustur(YerelOyuncuyuAl());
+		M360_IsOturumVerisi veri = M360_IsOturumlari.AlVeyaOlustur(YerelOyuncuyuAl());
 		EnvanterIpucuGoster(veri);
 
 		WorkspaceWidget ws = GetGame().GetWorkspace();
 		if (!ws)
 		{
-			Print("[M360] Envanter: Workspace yok — hint gosterildi", LogLevel.WARNING);
+			Print("[M360] Envanter: Workspace yok — ipucu gosterildi", LogLevel.WARNING);
 			m_bAcik = true;
 			return;
 		}
@@ -218,7 +218,7 @@ class M360_JobHudComponent : ScriptComponent
 		DikdortgenOlustur(ws, 0, 0, (int)sw, (int)sh, dim, 40);
 		if (!DikdortgenOlustur(ws, left, top, panelW, panelH, panelBg, 45))
 		{
-			Print("[M360] Envanter: panel widget yok — hint yeterli", LogLevel.WARNING);
+			Print("[M360] Envanter: panel widget yok — ipucu yeterli", LogLevel.WARNING);
 			m_bAcik = true;
 			return;
 		}
@@ -254,7 +254,7 @@ class M360_JobHudComponent : ScriptComponent
 
 		m_bAcik = true;
 		EnvanterYenile(veri);
-		Print("[M360] Envanter ACILDI (hint + panel denemesi)", LogLevel.NORMAL);
+		Print("[M360] Envanter ACILDI (ipucu + panel denemesi)", LogLevel.NORMAL);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -276,7 +276,7 @@ class M360_JobHudComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void EnvanterYenile(M360_JobSessionData veri)
+	protected void EnvanterYenile(M360_IsOturumVerisi veri)
 	{
 		if (!veri)
 			return;
@@ -330,7 +330,7 @@ class M360_JobHudComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void IlerlemeCubugunuGuncelle(M360_JobSessionData veri)
+	protected void IlerlemeCubugunuGuncelle(M360_IsOturumVerisi veri)
 	{
 		bool goster = veri && (veri.m_bTopluyor || veri.m_bIsliyor);
 		if (!goster)

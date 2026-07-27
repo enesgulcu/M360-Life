@@ -31,19 +31,22 @@ Arma Reforger İstemcisi          Dedicated Oyun Sunucusu          M360 Web/API 
 - **Doğrulama notu (Döküman 14.2):** Enforce Script'in native bir PostgreSQL sürücüsü yok; topluluğun kendi açık kaynak framework'ünde bile (Arkensor'ın EnfusionDatabaseFramework) PostgreSQL desteği henüz olgunlaşmamış (🚧 durumda). Bu, bizim "dedicated server → HTTP → Next.js → PostgreSQL" mimari kararımızın **doğru ve gerekli** olduğunu doğruluyor — zaten motor seviyesinde başka bir seçenek yok.
 - Sistemler tek sorumluluklu component/service biçiminde ayrılır; büyük tek script dosyası oluşturulmaz (bu, ileride benim seninle kod üzerinde çalışmamı da kolaylaştıracak — küçük, isimli, anlaşılır parçalar).
 
-### 11.2.1 Script isimlendirme & yorum dili (kullanıcı kararı — 2026-07-27)
+### 11.2.1 Script isimlendirme & yorum dili (ANA DÜSTUR — 2026-07-27)
 
 | Kural | Uygulama |
 |---|---|
-| Anlam | Değişken / üye / **fonksiyon-metod** / yerel isimler **Türkçe** (`araba`, `bicak`, `nakit`, `ToplamaBaslat`) |
-| Alfabe | İsimlerde **Türkçe karakter yok** — ASCII: s, i, g, u, o, c (`bicak` ← bıçak, `IslemeBaslat` ← İşlemeBaşlat) |
-| Yorum | **Türkçe**; yorum metninde ş/ğ/ü/ö/ç/ı kullanılabilir |
-| Motor API / override | İngilizce **zorunlu** kalır (`OnPostInit`, `PerformAction`, `EOnFrame`, `ActionOpenInventory`, `GetGame()`) — motor bunları arar |
-| Önek | Public class/global: `M360_` (Döküman 13.2) |
-| Prefab Attribute | Alan adı değişince ilgili `.et` / `.conf` **aynı commit’te** güncellenir |
-| Mevcut sınıf adları | Lab’daki `M360_Job*Component` gibi class adları anlık kırılmayı önlemek için korunabilir; **yeni kod** ve üyeler/metodlar bu tabloya uyar |
+| Anlam | Class, değişken, üye, **metod**, yerel, Attribute, oyuncu metni → **Türkçe ASCII** |
+| Alfabe | İsimlerde **Türkçe karakter yok** (`bicak`, `IslemeBaslat`, `m_iNakit`, `M360_ToplamaAlaniBileseni`) |
+| Yorum / Print / Hint | **Türkçe** (yorumda ş/ğ/ü serbest; kod isminde değil) |
+| Motor API / override | İngilizce **zorunlu** — dokunulmaz (`OnPostInit`, `PerformAction`, `EOnFrame`, `GetGame()`, `pOwnerEntity` imza parametreleri, `ScriptedUserAction`…) |
+| Önek | Public: `M360_` |
+| Prefab | Class/Attribute rename = `.et` + dünya layer **aynı anda** |
+| Dosya adı | Class ile uyumlu `.c` (`M360_IsAyar.c`) |
+| Yasak kaçış | “Lab için İngilizce class kalsın” **yok** — değiştirilebilir her şey Türkçe |
 
-Örnekler: `car` → `araba`; `knife` → `bicak`; `m_iCash` → `m_iNakit`; `StartProcessing` → `IslemeBaslat`; `Boot` → `Baslat`; `Get` → `Al`.
+Örnek: `JobConfig` → `IsAyar`; `TickDuration` → `AdimSuresi`; `CollectAction` → `ToplaAksiyonu`; `StartProcessing` → `IslemeBaslat`.
+
+**Dokunulmayanlar:** BI/Enfusion API, `Scripts/WorkbenchGame/EnfusionMCP/*` (araç handler’ları), resource GUID path’lerindeki dosya adları (prefab dosya adı `M360_JobCollect_Pirinc.et` GUID için sabit kalabilir; içindeki class Türkçe).
 
 ## 11.3 Next.js Fullstack + PostgreSQL Kararı
 

@@ -1,20 +1,20 @@
 //------------------------------------------------------------------------------------------------
 //! M360 Life — Toplama alani (Dokuman 5.1b Asama 1)
-//! Her tick 0→100 ilerleme; dolunca ham eklenir.
+//! Her adim 0→100 ilerleme; dolunca ham eklenir.
 //------------------------------------------------------------------------------------------------
-[ComponentEditorProps(category: "M360/Jobs", description: "Toplama alani")]
-class M360_JobCollectSiteComponentClass : ScriptComponentClass
+[ComponentEditorProps(category: "M360/Isler", description: "Toplama alani")]
+class M360_ToplamaAlaniBileseniClass : ScriptComponentClass
 {
 }
 
-class M360_JobCollectSiteComponent : ScriptComponent
+class M360_ToplamaAlaniBileseni : ScriptComponent
 {
 	[Attribute(desc: "Is ayarlari")]
-	ref M360_JobConfig m_Ayar;
+	ref M360_IsAyar m_Ayar;
 
 	protected IEntity m_ToplayanKullanici;
-	protected int m_iTamamlananTick;
-	protected int m_iTickMs;
+	protected int m_iTamamlananAdim;
+	protected int m_iAdimMs;
 	protected int m_iIlerlemeGecenMs;
 	protected const int ILERLEME_ADIM_MS = 50;
 
@@ -45,7 +45,7 @@ class M360_JobCollectSiteComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	void ToplamaDegistir(IEntity kullanici)
 	{
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(kullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		if (oturum.m_bTopluyor && m_ToplayanKullanici == kullanici)
 			ToplamaDurdur(kullanici);
 		else
@@ -58,7 +58,7 @@ class M360_JobCollectSiteComponent : ScriptComponent
 		if (!m_Ayar || !kullanici)
 			return;
 
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(kullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		if (oturum.m_bIsliyor)
 		{
 			MesajGoster("Once isleme bitsin");
@@ -86,12 +86,12 @@ class M360_JobCollectSiteComponent : ScriptComponent
 		oturum.m_bTopluyor = true;
 		oturum.m_fToplamaIlerleme = 0;
 		m_ToplayanKullanici = kullanici;
-		m_iTamamlananTick = 0;
+		m_iTamamlananAdim = 0;
 		m_iIlerlemeGecenMs = 0;
 
-		m_iTickMs = m_Ayar.m_iTickSuresi * 1000;
-		if (m_iTickMs < 100)
-			m_iTickMs = 100;
+		m_iAdimMs = m_Ayar.m_iAdimSuresi * 1000;
+		if (m_iAdimMs < 100)
+			m_iAdimMs = 100;
 
 		GetGame().GetCallqueue().CallLater(ToplamaIlerlemeAdimi, ILERLEME_ADIM_MS, true);
 		MesajGoster("Toplama basladi: " + m_Ayar.m_sIsAdi);
@@ -106,7 +106,7 @@ class M360_JobCollectSiteComponent : ScriptComponent
 			return;
 		}
 
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(m_ToplayanKullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(m_ToplayanKullanici);
 		if (!oturum.m_bTopluyor)
 		{
 			GetGame().GetCallqueue().Remove(ToplamaIlerlemeAdimi);
@@ -114,15 +114,15 @@ class M360_JobCollectSiteComponent : ScriptComponent
 		}
 
 		m_iIlerlemeGecenMs += ILERLEME_ADIM_MS;
-		float yuzde = (m_iIlerlemeGecenMs * 100.0) / m_iTickMs;
+		float yuzde = (m_iIlerlemeGecenMs * 100.0) / m_iAdimMs;
 		if (yuzde > 100)
 			yuzde = 100;
 		oturum.m_fToplamaIlerleme = yuzde;
 
-		if (m_iIlerlemeGecenMs < m_iTickMs)
+		if (m_iIlerlemeGecenMs < m_iAdimMs)
 			return;
 
-		// Tick tamam — ham ekle, ilerlemeyi sifirla
+		// Adim tamam — ham ekle, ilerlemeyi sifirla
 		m_iIlerlemeGecenMs = 0;
 		oturum.m_fToplamaIlerleme = 0;
 
@@ -138,19 +138,19 @@ class M360_JobCollectSiteComponent : ScriptComponent
 			return;
 		}
 
-		int kazanc = m_Ayar.m_iTickVerim;
+		int kazanc = m_Ayar.m_iAdimVerim;
 		if (kazanc > bosYer)
 			kazanc = bosYer;
 
 		oturum.m_iHam += kazanc;
-		m_iTamamlananTick++;
+		m_iTamamlananAdim++;
 		MesajGoster(string.Format("Toplandi +%1  |  ham=%2/%3", kazanc, oturum.m_iHam, maxTasima));
 	}
 
 	//------------------------------------------------------------------------------------------------
 	void ToplamaDurdur(IEntity kullanici)
 	{
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(kullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		if (!oturum.m_bTopluyor)
 			return;
 
@@ -165,7 +165,7 @@ class M360_JobCollectSiteComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	bool BuKullaniciTopluyorMu(IEntity kullanici)
 	{
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(kullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		return oturum.m_bTopluyor && m_ToplayanKullanici == kullanici;
 	}
 

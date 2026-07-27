@@ -2,7 +2,7 @@
 
 *Bağlı olduğu: [00 - Ana Döküman](./00_ana_dokuman.md) · [11 - Teknik Mimari](./11_teknik_mimari.md) · [15 - Geliştirme Notları](./15_gelistirme_notlari.md)*
 
-> **Durum (2026-07-27):** Lab’da kanıtlandı. Eski “tek JobStation” iskeleti **tarihçe**; güncel model = **üç site** (Collect / Process / Sell) + paylaşılan `M360_JobConfig`. Detaylı tuzaklar: Döküman 15.
+> **Durum (2026-07-27):** Lab’da kanıtlandı. Model = **üç site** + `M360_IsAyar`. İsimler Türkçe ASCII (11.2.1).
 
 ## 13.1 Neden Bu Döküman Var
 
@@ -13,9 +13,9 @@ Döküman 11 backend’i, Döküman 5 oyun tasarımını kapsar. Bu dosya **Enfu
 | Kural | Uygulama |
 |---|---|
 | Proje etiketi (Tag) | **M360_** |
-| Class | PascalCase; anlam Türkçe ASCII tercih. Lab class adları (`M360_JobConfig`, `M360_JobCollectSiteComponent`) kırılmamak için durabilir |
-| Üye | `m_` + tip + Türkçe ASCII (`m_iSatisFiyati`, `m_sIsAdi`, `m_bYasalMi`) |
-| Metod | Türkçe ASCII (`ToplamaBaslat`, `IslemeBitir`, `EnvanterAcKapa`). BI override İngilizce (`OnPostInit`, `PerformAction`) |
+| Class | PascalCase **Türkçe ASCII** (`M360_IsAyar`, `M360_ToplamaAlaniBileseni`) — İngilizce class adı yok |
+| Üye | `m_` + tip + Türkçe ASCII (`m_iSatisFiyati`, `m_iAdimSuresi`) |
+| Metod | Türkçe ASCII (`ToplamaBaslat`). BI override İngilizce (`OnPostInit`, `PerformAction`) |
 | Sabit | `UPPER_CASE` ASCII (`ILERLEME_ADIM_MS`) |
 | Yerel | camelCase Türkçe ASCII (`hamMiktar`) |
 | Yorum | Türkçe (karakter serbest) |
@@ -28,35 +28,35 @@ Detay: Ana Döküman + 11.2.1 + 15-A.
 
 Döküman 5’teki “tek çekirdek, çok iş” fikrinin motor karşılığı:
 
-1. **Config class:** `M360_JobConfig` — parametreler `[Attribute()]` ile prefab’da düzenlenir:
+1. **Config class:** `M360_IsAyar` — parametreler `[Attribute()]` ile prefab’da düzenlenir:
 
 | Attribute | Anlam |
 |---|---|
 | `m_sIsAdi` | İş adı |
 | `m_bYasalMi` | Yasal mı |
-| `m_iTickSuresi` | Toplama tick (sn) |
-| `m_iTickVerim` | Tick başı ham |
-| `m_iPartiBoyutu` | İşleme batch üst sınırı |
+| `m_iAdimSuresi` | Toplama adım süresi (sn) |
+| `m_iAdimVerim` | Adım başı ham |
+| `m_iPartiBoyutu` | İşleme parti üst sınırı |
 | `m_iIslemeSuresi` | İşleme süresi (sn) |
 | `m_fDonusumOrani` | Ham → işlenmiş oranı |
 | `m_iSatisFiyati` | İşlenmiş birim fiyat |
-| `m_iMaxTasima` | Lab max ham taşıma (ürün = kapasite puanı) |
+| `m_iMaxTasima` | Lab max ham taşıma |
 
-2. **Üç generic component** (tek monolit istasyon değil):
+2. **Üç bilesen:**
 
-| Component | Aşama | Prefab örneği |
+| Component | Aşama | Prefab dosyası (GUID path) |
 |---|---|---|
-| `M360_JobCollectSiteComponent` | Toplama | `M360_JobCollect_Pirinc.et` |
-| `M360_JobProcessSiteComponent` | İşleme | `M360_JobProcess_Pirinc.et` |
-| `M360_JobSellSiteComponent` | Satış | `M360_JobSell_Pirinc.et` |
+| `M360_ToplamaAlaniBileseni` | Toplama | `M360_JobCollect_Pirinc.et` |
+| `M360_IslemeMakinesiBileseni` | İşleme | `M360_JobProcess_Pirinc.et` |
+| `M360_SatisNoktasiBileseni` | Satış | `M360_JobSell_Pirinc.et` |
 
-Her birinde `m_Ayar` → aynı `M360_JobConfig` tipi. Sayılar **scriptte hardcoded değil**.
+Her birinde `m_Ayar` → `M360_IsAyar`. Aksiyonlar: `M360_ToplaAksiyonu` / `IsleAksiyonu` / `SatAksiyonu` / `DurumAksiyonu`. HUD: `M360_CantaHudBileseni`.
 
-3. **UserAction:** `ActionsManagerComponent` → `additionalActions` (camelCase) + `ParentContextList` + `PointInfo`. Dersler: Döküman 15 §7.
+3. **UserAction:** `additionalActions` + `ParentContextList` + `PointInfo` — Döküman 15 §7.
 
-4. **Yeni iş:** üç prefab kopyala → `m_Ayar` + F menü isimleri (+ isteğe bağlı model) → dünyaya koy. Script yok.
+4. **Yeni iş:** üç prefab kopyala → `m_Ayar` + F menü isimleri → yerleştir.
 
-> **Tarihçe:** İlk taslak tek `M360_JobStationComponent` / `M360_JobStation_Base.et` idi. Silindi; üç site daha net (lokasyon ayrımı, UserAction, denge).
+> **Tarihçe:** Tek `JobStation` silindi; İngilizce `M360_Job*` class adları → Türkçe ASCII (2026-07-27).
 
 ## 13.4 Config → Admin Panel Köprüsü
 
@@ -85,10 +85,11 @@ addons/M360 Life/          (Workbench)  ≈  Documents/GitHub/M360-Life (Git)
 ## 13.6 Lab’da Kanıtlanan İlk Adım (tamam)
 
 - [x] Klasör iskeleti + `M360_` tag
-- [x] `M360_JobConfig` + üç site component + Pirinç prefab’ları
-- [x] UserAction F menü (topla / işle / sat / durum)
-- [x] Play: ilerleme hint + I ile çanta stub
-- [ ] Dedicated + PG override (13.4) — sonraki kapı
+- [x] `M360_IsAyar` + üç site bilesen + Pirinç prefab’ları
+- [x] UserAction F menü
+- [x] Play: ilerleme ipucu + I ile çanta
+- [x] Class/Attribute Türkçe ASCII geçişi (11.2.1)
+- [ ] Dedicated + PG (13.4)
 
 Sayılar: lab vs üretim tablosu → **Döküman 5.7b** + kök README.
 

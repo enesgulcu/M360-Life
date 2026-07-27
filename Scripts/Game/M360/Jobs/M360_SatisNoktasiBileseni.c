@@ -1,16 +1,16 @@
 //------------------------------------------------------------------------------------------------
 //! M360 Life — Satis noktasi (Dokuman 5.1b Asama 4)
-//! Islenmis urunu aninda nakde cevirir (lab cuzdan stub).
+//! Islenmis urunu aninda nakde cevirir (lab cuzdan sayac).
 //------------------------------------------------------------------------------------------------
-[ComponentEditorProps(category: "M360/Jobs", description: "Satis noktasi")]
-class M360_JobSellSiteComponentClass : ScriptComponentClass
+[ComponentEditorProps(category: "M360/Isler", description: "Satis noktasi")]
+class M360_SatisNoktasiBileseniClass : ScriptComponentClass
 {
 }
 
-class M360_JobSellSiteComponent : ScriptComponent
+class M360_SatisNoktasiBileseni : ScriptComponent
 {
 	[Attribute(desc: "Is ayarlari")]
-	ref M360_JobConfig m_Ayar;
+	ref M360_IsAyar m_Ayar;
 
 	//------------------------------------------------------------------------------------------------
 	override void OnPostInit(IEntity owner)
@@ -35,7 +35,7 @@ class M360_JobSellSiteComponent : ScriptComponent
 		if (!m_Ayar || !kullanici)
 			return;
 
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(kullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		if (oturum.m_bIsliyor)
 		{
 			MesajGoster("Isleme bitmeden satilamaz");
@@ -65,7 +65,7 @@ class M360_JobSellSiteComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	bool SatilabilirMi(IEntity kullanici)
 	{
-		M360_JobSessionData oturum = M360_JobSessions.AlVeyaOlustur(kullanici);
+		M360_IsOturumVerisi oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		return oturum.m_iIslenmis > 0 && !oturum.m_bIsliyor;
 	}
 
