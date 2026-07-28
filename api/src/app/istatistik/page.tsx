@@ -18,6 +18,12 @@ export default function IstatistikPage() {
           </p>
         </div>
         <div className="aksiyonlar">
+          <a className="btn ikincil" href="/">
+            API lab
+          </a>
+          <button type="button" id="anahtar" className="btn ikincil">
+            Key
+          </button>
           <button type="button" id="yenile" className="btn">
             Yenile
           </button>
@@ -96,6 +102,7 @@ export default function IstatistikPage() {
         }
         .btn:hover { border-color: var(--accent); color: var(--accent); }
         .btn.ikincil { background: transparent; }
+        a.btn { text-decoration: none; display: inline-block; }
         .otomatik { display: flex; gap: 0.4rem; align-items: center; color: var(--muted); font-size: 0.85rem; }
         .ozet {
           display: grid;
@@ -147,18 +154,23 @@ export default function IstatistikPage() {
     return '<div class="kart"><span>' + etiket + '</span><strong>' + deger + '</strong></div>';
   }
 
-  async function anahtarAl() {
+  async function anahtarAl(zorla) {
     var k = sessionStorage.getItem("m360_server_key") || "";
-    if (!k) {
-      k = prompt("X-M360-Server-Key (Vercel / api/.env ile ayni)") || "";
+    if (!k || zorla) {
+      k = prompt("M360_SERVER_KEY (api/.env / Vercel ile ayni)", k || "") || "";
       if (k) sessionStorage.setItem("m360_server_key", k);
+      else if (zorla) sessionStorage.removeItem("m360_server_key");
     }
     return k;
   }
 
-  function basliklar(ekstra) {
-    var h = Object.assign({ "X-M360-Istek-Baslangic": String(Date.now()) }, ekstra || {});
-    return anahtarAl().then(function (k) {
+  document.getElementById("anahtar").addEventListener("click", function () {
+    anahtarAl(true).then(function () { yukle(); });
+  });
+
+  function basliklar() {
+    return anahtarAl(false).then(function (k) {
+      var h = { "X-M360-Istek-Baslangic": String(Date.now()) };
       if (k) h["X-M360-Server-Key"] = k;
       return h;
     });
@@ -171,7 +183,7 @@ export default function IstatistikPage() {
     if (res.status === 401) {
       sessionStorage.removeItem("m360_server_key");
       ozetEl.innerHTML = kart("Hata", "401 - anahtar gerekli");
-      satirlar.innerHTML = '<tr><td colspan="7" class="bos">Anahtar yanlis veya yok. Yenile ile tekrar dene.</td></tr>';
+      satirlar.innerHTML = '<tr><td colspan="7" class="bos">Anahtar yanlis veya yok. Key butonuna bas.</td></tr>';
       return;
     }
     const o = data.ozet || {};
