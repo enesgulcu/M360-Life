@@ -1,11 +1,107 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "M360 — Istatistik",
-  description: "API istek sureleri ve lab telemetri",
+import { useCallback, useEffect, useState } from "react";
+
+const KEY_STORAGE = "m360_server_key";
+
+type MetrikKayit = {
+  zaman?: string;
+  yontem?: string;
+  yol?: string;
+  durum?: number;
+  gelisMs?: number;
+  sunucuMs?: number;
+  toplamMs?: number;
+  ip?: string;
 };
 
+type Ozet = {
+  adet?: number;
+  ortSunucuMs?: number;
+  ortToplamMs?: number;
+  p95SunucuMs?: number;
+  son5dk?: number;
+};
+
+function ms(v?: number) {
+  if (v == null) return "—";
+  return `${Math.round(v)} ms`;
+}
+
+function durumSinif(d?: number) {
+  if (d != null && d >= 200 && d < 300) return "durum-ok";
+  if (d === 429 || d === 401) return "durum-warn";
+  return "durum-bad";
+}
+
 export default function IstatistikPage() {
+  const [ozet, setOzet] = useState<Ozet>({});
+  const [kayitlar, setKayitlar] = useState<MetrikKayit[]>([]);
+  const [hata, setHata] = useState<string | null>(null);
+  const [otomatik, setOtomatik] = useState(true);
+  const [bosMesaj, setBosMesaj] = useState("Yukleniyor…");
+
+  const anahtarAl = useCallback((zorla: boolean) => {
+    let k = sessionStorage.getItem(KEY_STORAGE) || "";
+    if (!k || zorla) {
+      k = window.prompt("M360_SERVER_KEY (api/.env / Vercel ile ayni)", k || "") || "";
+      if (k) sessionStorage.setItem(KEY_STORAGE, k);
+      else if (zorla) sessionStorage.removeItem(KEY_STORAGE);
+    }
+    return k;
+  }, []);
+
+  const basliklar = useCallback(
+    (zorla = false) => {
+      const h: Record<string, string> = {
+        "X-M360-Istek-Baslangic": String(Date.now()),
+      };
+      const k = anahtarAl(zorla);
+      if (k) h["X-M360-Server-Key"] = k;
+      return h;
+    },
+    [anahtarAl]
+  );
+
+  const yukle = useCallback(async () => {
+    try {
+      const res = await fetch("/api/metrik?limit=60", { headers: basliklar() });
+      const data = await res.json();
+      if (res.status === 401) {
+        sessionStorage.removeItem(KEY_STORAGE);
+        setHata("401 - anahtar gerekli. Key butonuna bas.");
+        setOzet({});
+        setKayitlar([]);
+        setBosMesaj("Anahtar yanlis veya yok.");
+        return;
+      }
+      setHata(null);
+      setOzet(data.ozet || {});
+      const list: MetrikKayit[] = data.kayitlar || [];
+      setKayitlar(list);
+      setBosMesaj(list.length ? "" : "Henuz kayit yok. Ornek istek gonder.");
+    } catch (err) {
+      setHata(err instanceof Error ? err.message : String(err));
+    }
+  }, [basliklar]);
+
+  const ornek = useCallback(async () => {
+    const headers = basliklar();
+    await fetch("/api/health", { headers });
+    await fetch("/api/jobs", { headers });
+    await yukle();
+  }, [basliklar, yukle]);
+
+  useEffect(() => {
+    void yukle();
+  }, [yukle]);
+
+  useEffect(() => {
+    if (!otomatik) return;
+    const t = setInterval(() => void yukle(), 4000);
+    return () => clearInterval(t);
+  }, [otomatik, yukle]);
+
   return (
     <main className="shell">
       <header className="ust">
@@ -21,23 +117,57 @@ export default function IstatistikPage() {
           <a className="btn ikincil" href="/">
             API lab
           </a>
-          <button type="button" id="anahtar" className="btn ikincil">
+          <button type="button" className="btn ikincil" onClick={() => { anahtarAl(true); void yukle(); }}>
             Key
           </button>
-          <button type="button" id="yenile" className="btn">
+          <button type="button" className="btn" onClick={() => void yukle()}>
             Yenile
           </button>
-          <button type="button" id="ornek" className="btn ikincil">
+          <button type="button" className="btn ikincil" onClick={() => void ornek()}>
             Ornek istek
           </button>
           <label className="otomatik">
-            <input type="checkbox" id="otomatik" defaultChecked />
+            <input
+              type="checkbox"
+              checked={otomatik}
+              onChange={(e) => setOtomatik(e.target.checked)}
+            />
             Canli
           </label>
         </div>
       </header>
 
-      <section className="ozet" id="ozet" aria-live="polite" />
+      <section className="ozet" aria-live="polite">
+        {hata ? (
+          <div className="kart">
+            <span>Hata</span>
+            <strong>{hata}</strong>
+          </div>
+        ) : (
+          <>
+            <div className="kart">
+              <span>Kayit</span>
+              <strong>{ozet.adet ?? 0}</strong>
+            </div>
+            <div className="kart">
+              <span>Ort. sunucu</span>
+              <strong>{ms(ozet.ortSunucuMs)}</strong>
+            </div>
+            <div className="kart">
+              <span>Ort. toplam</span>
+              <strong>{ms(ozet.ortToplamMs)}</strong>
+            </div>
+            <div className="kart">
+              <span>p95 sunucu</span>
+              <strong>{ms(ozet.p95SunucuMs)}</strong>
+            </div>
+            <div className="kart">
+              <span>Son 5 dk</span>
+              <strong>{ozet.son5dk ?? 0}</strong>
+            </div>
+          </>
+        )}
+      </section>
 
       <section className="tablo-wrap">
         <table>
@@ -52,7 +182,29 @@ export default function IstatistikPage() {
               <th>IP</th>
             </tr>
           </thead>
-          <tbody id="satirlar" />
+          <tbody>
+            {kayitlar.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="bos">
+                  {bosMesaj}
+                </td>
+              </tr>
+            ) : (
+              kayitlar.map((k, i) => (
+                <tr key={`${k.zaman}-${i}`}>
+                  <td>{(k.zaman || "").replace("T", " ").replace("Z", "")}</td>
+                  <td>
+                    {k.yontem} {k.yol}
+                  </td>
+                  <td className={durumSinif(k.durum)}>{k.durum}</td>
+                  <td>{ms(k.gelisMs)}</td>
+                  <td>{ms(k.sunucuMs)}</td>
+                  <td>{ms(k.toplamMs)}</td>
+                  <td>{k.ip || ""}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
         </table>
       </section>
 
@@ -129,108 +281,6 @@ export default function IstatistikPage() {
         .durum-warn { color: var(--warn); }
         .bos { padding: 2rem; color: var(--muted); font-family: var(--sans); }
       `}</style>
-
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-(function () {
-  const ozetEl = document.getElementById("ozet");
-  const satirlar = document.getElementById("satirlar");
-  const otomatik = document.getElementById("otomatik");
-  let timer;
-
-  function ms(v) {
-    if (v == null || v === undefined) return "—";
-    return Math.round(v) + " ms";
-  }
-
-  function durumSinif(d) {
-    if (d >= 200 && d < 300) return "durum-ok";
-    if (d === 429 || d === 401) return "durum-warn";
-    return "durum-bad";
-  }
-
-  function kart(etiket, deger) {
-    return '<div class="kart"><span>' + etiket + '</span><strong>' + deger + '</strong></div>';
-  }
-
-  async function anahtarAl(zorla) {
-    var k = sessionStorage.getItem("m360_server_key") || "";
-    if (!k || zorla) {
-      k = prompt("M360_SERVER_KEY (api/.env / Vercel ile ayni)", k || "") || "";
-      if (k) sessionStorage.setItem("m360_server_key", k);
-      else if (zorla) sessionStorage.removeItem("m360_server_key");
-    }
-    return k;
-  }
-
-  document.getElementById("anahtar").addEventListener("click", function () {
-    anahtarAl(true).then(function () { yukle(); });
-  });
-
-  function basliklar() {
-    return anahtarAl(false).then(function (k) {
-      var h = { "X-M360-Istek-Baslangic": String(Date.now()) };
-      if (k) h["X-M360-Server-Key"] = k;
-      return h;
-    });
-  }
-
-  async function yukle() {
-    const headers = await basliklar();
-    const res = await fetch("/api/metrik?limit=60", { headers });
-    const data = await res.json();
-    if (res.status === 401) {
-      sessionStorage.removeItem("m360_server_key");
-      ozetEl.innerHTML = kart("Hata", "401 - anahtar gerekli");
-      satirlar.innerHTML = '<tr><td colspan="7" class="bos">Anahtar yanlis veya yok. Key butonuna bas.</td></tr>';
-      return;
-    }
-    const o = data.ozet || {};
-    ozetEl.innerHTML =
-      kart("Kayit", o.adet ?? 0) +
-      kart("Ort. sunucu", ms(o.ortSunucuMs)) +
-      kart("Ort. toplam", ms(o.ortToplamMs)) +
-      kart("p95 sunucu", ms(o.p95SunucuMs)) +
-      kart("Son 5 dk", o.son5dk ?? 0);
-
-    const list = data.kayitlar || [];
-    if (!list.length) {
-      satirlar.innerHTML = '<tr><td colspan="7" class="bos">Henuz kayit yok. Ornek istek gonder.</td></tr>';
-      return;
-    }
-    satirlar.innerHTML = list.map(function (k) {
-      return '<tr>' +
-        '<td>' + (k.zaman || "").replace("T", " ").replace("Z", "") + '</td>' +
-        '<td>' + k.yontem + " " + k.yol + '</td>' +
-        '<td class="' + durumSinif(k.durum) + '">' + k.durum + '</td>' +
-        '<td>' + ms(k.gelisMs) + '</td>' +
-        '<td>' + ms(k.sunucuMs) + '</td>' +
-        '<td>' + ms(k.toplamMs) + '</td>' +
-        '<td>' + (k.ip || "") + '</td>' +
-        '</tr>';
-    }).join("");
-  }
-
-  async function ornek() {
-    const headers = await basliklar();
-    await fetch("/api/health", { headers });
-    await fetch("/api/jobs", { headers });
-    await yukle();
-  }
-
-  document.getElementById("yenile").addEventListener("click", yukle);
-  document.getElementById("ornek").addEventListener("click", ornek);
-  otomatik.addEventListener("change", function () {
-    clearInterval(timer);
-    if (otomatik.checked) timer = setInterval(yukle, 4000);
-  });
-  yukle();
-  timer = setInterval(yukle, 4000);
-})();
-          `,
-        }}
-      />
     </main>
   );
 }

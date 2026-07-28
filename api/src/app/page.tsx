@@ -1,4 +1,88 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+
+const KEY_STORAGE = "m360_server_key";
+
+const SEKMELER: { etiket: string; yol: string }[] = [
+  { etiket: "health", yol: "/api/health" },
+  { etiket: "jobs", yol: "/api/jobs" },
+  { etiket: "metrik", yol: "/api/metrik?limit=20" },
+];
+
 export default function HomePage() {
+  const [keyInput, setKeyInput] = useState("");
+  const [keyVar, setKeyVar] = useState(false);
+  const [aktifYol, setAktifYol] = useState("/api/health");
+  const [httpDurum, setHttpDurum] = useState<number | null>(null);
+  const [cikti, setCikti] = useState("Yukleniyor…");
+  const [yukleniyor, setYukleniyor] = useState(false);
+
+  useEffect(() => {
+    setKeyVar(Boolean(sessionStorage.getItem(KEY_STORAGE)));
+  }, []);
+
+  const yukle = useCallback(async (yol: string) => {
+    setAktifYol(yol);
+    setYukleniyor(true);
+    setCikti("Yukleniyor…");
+    setHttpDurum(null);
+
+    const headers: Record<string, string> = {
+      "X-M360-Istek-Baslangic": String(Date.now()),
+    };
+    const k = sessionStorage.getItem(KEY_STORAGE);
+    if (k) headers["X-M360-Server-Key"] = k;
+
+    try {
+      const res = await fetch(yol, { headers });
+      const text = await res.text();
+      let goster = text;
+      try {
+        goster = JSON.stringify(JSON.parse(text), null, 2);
+      } catch {
+        /* ham metin */
+      }
+      setHttpDurum(res.status);
+      if (res.status === 401) {
+        setCikti(
+          `${goster}\n\n---\n401: Key kaydet (api/.env / Vercel M360_SERVER_KEY ile ayni).`
+        );
+      } else {
+        setCikti(goster);
+      }
+    } catch (err) {
+      setHttpDurum(null);
+      setCikti(err instanceof Error ? err.message : String(err));
+    } finally {
+      setYukleniyor(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void yukle("/api/health");
+  }, [yukle]);
+
+  function kaydet() {
+    const v = keyInput.trim();
+    if (!v) {
+      alert("Key bos.");
+      return;
+    }
+    sessionStorage.setItem(KEY_STORAGE, v);
+    setKeyInput("");
+    setKeyVar(true);
+    void yukle(aktifYol);
+  }
+
+  function temizle() {
+    sessionStorage.removeItem(KEY_STORAGE);
+    setKeyInput("");
+    setKeyVar(false);
+    setCikti("Key silindi. Kaydetmeden kilitli endpoint'ler 401 verir.");
+    setHttpDurum(null);
+  }
+
   return (
     <main className="shell">
       <header className="ust">
@@ -18,7 +102,9 @@ export default function HomePage() {
       <section className="anahtar-kutu">
         <label htmlFor="key">
           M360_SERVER_KEY
-          <span id="key-durum" className="muted"> — kayitli degil</span>
+          <span className="muted">
+            {keyVar ? " — kayitli (bu sekme)" : " — kayitli degil"}
+          </span>
         </label>
         <div className="satir">
           <input
@@ -26,37 +112,55 @@ export default function HomePage() {
             type="password"
             autoComplete="off"
             spellCheck={false}
-            placeholder="api/.env veya Vercel env ile ayni"
+            value={keyInput}
+            onChange={(e) => setKeyInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") kaydet();
+            }}
+            placeholder={
+              keyVar ? "(kayitli — degistirmek icin yaz)" : "api/.env veya Vercel env ile ayni"
+            }
           />
-          <button type="button" id="kaydet" className="btn">
+          <button type="button" className="btn" onClick={kaydet}>
             Kaydet
           </button>
-          <button type="button" id="temizle" className="btn ikincil">
+          <button type="button" className="btn ikincil" onClick={temizle}>
             Unut
           </button>
         </div>
       </section>
 
-      <nav className="sekmeler" id="sekmeler">
-        <button type="button" className="sekme aktif" data-yol="/api/health">
-          health
-        </button>
-        <button type="button" className="sekme" data-yol="/api/jobs">
-          jobs
-        </button>
-        <button type="button" className="sekme" data-yol="/api/metrik?limit=20">
-          metrik
-        </button>
-        <button type="button" id="yenile" className="btn ikincil">
+      <nav className="sekmeler">
+        {SEKMELER.map((s) => (
+          <button
+            key={s.yol}
+            type="button"
+            className={`sekme${aktifYol === s.yol ? " aktif" : ""}`}
+            onClick={() => void yukle(s.yol)}
+          >
+            {s.etiket}
+          </button>
+        ))}
+        <button
+          type="button"
+          className="btn ikincil"
+          disabled={yukleniyor}
+          onClick={() => void yukle(aktifYol)}
+        >
           Yenile
         </button>
       </nav>
 
       <p className="yol-etiket">
-        <span id="yol-goster">/api/health</span>
-        <span id="http-durum" className="muted" />
+        <span>{aktifYol}</span>
+        {httpDurum != null && (
+          <span className={httpDurum >= 200 && httpDurum < 300 ? "http-ok" : "http-bad"}>
+            {" "}
+            · HTTP {httpDurum}
+          </span>
+        )}
       </p>
-      <pre id="cikti" className="cikti">Key kaydet, sonra bir sekme sec…</pre>
+      <pre className="cikti">{cikti}</pre>
 
       <style>{`
         :root {
@@ -100,7 +204,8 @@ export default function HomePage() {
           cursor: pointer; font: inherit; font-size: 0.9rem; text-decoration: none;
           display: inline-block;
         }
-        .btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+        .btn:disabled { opacity: 0.5; cursor: wait; }
         .btn.ikincil { background: transparent; }
         .anahtar-kutu {
           margin-bottom: 1.25rem; padding: 1rem;
@@ -134,90 +239,6 @@ export default function HomePage() {
         .http-ok { color: var(--ok); }
         .http-bad { color: var(--bad); }
       `}</style>
-
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-(function () {
-  var KEY = "m360_server_key";
-  var aktifYol = "/api/health";
-  var input = document.getElementById("key");
-  var durum = document.getElementById("key-durum");
-  var cikti = document.getElementById("cikti");
-  var yolGoster = document.getElementById("yol-goster");
-  var httpDurum = document.getElementById("http-durum");
-
-  function keyOku() { return sessionStorage.getItem(KEY) || ""; }
-
-  function keyDurumGuncelle() {
-    var k = keyOku();
-    durum.textContent = k ? " — kayitli (bu sekme)" : " — kayitli degil";
-    if (k && !input.value) input.placeholder = "(kayitli — degistirmek icin yaz)";
-  }
-
-  function basliklar() {
-    var h = { "X-M360-Istek-Baslangic": String(Date.now()) };
-    var k = keyOku();
-    if (k) h["X-M360-Server-Key"] = k;
-    return h;
-  }
-
-  async function yukle(yol) {
-    aktifYol = yol || aktifYol;
-    yolGoster.textContent = aktifYol;
-    document.querySelectorAll(".sekme").forEach(function (b) {
-      b.classList.toggle("aktif", b.getAttribute("data-yol") === aktifYol);
-    });
-    cikti.textContent = "Yukleniyor…";
-    httpDurum.textContent = "";
-    try {
-      var res = await fetch(aktifYol, { headers: basliklar() });
-      var text = await res.text();
-      var goster = text;
-      try { goster = JSON.stringify(JSON.parse(text), null, 2); } catch (e) {}
-      httpDurum.textContent = " · HTTP " + res.status;
-      httpDurum.className = res.ok ? "http-ok" : "http-bad";
-      if (res.status === 401) {
-        cikti.textContent = goster + "\\n\\n---\\n401: Key kaydet (api/.env / Vercel M360_SERVER_KEY ile ayni).";
-        return;
-      }
-      cikti.textContent = goster;
-    } catch (err) {
-      httpDurum.textContent = " · hata";
-      httpDurum.className = "http-bad";
-      cikti.textContent = String(err);
-    }
-  }
-
-  document.getElementById("kaydet").addEventListener("click", function () {
-    var v = (input.value || "").trim();
-    if (!v) { alert("Key bos."); return; }
-    sessionStorage.setItem(KEY, v);
-    input.value = "";
-    keyDurumGuncelle();
-    yukle(aktifYol);
-  });
-
-  document.getElementById("temizle").addEventListener("click", function () {
-    sessionStorage.removeItem(KEY);
-    input.value = "";
-    keyDurumGuncelle();
-    cikti.textContent = "Key silindi. Kaydetmeden kilitli endpoint'ler 401 verir.";
-  });
-
-  document.getElementById("sekmeler").addEventListener("click", function (e) {
-    var t = e.target;
-    if (t && t.getAttribute && t.getAttribute("data-yol")) yukle(t.getAttribute("data-yol"));
-  });
-
-  document.getElementById("yenile").addEventListener("click", function () { yukle(aktifYol); });
-
-  keyDurumGuncelle();
-  yukle("/api/health");
-})();
-          `,
-        }}
-      />
     </main>
   );
 }
