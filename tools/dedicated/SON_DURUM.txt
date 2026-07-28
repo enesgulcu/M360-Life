@@ -1,15 +1,22 @@
 M360 Life — dedicated paket (guncel)
-Tarih: 2026-07-28 ~15:30
+Tarih: 2026-07-28 ~17:10
 
 === CALISIYOR ===
 [x] Binary: D:\SteamLibrary\steamapps\common\Arma Reforger Server
-[x] start.ps1 lokal mod: -server LabDuzZemin + -addons 69F4E91377BCC9A5
-[x] Sunucu ayakta (~60 FPS, Player 0) — Direct Connect 127.0.0.1:2001
+[x] start.ps1: -server LabDuzZemin + -addons 69F4E91377BCC9A5 -bindPort 2001
+[x] Lab isik: Lighting_Default YOK, Overcast
+[x] Canta: I + Tab (ActionOpenInventory + InputBinding I) — docs/15 §C
+[x] baglan-istemci.ps1 (Steam Oyna degil; -client burada)
 
-=== ISTEMCI ===
-Steam Reforger Launch Options:
-  -addonsDir "C:\Users\Enes\Documents\GitHub\M360-Life\tools\dedicated\addons" -addons 69F4E91377BCC9A5
-Sonra: Multiplayer -> Direct Connect -> 127.0.0.1:2001
+=== ISTEMCI Steam KALICI ( -client YOK ) ===
+-addonsDir "C:\Users\Enes\Documents\GitHub\M360-Life\tools\dedicated\addons" -addons 69F4E91377BCC9A5
+
+=== BAGLAN ===
+powershell -File tools\dedicated\start.ps1
+powershell -File tools\dedicated\baglan-istemci.ps1
+
+=== YASAK ===
+rdb silme | Context Overlay | ActivateAction spam | kalici -client | secrets commit
 
 === NOT ===
--config + -addons birlikte YASAK (BI). Workshop yayini sonrasi server.json yolu acilir.
+-config + -addons birlikte YASAK (BI). Secrets git'te yok.

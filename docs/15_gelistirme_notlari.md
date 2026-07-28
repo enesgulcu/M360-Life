@@ -4,34 +4,57 @@
 >
 > **Yeni sohbette zorunlu okuma sırası:** `docs/00`–`14` → **bu dosya (15)** → sonra işe başla.
 >
-> **Son güncelleme:** 2026-07-28 ~17:05 (TR) — Lab ışık OK. Çanta şimdilik **Tab**. I/ESC input conf sorunu açık. **SON DURUM → §C.**
+> **Son güncelleme:** 2026-07-28 ~17:10 (TR) — **I + Tab çanta KANITLI.** Lab ışık OK. Dedicated + baglan. **SON DURUM → §C.**
 
 ---
 
 ## C. SON DURUM / el değiştirme (yeni sohbet buradan)
 
-> Yeni pencere/oturum: önce **§C** + **§B** + **§7e** oku. Günlük değil; kaldığımız yer + kırılmalar.
+> Yeni pencere/oturum: önce **§C** + **§B** + **§7e** oku.
 
 | | |
 |---|---|
-| **Tarih** | 2026-07-28 ~17:05 Europe/Istanbul |
-| **Neredeyiz** | Lab + dedicated OK. Güneş yok → ışık OK. Life çanta **Tab** ile açılıyor (`ActionOpenInventory`). |
-| **I tuşu** | **Açık bug.** Notlardaki `M360_Input` + `ActivateAction` yolu dedicated istemcide çoğu boot’ta `InputManager config load … M360_Input` **hiç gelmiyor** (16:55+). `InputBinding.Save` / Tab hijack denemeleri I vermedi; conf `Context` ESC mouse öldürdü. |
-| **ESC mouse** | `Context` / `ActivateAction` spam / bozuk `InputBinding` ile kırıldı. Şu an gproj **vanilla** `chimeraInputCommon` — ESC’yi buna göre dene (tam quit + baglan). |
-| **Geçici UX** | **Tab = Life çanta.** I eve Workbench’te Play doğrulaması + InputManager load logu şart. |
-| **rdb** | `resourceDatabase.rdb` **ASLA silme** (baglan artık silmiyor). |
-| **Sıradaki (ev)** | Workbench’te M360 aç → Play’de I dene → logda `InputManager config load … M360_Input` ara → dedicated’a taşı. Push yapıldıysa pull ile devam. |
-| **Commit** | Kullanıcı “push” dediğinde AI commit+push yapabilir. |
+| **Tarih** | 2026-07-28 ~17:10 Europe/Istanbul |
+| **Neredeyiz** | LabDuzZemin + lokal dedicated MP **çalışıyor**. HUD, API, **I+Tab çanta**, güneş yok (ışık OK). Push: `614826e` + bu not güncellemesi. |
+| **Çanta (KANITLI)** | `modded ActionOpenInventory` → Life `EnvanterAcKapa()`. **Tab** = Inventory action. **I** = aynı action’a `InputBinding.AddBinding(..., "keyboard:KC_I")` + `Save()` (profilde kalır). `addon.gproj` InputManager = **vanilla** `chimeraInputCommon`. |
+| **Işık** | `Lighting_Default` silindi; Overcast (`M360_LabOrtam`); EnvProbe/WorldPP kapalı (HDR yanma). |
+| **Bağlan** | `start.ps1` → `baglan-istemci.ps1` (Steam Oyna değil). Steam kalıcı: sadece `-addonsDir` + `-addons` (**`-client` kalıcı yazma**). |
+| **rdb** | `resourceDatabase.rdb` **ASLA silme**. |
+| **Sıradaki** | Ev PC: pull + junction + secrets + dedicated. Sonra Workshop / Pirinç GUID / Everon en sonda. |
+| **Commit** | Kullanıcı push isterse AI yapabilir. |
 
-**Ev / başka PC’de devam (evet, mümkün):**
+### I + Tab — nasıl düzeldi (kısa; fazla deneme gürültüsü)
 
-1. GitHub’dan clone/pull: `enesgulcu/M360-Life` (veya remote URL’in).
-2. Steam: Arma Reforger + **Arma Reforger Server** (Araçlar).
-3. Workbench KAPALI → `tools\bagla-oyun-klasoru.ps1` (junction).
-4. Dedicated: `tools\dedicated\` — `server-root.txt` / secrets (`M360_ApiLabKey.txt` **git’te yok**; evde yeniden oluştur veya USB ile taşı).
-5. Cursor’da bu repo’yu aç → agent’a “docs/15 §C oku” de.
+**Asıl kırılma (çalışan 2 satır):**
 
-Secrets (API key, PASSWORDS) gitignore’da → push ile gelmez; ayrı taşı.
+1. `SCR_PlayerController.ActionOpenInventory` → `M360_CantaHudBileseni.EnvanterAcKapa()`  
+   → Tab (ve Inventory’ye bağlı her tuş) Life çantayı açar.
+2. İlk spawn’da bir kez: `InputManager.CreateUserBinding()` → `AddBinding("Inventory", "", "keyboard:KC_I")` → `Save()`  
+   → I de Inventory olur; **canlı istemci profilinde kalır** (WB Play’de tutmuyordu; dedicated’da tuttu — kullanıcı doğruladı).
+
+**Yapma (hepsi ESC ve/veya I’yi bozdu):**
+
+| Yasak | Neden |
+|---|---|
+| `M360_Input` + `Contexts { Context … }` | `Unknown class 'Context'` → ESC mouse ölür |
+| Her frame `ActivateAction` / `ActivateContext` Overlay | ESC cursor + menü çatışması |
+| `ActionInput` sınıfı | Tüm input kırılır |
+| `resourceDatabase.rdb` silmek | Wrong GUID; conf/texture çözülmez |
+| gproj’u sürekli M360_Input’a çekmek | Dedicated client çoğu boot’ta conf’u yüklemiyor / kararsız |
+| Steam’den direkt Oyna / kalıcı `-client` | Eski oturum / Init Error |
+
+**Dosya:** `m360-life/Scripts/Game/M360/Arayuz/M360_PlayerControllerI.c`  
+**Log:** `[M360] Inventory <- I (Tab + I = Life canta)`
+
+**Ev / başka PC’de devam:**
+
+1. pull `enesgulcu/M360-Life`
+2. Steam: Reforger + Reforger Server
+3. Workbench KAPALI → `tools\bagla-oyun-klasoru.ps1`
+4. `tools\dedicated\` secrets yerelde (git’te yok)
+5. Cursor → “docs/15 §C oku”
+
+Secrets push ile gelmez; USB/kopya ile taşı.
 
 ---
 
@@ -57,7 +80,7 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | **Önceki süreç** | Tasarım + ilk kod **Claude Agent / Claude Code** ile yapıldı. Şimdi **Cursor + enfusion-mcp**. Klasör: `...\addons\M360-Life`. |
 | **Docker istemiyor** | Neon hosted PG; yerel PG yok. Docker yok. |
 | **Kapsam büyüdü ama acele yok** | MVP geniş (15 iş, polis/doktor, klan); süre esnek. Faz sırası önemli. |
-| **Life envanter tuşu** | Arma 3 Life = **I**. Reforger `"Inventory"` ≈ **Tab** (M360’ye bağlama). **Workbench Play:** `Debug.KeyState(KC_I)` yeterliydi. **Dedicated/canlı istemci:** Debug kapalı → `M360_EnvanterAc` + `ActivateContext("M360LifeContext")` + `AddActionListener` (§7b / §7e). |
+| **Life envanter tuşu** | **I + Tab** → Life çanta. Yol: `ActionOpenInventory` + `InputBinding` I (`M360_PlayerControllerI.c`). WB’de yalnız Debug/I conf yolları; dedicated’da InputBinding Save **kalır**. Custom Context/ActivateAction **yasak** (§C / §7e). |
 | **Kod dili / isim (ANA DÜSTUR)** | Değiştirilebilir her şey **Türkçe ASCII**: class, metod, üye, Attribute, dosya adı, oyuncu metni. **Yorumlar Türkçe**. Motor override/API İngilizce dokunulmaz. Prefab + `.et` birlikte. `EnfusionMCP` araç kodu hariç. Bkz. **11.2.1 / 13.2**. |
 | **Oyun içi HUD** | Hedef: Life tarzı kenar HUD. **Lab yolu (kanıtlı):** `CreateWidget` + `FrameSlot` + alpha texture. Elle `.layout` + `CreateWidgets` = **Play/WB donması** — yasak. Ürün hedefi ileride Layout Editor. HTML/NUI yok. Detay: **10.8** + **7c**. |
 | **Özen / tekrar etme** | Aynı UI ayarını 5 kez deneme. Önce doğru teknik (9-slice, soft AA, CreateWidgets yasak), sonra bir net sonuç. Kullanıcı güven + yol arkadaşı ister. |
@@ -351,49 +374,32 @@ Lab → portable dedicated → istemci bağlandı; HUD/API/I tuşu/ışık düze
 | **Silince ne olur** | Sert gölge/specular yok; düz ambient. Çok karanlıksa sonra **düşük LV** soft ışık eklenir (Lighting_Default değil). |
 | **Sıfırdan** | İleride kendi soft prefab; default Lighting alma. |
 
-### I tuşu dedicated — kritik kırılma
+### I tuşu dedicated — kritik kırılma (SON: 2026-07-28 17:10 KANITLI)
 
 | | |
 |---|---|
-| **Belirti** | I ölü; F→obje→Envanter ile HUD açılır; ESC’de mouse tıklamaz (sadece ok tuşu) |
-| **Neden (HUD)** | F menü `EnvanterAcKapa()` **doğrudan** çağırır — InputManager gerekmez. I yolu InputManager ister. |
-| **Neden (I/mouse)** | Özel `M360LifeContext` + `Flags Overlay` + her frame `ActivateContext` → ESC CursorVisible bozulur; context FRAME sonunda geç kalıp I tetiklenmeyebilir. `Debug.KeyState` canlıda zaten kapalı. |
-| **Kırılma (conf)** | `Action` kökte değil → `Actions { Action ... }`. `Contexts`/`Context` bu parent formatında **Unknown class** verdi → context yok; sadece Actions. |
-| **Kırılma (okuma)** | `modded SCR_PlayerController.OnUpdate` + `ActivateAction("M360_EnvanterAc")` (entity FRAME geç; dedicated InputManager sunucuda yüklenmeyebilir — **istemci** conf şart). |
-| **Doğrula** | İstemciyi tamamen kapatıp `baglan-istemci` → I; logda `Unknown keyword/class Action|Context` **olmamalı** |
+| **Belirti (eski)** | I ölü; ESC’de mouse yok; bazen sadece Tab |
+| **Çalışan çözüm** | (1) `ActionOpenInventory` → Life çanta. (2) `InputBinding.AddBinding("Inventory","keyboard:KC_I")+Save()`. Vanilla InputManager. |
+| **Neden Tab yetti** | Inventory action = Tab; hijack Life’a gider. |
+| **Neden I de oldu** | Aynı Inventory action’a I eklendi; Save profilde kaldı (dedicated). WB Play’de Save tutmuyordu — yanıltıcı not eski. |
+| **Yanlış yollar** | M360_EnvanterAc + Context Overlay; ActivateAction her frame; ActionInput; rdb silmek; gproj’u M360_Input’a zorlamak (client conf yüklemeyebiliyor). |
+| **Doğrula** | `baglan-istemci` → I ve Tab çanta; ESC mouse; log `[M360] Inventory <- I` |
 
 ### Input conf — doğru / yanlış
 
 ```
-# YANLIŞ — Unknown keyword 'Action'/'Context' (kokte)
-ActionManager : parent {
- Action M360_EnvanterAc { ... }
- Context M360LifeContext { ... }
-}
+# CANLI dedicated DOĞRU (kod; conf şart değil)
+# M360_PlayerControllerI.c:
+#   ActionOpenInventory → EnvanterAcKapa
+#   InputBinding AddBinding Inventory <- keyboard:KC_I + Save
+# addon.gproj Default = chimeraInputCommon (vanilla)
 
-# YANLIŞ — ActionInput sinifi yok
+# YANLIŞ — ESC olumu
+Contexts { Context ... Flags Overlay } + her frame ActivateContext
+
+# YANLIŞ — tum input kirilir
 Actions { ActionInput Inventory { ... } }
-
-# DOĞRU
-ActionManager : "{795...}chimeraInputCommon.conf" {
- Actions {
-  Action M360_EnvanterAc {
-   InputSource InputSourceSum "{...}" {
-    Sources {
-     InputSourceValue "{...}" { Input "keyboard:KC_I" }
-    }
-   }
-  }
- }
- Contexts {
-  Context M360LifeContext {
-   Priority 0
-   Actions { M360_EnvanterAc 0 }
-  }
- }
-}
 ```
-
 ### Bilinen uyarılar (şimdilik OK)
 
 - Pirinç prefab `Wrong GUID/name` / `inherited-name` — resource rebuild / Workbench teyidi sonra.

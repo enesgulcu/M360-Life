@@ -30,6 +30,5 @@ Start-Process -FilePath $steam -ArgumentList @(
   "-addons", $modGuid
 )
 
-Write-Host "Test: I=canta | Tab=vanilla | ESC=mouse"
-Write-Host "Logda olmali: InputManager config load ... M360_Input.conf"
-Write-Host "Logda OLMAMALI: Unknown class Context"
+Write-Host "Test: I + Tab = canta | ESC mouse"
+Write-Host "Log: [M360] Inventory <- I"

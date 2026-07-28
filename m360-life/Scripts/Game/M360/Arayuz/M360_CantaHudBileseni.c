@@ -133,12 +133,12 @@ class M360_CantaHudBileseni : ScriptComponent
 
 		if (m_bWidgetHazir)
 			SCR_HintManagerComponent.ShowCustomHint(
-				"Nakit | Saat | Yemek/Su/Can | Tab = canta (I sonra)",
+				"Nakit | Saat | Yemek/Su/Can | I veya Tab = canta",
 				"M360",
 				8);
 		else
 			SCR_HintManagerComponent.ShowCustomHint(
-				"Tab = M360 Envanter (hint)  |  Widget olusmadi",
+				"I/Tab = M360 Envanter (hint)  |  Widget olusmadi",
 				"M360",
 				8);
 	}
