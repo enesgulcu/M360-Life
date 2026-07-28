@@ -1,8 +1,10 @@
-# M360 Life - tek seferlik dedicated hazirlik (install + bagla + durum)
+# M360 Life - tek seferlik dedicated hazirlik
+# Onerilen: ust seviye tools\pc-hazirla.ps1 (Workbench junction dahil)
 
 $ErrorActionPreference = "Stop"
 $here = $PSScriptRoot
 
+Write-Host "Not: Tam hazirlik icin repo kokunden: powershell -File tools\pc-hazirla.ps1"
 Write-Host "=== 1/3 install-server ==="
 & (Join-Path $here "install-server.ps1")
 

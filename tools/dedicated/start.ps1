@@ -9,11 +9,14 @@
 
 param(
   [string]$ServerRoot = "",
-  [switch]$SkipKeyCopy
+  [switch]$SkipKeyCopy,
+  [switch]$Background
 )
 
 $ErrorActionPreference = "Stop"
 $here = $PSScriptRoot
+. (Join-Path $here "..\Resolve-M360Paths.ps1")
+
 $secrets = Join-Path $here "secrets"
 $addonsDir = Join-Path $here "addons"
 $keySrc = Join-Path $secrets "M360_ApiLabKey.txt"
@@ -22,35 +25,37 @@ $world = "{60855889A2B4FE4E}Worlds/LabDuzZemin/M360_LabDuzZemin.ent"
 $bindPort = 2001
 
 if (-not $ServerRoot) {
-  $cfgPath = Join-Path $secrets "server-root.txt"
-  if (Test-Path $cfgPath) {
-    $ServerRoot = (Get-Content $cfgPath -Raw).Trim()
-  } else {
-    $ServerRoot = "D:\SteamLibrary\steamapps\common\Arma Reforger Server"
-  }
+  $ServerRoot = Find-M360ReforgerServerRoot
+}
+if (-not $ServerRoot) {
+  throw "Dedicated binary bulunamadi. Steam > Araclar > Arma Reforger Server kur, sonra: tools\pc-hazirla.ps1"
 }
 
+# Bu PC icin yolu kalici kaydet (git'e girmez)
+New-Item -ItemType Directory -Force -Path $secrets | Out-Null
+Set-Content -Path (Join-Path $secrets "server-root.txt") -Value $ServerRoot -Encoding ascii -NoNewline
+
 $exe = Join-Path $ServerRoot "ArmaReforgerServer.exe"
-if (-not (Test-Path $exe)) {
+if (-not (Test-Path -LiteralPath $exe)) {
   throw ("Dedicated binary yok: {0}" -f $exe)
 }
 
-if (-not (Test-Path (Join-Path $addonsDir "M360-Life\addon.gproj"))) {
+if (-not (Test-Path -LiteralPath (Join-Path $addonsDir "M360-Life\addon.gproj"))) {
   Write-Host "Addon junction yok - baglaniyor..."
   & (Join-Path $here "bagla-addon.ps1")
 }
 
 $profileName = "M360Dedicated"
-# -profile X -> Documents\My Games\X\profile  (ArmaReforger\profile\X DEGIL)
 $profileRoot = Join-Path $env:USERPROFILE "Documents\My Games\$profileName\profile"
 New-Item -ItemType Directory -Force -Path $profileRoot | Out-Null
 
 if (-not $SkipKeyCopy) {
-  if (Test-Path $keySrc) {
-    Copy-Item $keySrc (Join-Path $profileRoot "M360_ApiLabKey.txt") -Force
-    Write-Host ("API key -> profile\{0}\M360_ApiLabKey.txt" -f $profileName)
+  [void](Sync-M360ApiKeyFromEnv)
+  if (Test-Path -LiteralPath $keySrc) {
+    Copy-Item -LiteralPath $keySrc -Destination (Join-Path $profileRoot "M360_ApiLabKey.txt") -Force
+    Write-Host ("API key -> profile\{0}\M360_ApiLabKey.txt (kaynak: api/.env)" -f $profileName)
   } else {
-    Write-Host "UYARI: secrets\M360_ApiLabKey.txt yok"
+    Write-Host "UYARI: API key yok. api/.env icine M360_SERVER_KEY yaz."
   }
 }
 
@@ -76,5 +81,16 @@ $launchArgs = @(
   "-logStats", "30"
 )
 
-Set-Location $ServerRoot
+if ($Background) {
+  $existing = Get-Process -Name "ArmaReforgerServer" -ErrorAction SilentlyContinue
+  if ($existing) {
+    Write-Host ("Zaten calisiyor PID {0}" -f ($existing.Id -join ","))
+    return
+  }
+  Start-Process -FilePath $exe -ArgumentList $launchArgs -WorkingDirectory $ServerRoot
+  Write-Host "Sunucu arka planda baslatildi."
+  return
+}
+
+Set-Location -LiteralPath $ServerRoot
 & $exe @launchArgs

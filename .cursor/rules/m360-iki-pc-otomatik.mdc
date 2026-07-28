@@ -1,0 +1,42 @@
+---
+description: M360 Life - her sohbette zorunlu bellek (iki PC, tek tik)
+alwaysApply: true
+---
+
+# M360 Life — otomatik bağlam
+
+Kullanıcıya uzun checklist verme. **Tek kullanıcı işlemi:** repo kökü `M360.bat` (çift tık). Oyun için `M360.bat oyna` veya `M360-Oyna.bat`.
+
+## Her yeni sohbette / işe başlamadan
+
+1. **`docs/15_gelistirme_notlari.md` §C** oku (SON DURUM + iki PC yolları).
+2. Kullanıcıya “docs/15 oku” deme — sen oku, uygula.
+3. Tercihler: §A (acemi yönetici, Türkçe tık-tık rehber, Workbench tek instance).
+
+## İki PC (otomatik yol)
+
+| | Sabah (`Enes`) | Akşam (`enesg`) |
+|---|---|---|
+| Repo | `C:\Users\Enes\Documents\GitHub\M360-Life` | `C:\Users\enesg\Documents\GitHub\M360-Life` |
+
+Scriptler `$env:USERPROFILE` kullanır — sabit kullanıcı yolu yazma. Senkron = git + junction (`pc-hazirla` / `M360.bat`). Cursor sohbet senkron **değil**; ortak bellek = docs/15 §C + bu kural.
+
+## Kullanıcı tek iş
+
+- PC’ye geçince / güne başlarken: **`M360.bat`**
+- Test oynamak: **`M360-Oyna.bat`** (içerde pull + hazirla + sunucu yenile + bağlan)
+- Gün sonu: Cursor’a “commit ve push” demesi yeter (AI yapar; secrets/`api/.env` commit etme)
+
+## Teknik yasaklar (kısa)
+
+- `InputBinding.Save` YASAK (profil boşalır)
+- `resourceDatabase.rdb` silme YASAK
+- Workbench açıkken `wb_launch` YASAK → `wb_connect`
+- Steam kalıcı launch’ta `-client` YAZMA
+- Dedicated açıkken script değiştiyse sunucuyu yenile (`oyna.ps1` zaten yeniler) — yoksa checksum Init Error
+
+## Oyun / dedicated
+
+- Mod GUID: `69F4E91377BCC9A5`
+- Workbench `addons\M360-Life` = junction → repo `m360-life` (aynı fiziksel dosya)
+- Detay: docs/15 §C, docs/18, `tools/dedicated/SON_DURUM.txt`

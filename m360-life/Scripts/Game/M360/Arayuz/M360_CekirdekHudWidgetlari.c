@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------------
-//! Circle HUD — sol alt 3 badge + nakit pill (referans status rings)
+//! Cekirdek HUD — sol alt 3 badge + nakit pill (status halkalari)
 //------------------------------------------------------------------------------------------------
 class M360_CekirdekHudWidgetlari
 {

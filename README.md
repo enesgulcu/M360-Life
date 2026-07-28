@@ -42,7 +42,7 @@ Detay: [docs/18](docs/18_calisma_duzeni.md) · mimari [docs/11.1b](docs/11_tekni
 
 Repo: `m360-life/` · `api/` · `web/` · `packages/db/` · `docs/`
 
-Kopyasız senkron: `tools/bagla-oyun-klasoru.ps1` ([docs/18](docs/18_calisma_duzeni.md)).  
+İki PC / kopyasız senkron: `tools/pc-hazirla.ps1` ([docs/18](docs/18_calisma_duzeni.md)).  
 API: Vercel + Neon. Güvenlik: [docs/19](docs/19_guvenlik.md). Metrik: `/istatistik`.
 
 Remote: https://github.com/enesgulcu/M360-Life

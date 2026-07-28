@@ -13,6 +13,8 @@
 | Ekip | Tek kişi (sen) + AI teknik ortak (şimdi **Cursor + enfusion-mcp**; önceki Claude Code oturumları) |
 | İlk hedef | Kendi/topluluk sunucusu; lisans satışı ileride ikinci aşama |
 | Geliştirme ortamı | Lab + Vercel/Neon + `tools/dedicated/` paket; Everon yerleştirme en sonda |
+| **Kullanıcı tek tık** | [`TEK_ADIM.txt`](../TEK_ADIM.txt) → `M360.bat` / `M360-Oyna.bat` |
+| **Oyun klasör haritası** | [`m360-life/YAPI.md`](../m360-life/YAPI.md) + `Scripts/Game/M360/README.md` |
 
 ---
 
@@ -159,4 +161,4 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 
 ---
 
-*Sıradaki adım: dedicated kur (`tools/dedicated/install-server.ps1`) → Direct Connect doğrula; bkz. [15](./15_gelistirme_notlari.md) · [tools/dedicated/README](../tools/dedicated/README.md).*
+*Sıradaki adım (her PC): `git pull` → Workbench kapalı → `tools\pc-hazirla.ps1` → dedicated test; bkz. [15](./15_gelistirme_notlari.md) · [18](./18_calisma_duzeni.md).*

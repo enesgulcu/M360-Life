@@ -1,41 +1,37 @@
-# M360 Life — Workbench addon klasorunu GitHub m360-life ile BIRLESTIR (junction)
+# M360 Life - Workbench addon klasorunu GitHub m360-life ile BIRLESTIR (junction)
 # Sonuc: iki yol ayni fiziksel dosyalar. Kopyala-yapistir gerekmez.
 #
-# Workbench yolu = junction
-# Gercek dosyalar = GitHub\M360-Life\m360-life
+# Workbench yolu = junction (kullanici profiline gore)
+# Gercek dosyalar = bu repo icindeki m360-life (script'e gore)
 #
 # ONEMLI: Workbench KAPALI olmali.
 #
 # Kullanim:
 #   powershell -File tools\bagla-oyun-klasoru.ps1
 #   powershell -File tools\bagla-oyun-klasoru.ps1 -Coz
+# Onerilen: powershell -File tools\pc-hazirla.ps1
 
 param(
   [switch]$Coz
 )
 
 $ErrorActionPreference = "Stop"
+. "$PSScriptRoot\Resolve-M360Paths.ps1"
 
-$wb = "C:\Users\Enes\Documents\My Games\ArmaReforgerWorkbench\addons\M360-Life"
-$gh = "C:\Users\Enes\Documents\GitHub\M360-Life\m360-life"
-$bak = "C:\Users\Enes\Documents\My Games\ArmaReforgerWorkbench\addons\M360-Life.bak"
+$wb = Get-M360WorkbenchAddon
+$gh = Get-M360OyunKaynak
+$bak = Get-M360WorkbenchAddonBak
 
 $wbProc = Get-Process -Name "ArmaReforgerWorkbenchSteamDiag" -ErrorAction SilentlyContinue
 if ($wbProc) {
   throw "Workbench acik (PID $($wbProc.Id)). Once kapat, sonra bu scripti tekrar calistir."
 }
 
-function Test-IsJunction([string]$Path) {
-  if (-not (Test-Path $Path)) { return $false }
-  $item = Get-Item $Path -Force
-  return [bool]($item.Attributes -band [IO.FileAttributes]::ReparsePoint)
-}
-
 if ($Coz) {
-  if (-not (Test-IsJunction $wb)) { throw "Junction yok: $wb" }
+  if (-not (Test-M360Junction $wb)) { throw "Junction yok: $wb" }
   cmd /c "rmdir `"$wb`""
-  if (Test-Path $bak) {
-    Rename-Item $bak $wb
+  if (Test-Path -LiteralPath $bak) {
+    Rename-Item -LiteralPath $bak -NewName (Split-Path $wb -Leaf)
     Write-Host "Junction kaldirildi; .bak geri yuklendi: $wb"
   } else {
     Write-Host "Junction kaldirildi. GitHub kopyasi duruyor: $gh"
@@ -44,34 +40,44 @@ if ($Coz) {
   exit 0
 }
 
-if (-not (Test-Path $gh)) { throw "GitHub oyun klasoru yok: $gh" }
+if (-not (Test-Path -LiteralPath $gh)) { throw "GitHub oyun klasoru yok: $gh" }
+if (-not (Test-Path -LiteralPath (Join-Path $gh "addon.gproj"))) {
+  throw ("addon.gproj yok: {0} - once git pull" -f $gh)
+}
 
-if (Test-IsJunction $wb) {
-  $target = (Get-Item $wb).Target
-  Write-Host "Zaten junction: $wb -> $target"
+if (Test-M360Junction $wb) {
+  $target = (Get-Item -LiteralPath $wb).Target
+  Write-Host ("Zaten junction: {0} -> {1}" -f $wb, ($target -join ", "))
+  $resolvedGh = (Resolve-Path -LiteralPath $gh).Path
+  $t0 = if ($target -is [array]) { $target[0] } else { "$target" }
+  if ($t0 -and ((Resolve-Path -LiteralPath $t0 -ErrorAction SilentlyContinue).Path -ne $resolvedGh)) {
+    Write-Host "UYARI: Junction baska yere bakiyor. Cozup yeniden bagla:"
+    Write-Host "  powershell -File tools\bagla-oyun-klasoru.ps1 -Coz"
+    Write-Host "  powershell -File tools\bagla-oyun-klasoru.ps1"
+  }
   exit 0
 }
 
-if (Test-Path $wb) {
-  Write-Host "Son kopya: Workbench -> GitHub (baglamadan once)"
-  & "$PSScriptRoot\sync-game-to-github.ps1" -Yon workbench-to-github
-}
+# Cift PC: git pull sonrasi kaynak = repo. Eski Workbench kopyasi git'i EZMESIN.
+# Workbench klasoru yedeklenir (bak); icerik git uzerine kopyalanmaz.
+if (Test-Path -LiteralPath $bak) { throw "Yedek zaten var: $bak - elle kontrol et." }
 
-if (Test-Path $bak) { throw "Yedek zaten var: $bak - elle kontrol et." }
-
-if (Test-Path $wb) {
-  Rename-Item $wb $bak
-  Write-Host "Yedek: $bak"
+if (Test-Path -LiteralPath $wb) {
+  Rename-Item -LiteralPath $wb -NewName (Split-Path $bak -Leaf)
+  Write-Host "Eski Workbench kopyasi yedeklendi (git ezilmedi): $bak"
+  Write-Host "Istersen sonra sil: $bak"
 }
 
 cmd /c "mklink /J `"$wb`" `"$gh`""
 if ($LASTEXITCODE -ne 0) {
-  if (Test-Path $bak) { Rename-Item $bak $wb }
+  if (Test-Path -LiteralPath $bak) {
+    Rename-Item -LiteralPath $bak -NewName (Split-Path $wb -Leaf)
+  }
   throw "mklink /J basarisiz"
 }
 
 Write-Host ""
-Write-Host "BAGLANDI: $wb  <=>  $gh"
+Write-Host ("BAGLANDI: {0}  <==>  {1}" -f $wb, $gh)
 Write-Host "Artik birinde degisen dosya digerinde de ayni."
-Write-Host "Workbench'i ac: addons\M360-Life (junction)."
-Write-Host "Istersen eski yedegi sil: $bak (emin olduktan sonra)."
+Write-Host "Workbench ac: addons\M360-Life (junction)."
+Write-Host ("Istersen eski yedegi sil: {0} (emin olduktan sonra)." -f $bak)

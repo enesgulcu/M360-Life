@@ -51,6 +51,9 @@ web/.env
 web/.env.local
 packages/**/.env
 
+# Eski/yanlis iskelet (gercek API = api/)
+apps/
+
 # Dedicated sirlar + yerel kurulum yolu
 tools/dedicated/secrets/**
 !tools/dedicated/secrets/.gitkeep

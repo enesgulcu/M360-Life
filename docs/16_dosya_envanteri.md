@@ -19,10 +19,12 @@
 
 ## 1. Senkron kuralı (kritik)
 
-- Tercih: `tools/bagla-oyun-klasoru.ps1` (junction — kopya yok)
-- Yedek: `tools/sync-game-to-github.ps1`
+- **Canon:** `M360.bat` → `tools/pc-hazirla.ps1` (junction — kopya yok)
+- İç: `tools/bagla-oyun-klasoru.ps1` (hazirla çağırır)
+- **Eskimiş yedek:** `tools/sync-game-to-github.ps1` (tercih etme)
 - **`robocopy /MIR` yasak** — `api/` / `web/` / `packages/` / `docs/` silinir.
 - Platform: `api/` `web/` `packages/`; oyun: `m360-life/`
+- Klasör haritası: `m360-life/YAPI.md` · `Scripts/Game/M360/README.md`
 
 ---
 
@@ -39,7 +41,9 @@
 | `Isler/M360_IsleAksiyonu.c` | F Isle | Process | UserAction | lab |
 | `Isler/M360_SatAksiyonu.c` | F Sat | Sell | UserAction | lab |
 | `Isler/M360_DurumAksiyonu.c` | F Envanter | HUD | UserAction | lab |
-| `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + I canta | CreateWidget + oturum | lab UI | lab |
+| `Arayuz/M360_TusYoneticisi.c` | Tuş→panel omurgası (I Life, Tab vanilla; ileride genişler) | PlayerControllerI | lab UI | lab |
+| `Arayuz/M360_PlayerControllerI.c` | InputBinding oturum (Save yok) + ActionOpenInventory | TusYoneticisi | lab UI | lab |
+| `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + panel | TusYoneticisi | lab UI | lab |
 | `Arayuz/M360_CekirdekHudWidgetlari.c` | Circle rings + nakit pill + saat + iş barı | CantaHudBileseni | lab UI | lab |
 | `Arayuz/M360_HudIkonlari.c` | Texture ResourceName + Yukle/MaskYukle | YuvarlakBar / Canta / Cekirdek | lab UI | lab |
 | `Arayuz/M360_YuvarlakBar.c` | Badge + maskeli progress ring | CekirdekHud | lab UI | lab |

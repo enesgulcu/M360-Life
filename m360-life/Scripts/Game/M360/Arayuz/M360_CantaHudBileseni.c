@@ -15,6 +15,8 @@ class M360_CantaHudBileseni : ScriptComponent
 	protected bool m_bAcik;
 	protected bool m_bIpucuGosterildi;
 	protected bool m_bWidgetHazir;
+	protected bool m_bIOnceki;
+	protected bool m_bInputLog;
 	protected int m_iSonNakit = -1;
 	protected int m_iSonIpucuYuzde = -1;
 	protected int m_iSonSaatDakika = -1;
@@ -78,21 +80,35 @@ class M360_CantaHudBileseni : ScriptComponent
 		GetGame().GetCallqueue().CallLater(GirisIpucuGoster, 2000, false);
 
 		if (m_bWidgetHazir)
-			Print("[M360] CantaHud baslat — Life HUD OK (I=PlayerController)", LogLevel.NORMAL);
+			Print("[M360] CantaHud baslat — Life HUD OK | I=M360_LifeCanta | Tab=vanilla", LogLevel.NORMAL);
 		else
 			Print("[M360] CantaHud baslat — widget FAIL, hint yedek", LogLevel.WARNING);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! I/Tab: M360_PlayerControllerI (ActionOpenInventory). F>Envanter dogrudan EnvanterAcKapa.
-	//! Burada Debug.KeyState sadece Workbench Play yedegi.
+	//! Dedicated I: PlayerController (Inventory+Save). Play: Debug.KeyState.
 	protected void ITusunuKontrolEt()
 	{
+		if (!m_bInputLog)
+		{
+			m_bInputLog = true;
+			Print("[M360] CantaHud: dedicated=PlayerController Inventory | Play=Debug I", LogLevel.NORMAL);
+		}
+
+#ifdef WORKBENCH
 		if (Debug.KeyState(KeyCode.KC_I))
 		{
 			Debug.ClearKey(KeyCode.KC_I);
-			EnvanterAcKapa();
+			OnLifeCantaTusu();
 		}
+#endif
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void OnLifeCantaTusu()
+	{
+		Print("[M360] I → Life HUD", LogLevel.NORMAL);
+		M360_TusYoneticisi.LifeCantaAcKapa();
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -133,12 +149,12 @@ class M360_CantaHudBileseni : ScriptComponent
 
 		if (m_bWidgetHazir)
 			SCR_HintManagerComponent.ShowCustomHint(
-				"Nakit | Saat | Yemek/Su/Can | I veya Tab = canta",
+				"Nakit | Saat | Yemek/Su/Can | I = Life canta | Tab = normal envanter",
 				"M360",
 				8);
 		else
 			SCR_HintManagerComponent.ShowCustomHint(
-				"I/Tab = M360 Envanter (hint)  |  Widget olusmadi",
+				"I = M360 Envanter (hint)  |  Widget olusmadi",
 				"M360",
 				8);
 	}

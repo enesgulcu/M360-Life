@@ -1,23 +1,22 @@
 //------------------------------------------------------------------------------------------------
-//! Life canta = Inventory action.
-//! Tab: vanilla Inventory + ActionOpenInventory hijack.
-//! I: InputBinding.AddBinding("Inventory", keyboard:KC_I) + Save() — profilde kalir (dedicated kanit 2026-07-28).
-//! YASAK: custom Context/Overlay, ActivateAction spam, ActionInput sinifi, rdb silmek.
+//! I = Life: ActionOpenInventory hijack + Inventory klavyede sadece I (oturum, Save YOK).
+//! Tab = vanilla: Inventory'de Tab yok; QS8<-Tab + OpenInventory API.
+//!
+//! KRITIK (bu PC): InputBinding.Save() profili BOSALTIYOR → Tab default Inventory'ye
+//! donup Life aciyor. Save YASAK. Profil dosyasi elle I-only yazili.
 //------------------------------------------------------------------------------------------------
 modded class SCR_PlayerController
 {
-	protected bool m_bM360IBaglandi;
+	protected bool m_bM360Kuruldu;
+	protected bool m_bM360TabListener;
+	protected int m_iM360Deneme;
 
 	//------------------------------------------------------------------------------------------------
 	override void ActionOpenInventory()
 	{
-		M360_CantaHudBileseni canta = M360_CantaHudBileseni.Al();
-		if (canta)
-		{
-			canta.EnvanterAcKapa();
-			return;
-		}
-		super.ActionOpenInventory();
+		// Inventory action (sadece I bagli olmali) → Life
+		Print("[M360] Inventory → Life HUD", LogLevel.NORMAL);
+		M360_TusYoneticisi.LifeCantaAcKapa();
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -25,17 +24,23 @@ modded class SCR_PlayerController
 	{
 		super.OnUpdate(timeSlice);
 
-		if (m_bM360IBaglandi)
-			return;
 		if (!GetControlledEntity())
 			return;
 
-		m_bM360IBaglandi = true;
-		M360_InventoryIEkle();
+		// Spawn sonrasi birkaç kez uygula (Save yok; oturum baglari dusebilir)
+		if (m_bM360Kuruldu)
+			return;
+
+		m_iM360Deneme++;
+		if (m_iM360Deneme == 1 || m_iM360Deneme == 30 || m_iM360Deneme == 60)
+			M360_DedicatedTusKur();
+
+		if (m_iM360Deneme >= 60)
+			m_bM360Kuruldu = true;
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void M360_InventoryIEkle()
+	protected void M360_DedicatedTusKur()
 	{
 		InputManager im = GetGame().GetInputManager();
 		if (!im)
@@ -43,16 +48,49 @@ modded class SCR_PlayerController
 
 		InputBinding baglama = im.CreateUserBinding();
 		if (!baglama)
-		{
-			Print("[M360] InputBinding yok — Tab ile canta", LogLevel.WARNING);
 			return;
+
+		// Inventory: user bind → TUM klavye sil → sadece I (Save YOK)
+		baglama.CreateUserBinding("Inventory", EInputDeviceType.KEYBOARD, string.Empty);
+		M360_KlavyeTemizle(baglama, "Inventory");
+		baglama.AddBinding("Inventory", string.Empty, "keyboard:KC_I", string.Empty);
+
+		// Tab vanilla: QS8
+		baglama.CreateUserBinding("InventoryQuickSlot8", EInputDeviceType.KEYBOARD, string.Empty);
+		M360_KlavyeTemizle(baglama, "InventoryQuickSlot8");
+		baglama.AddBinding("InventoryQuickSlot8", string.Empty, "keyboard:KC_TAB", string.Empty);
+
+		// Save() YASAK — bu PC'de bos profil yaziyor
+
+		if (!m_bM360TabListener)
+		{
+			im.AddActionListener("InventoryQuickSlot8", EActionTrigger.DOWN, M360_OnTab);
+			m_bM360TabListener = true;
 		}
 
-		if (baglama.IsDefault("Inventory", EInputDeviceType.KEYBOARD, string.Empty))
-			baglama.CreateUserBinding("Inventory", EInputDeviceType.KEYBOARD, string.Empty);
+		array<string> inv = {};
+		baglama.GetBindings("Inventory", inv, EInputDeviceType.KEYBOARD, string.Empty, true);
+		string s = "";
+		foreach (string x : inv)
+		{
+			if (s != "") s = s + ",";
+			if (x) s = s + x;
+		}
+		Print(string.Format("[M360] Tus (Save=YOK) Inventory=[%1] | Tab=QS8 vanilla", s), LogLevel.NORMAL);
+	}
 
-		baglama.AddBinding("Inventory", string.Empty, "keyboard:KC_I", string.Empty);
-		baglama.Save();
-		Print("[M360] Inventory <- I (Tab + I = Life canta)", LogLevel.NORMAL);
+	//------------------------------------------------------------------------------------------------
+	protected void M360_KlavyeTemizle(InputBinding baglama, string aksiyon)
+	{
+		int n = baglama.GetBindingsCount(aksiyon, EInputDeviceType.KEYBOARD, string.Empty);
+		for (int i = n - 1; i >= 0; i--)
+			baglama.RemoveBinding(aksiyon, EInputDeviceType.KEYBOARD, string.Empty, i);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void M360_OnTab()
+	{
+		Print("[M360] Tab → vanilla envanter", LogLevel.NORMAL);
+		M360_TusYoneticisi.VanillaEnvanterAc(GetControlledEntity());
 	}
 }

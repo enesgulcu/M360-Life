@@ -3,6 +3,8 @@
 Lab’da doğrulanan sistemleri **gerçek multiplayer** ortamında çalıştırmak için.
 Everon yerleştirme hâlâ en sonda; senaryo şimdilik `LabDuzZemin`.
 
+**İki PC:** önce `git pull`, sonra `tools\pc-hazirla.ps1` — dedicated addon + server yolu otomatik.
+
 ## Ne kurulu?
 
 | Parça | Yol |
@@ -12,73 +14,62 @@ Everon yerleştirme hâlâ en sonda; senaryo şimdilik `LabDuzZemin`.
 | scenarioId | `{7C2E9A41B8D05F36}Missions/M360_LabDuzZemin.conf` |
 | Mod GUID | `69F4E91377BCC9A5` (M360 Life) |
 | Addon junction | `tools/dedicated/addons/M360-Life` → `m360-life/` |
-| Sırlar | `tools/dedicated/secrets/` (**git’e girmez**) |
+| Sırlar | `tools/dedicated/secrets/` (**git’e girmez**) — [SECRETS.md](./SECRETS.md) |
 
-## Kurulum (bir kez, bu PC)
+## Kurulum (her PC’de bir kez)
 
 ```powershell
-# Hepsi bir arada:
-powershell -File tools\dedicated\setup.ps1
+# Onerilen: tek komut (Workbench kapali)
+powershell -File tools\pc-hazirla.ps1
 
-# veya adim adim:
-powershell -File tools\dedicated\install-server.ps1
-powershell -File tools\dedicated\bagla-addon.ps1
+# Dedicated binary yoksa:
+# Steam > Kutiphane > Araclar > Arma Reforger Server
+# veya: powershell -File tools\dedicated\install-server.ps1
 ```
 
-SteamCMD ag hatasi verirse (offline): Steam acikken tekrar `install-server.ps1` calistir.
-
-Sifreler: `tools\dedicated\secrets\PASSWORDS.txt` (git'e girmez).
-API key: `secrets\M360_ApiLabKey.txt` (lab profilinden kopyalandiysa hazir).
+SteamCMD “Missing configuration” verirse Steam UI ile kur.
 
 ## Çalıştır
 
+**Tek tık (önerilen):** repo kökünde `M360-Oyna.bat` çift tık  
+→ junction kontrol → sunucu yoksa aç → Steam istemciyi `127.0.0.1`’e bağla.
+
 ```powershell
+powershell -File tools\dedicated\oyna.ps1
 powershell -File tools\dedicated\start.ps1
-powershell -File tools\dedicated\status.ps1   # durum
-powershell -File tools\dedicated\stop.ps1     # durdur
+powershell -File tools\dedicated\status.ps1
+powershell -File tools\dedicated\stop.ps1
 ```
 
-Lokal mod: `-server` (Lab dünyası) + `-addons` — BI kuralı: `-config` ile `-addons` birlikte olmaz.
+Lokal: `-server` + `-addons` (`-config` ile birlikte değil). Port **2001**.
 
-- Port: **2001** (oyun) · **17777** (A2S) · **19999** (RCON, localhost)
-- `visible: false` — sunucu listesinde görünmez (local lab)
-- Profil: `My Games\ArmaReforger\profile\M360Dedicated\` (API key buraya kopyalanır)
+## İstemci
 
-Durdur: sunucu penceresinde **Ctrl+C**.
+`M360-Oyna.bat` yeter. Elle:
 
-## İstemci bağlan
-
-1. Arma Reforger açık; **M360 Life** modu yüklü (Workbench junction / aynı addon)
-2. Multiplayer → **Direct connect** → `127.0.0.1:2001`
-3. Admin: `server.json` içindeki `passwordAdmin`
-
-## Başka PC’ye taşıma
-
-1. Bu repo’yu clone / sync et  
-2. O PC’de `install-server.ps1` + `bagla-addon.ps1`  
-3. `secrets/` dosyalarını güvenli kopyala (git’e koyma)  
-4. `start.ps1`
-
-## Geliştirme düzeni
-
-```
-Workbench / Cursor  →  m360-life değişir
-        ↓ (junction)
-dedicated -addonsDir  →  aynı dosyalar
-        ↓
-istemci Direct Connect
+```powershell
+powershell -File tools\dedicated\baglan-istemci.ps1
 ```
 
-Yeni sistem = önce Lab haritada yerleştir → dedicated’ta 2+ oyuncu ile doğrula → sonra Everon.
+Steam kalıcı launch: **sadece** `-addonsDir ...\tools\dedicated\addons -addons 69F4E91377BCC9A5` (`-client` kalıcı yazma).
+
+## Senkron (Workbench = GitHub)
+
+`addons\M360-Life` (Workbench) **junction** → repo `m360-life`. Aynı fiziksel dosyalar; kopyala yok.  
+Eksikse Workbench kapat → `pc-hazirla.ps1`.
+
+## Başka PC
+
+1. `git pull`
+2. `tools\pc-hazirla.ps1`
+3. Secrets bir kez ([SECRETS.md](./SECRETS.md))
+4. `start.ps1` → `baglan-istemci.ps1`
 
 ## Sorun giderme
 
 | Belirti | Kontrol |
 |---|---|
-| Binary yok | `install-server.ps1` |
-| Senaryo bulunamadı | Workbench’te resource rebuild; `M360_LabDuzZemin.conf` + `.meta` |
-| Mod yüklenmedi | `bagla-addon.ps1`; `addons\M360-Life\addon.gproj` var mı |
-| API 401 | `secrets\M360_ApiLabKey.txt` = Vercel `M360_SERVER_KEY` |
-| Port meşgul | `server.json` `bindPort` / `publicPort` değiştir |
-
-Resmi BI: [Server Hosting](https://community.bistudio.com/wiki/Arma_Reforger:Server_Hosting) · [Server Config](https://community.bistudio.com/wiki/Arma_Reforger:Server_Config)
+| Binary yok | Steam Araclar / `install-server.ps1` / `pc-hazirla` |
+| Mod yok | `bagla-addon` / `pc-hazirla` |
+| API 401 | `secrets\M360_ApiLabKey.txt` |
+| Workbench junction yok | Workbench kapat → `pc-hazirla` |

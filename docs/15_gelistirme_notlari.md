@@ -4,57 +4,82 @@
 >
 > **Yeni sohbette zorunlu okuma sırası:** `docs/00`–`14` → **bu dosya (15)** → sonra işe başla.
 >
-> **Son güncelleme:** 2026-07-28 ~17:10 (TR) — **I + Tab çanta KANITLI.** Lab ışık OK. Dedicated + baglan. **SON DURUM → §C.**
+> **Son güncelleme:** 2026-07-29 ~01:55 (TR) — **DEVİR:** Dedicated I≠Life / Tab=Life (yanlış). WB Play I=OK. Dual-PC push. **SON DURUM → §C.**
 
 ---
 
 ## C. SON DURUM / el değiştirme (yeni sohbet buradan)
 
-> Yeni pencere/oturum: önce **§C** + **§B** + **§7e** oku.
+> Yeni pencere: AI **§C** okur (kural otomatik). Kullanıcıya “oku” deme.
+> Kullanıcı tek tık: **`M360.bat`** — bkz. **C.0** / `TEK_ADIM.txt`.
+
+### C.0 TEK ISLEM (kullanici)
+
+| Ne zaman | Ne yapar |
+|---|---|
+| PC değişince / güne başlarken | Repo kökü **`M360.bat`** çift tık |
+| Oynamak | **`M360-Oyna.bat`** (sunucu yeniler — script checksum Init Error önler) |
+| Gün sonu / diğer PC öncesi | Cursor’a: **“commit ve push”** |
+| Yeni Cursor sohbet | **Hiçbir şey deme** — kural §C okur |
+
+### C.1 İki PC
+
+| Ne | PC A (sabah / Enes) | PC B (akşam / enesg) |
+|---|---|---|
+| Windows | `Enes` | `enesg` |
+| Repo | `C:\Users\Enes\Documents\GitHub\M360-Life` | `C:\Users\enesg\Documents\GitHub\M360-Life` |
+| Addon | junction → repo `m360-life` | aynı |
+| Script yolları | `$env:USERPROFILE` + `tools\Resolve-M360Paths.ps1` | sabit `C:\Users\Enes\...` **yazma** |
+
+Senkron = **yalnızca git**. Secrets / Server exe git’e girmez.
+
+### C.3 Tablo — 2026-07-29 ~01:55 (DEVİR / KIRIK)
 
 | | |
 |---|---|
-| **Tarih** | 2026-07-28 ~17:10 Europe/Istanbul |
-| **Neredeyiz** | LabDuzZemin + lokal dedicated MP **çalışıyor**. HUD, API, **I+Tab çanta**, güneş yok (ışık OK). Push: `614826e` + bu not güncellemesi. |
-| **Çanta (KANITLI)** | `modded ActionOpenInventory` → Life `EnvanterAcKapa()`. **Tab** = Inventory action. **I** = aynı action’a `InputBinding.AddBinding(..., "keyboard:KC_I")` + `Save()` (profilde kalır). `addon.gproj` InputManager = **vanilla** `chimeraInputCommon`. |
-| **Işık** | `Lighting_Default` silindi; Overcast (`M360_LabOrtam`); EnvProbe/WorldPP kapalı (HDR yanma). |
-| **Bağlan** | `start.ps1` → `baglan-istemci.ps1` (Steam Oyna değil). Steam kalıcı: sadece `-addonsDir` + `-addons` (**`-client` kalıcı yazma**). |
-| **rdb** | `resourceDatabase.rdb` **ASLA silme**. |
-| **Sıradaki** | Ev PC: pull + junction + secrets + dedicated. Sonra Workshop / Pirinç GUID / Everon en sonda. |
-| **Commit** | Kullanıcı push isterse AI yapabilir. |
+| **PC** | B (`enesg`) — kullanıcı yattı; **sabah PC A** devam |
+| **Hedef (ürün)** | **I** = Life HUD · **Tab** = **vanilla** envanter (HUD yok) · istemciye ekonomi güvenme (docs/19) |
+| **WB Play** | **I → Life HUD KANITLI** (`Debug.KeyState` / `#ifdef WORKBENCH`) |
+| **Dedicated + Steam (son test)** | **BAŞARISIZ — kullanıcı:** Tab → Life HUD · **I tepki yok** |
+| **Log (01:55)** | `Tus (Save=YOK) Inventory=[]` · `Inventory → Life HUD` (Tab) · `I → Life` **yok** · HUD boot OK |
+| **API** | health OK; jobs 401 = `$profile:M360_ApiLabKey.txt` eksik (lab; çanta ile ilgisiz) |
+| **rdb** | **ASLA silme** |
+| **Sıradaki** | Dedicated’da I=Life + Tab=vanilla **kalıcı**. §C.5 yasakları tekrarlama. |
 
-### I + Tab — nasıl düzeldi (kısa; fazla deneme gürültüsü)
+**Steam kalıcı (`-client` YOK):**  
+enesg: `-addonsDir "C:\Users\enesg\Documents\GitHub\M360-Life\tools\dedicated\addons" -addons 69F4E91377BCC9A5`  
+Enes: `-addonsDir "C:\Users\Enes\Documents\GitHub\M360-Life\tools\dedicated\addons" -addons 69F4E91377BCC9A5`
 
-**Asıl kırılma (çalışan 2 satır):**
+### C.5 I + Tab — kök neden / yasaklar (TEKRARLAMA)
 
-1. `SCR_PlayerController.ActionOpenInventory` → `M360_CantaHudBileseni.EnvanterAcKapa()`  
-   → Tab (ve Inventory’ye bağlı her tuş) Life çantayı açar.
-2. İlk spawn’da bir kez: `InputManager.CreateUserBinding()` → `AddBinding("Inventory", "", "keyboard:KC_I")` → `Save()`  
-   → I de Inventory olur; **canlı istemci profilinde kalır** (WB Play’de tutmuyordu; dedicated’da tuttu — kullanıcı doğruladı).
-
-**Yapma (hepsi ESC ve/veya I’yi bozdu):**
+| Kök | Açıklama |
+|---|---|
+| Hijack | `ActionOpenInventory` → Life → Inventory’deki **her** tuş Life. Tab hâlâ Inventory’deyse Tab=HUD. |
+| Save (enesg) | `InputBinding.Save()` → `InputUserSettings` **boşalabiliyor** → Tab default Inventory → Life. **YASAK bu PC.** |
+| Save yok | `RemoveBinding` + `AddBinding` Save’siz → log `Inventory=[]` → **I bağlanmıyor**. |
+| Custom action | `M360_LifeCanta` + ActivateAction/listener dedicated’da **tetiklenmedi**. |
+| Text Context | `Contexts { Context … }` → `Unknown class` / ESC. Overlay → ESC mouse. |
 
 | Yasak | Neden |
 |---|---|
-| `M360_Input` + `Contexts { Context … }` | `Unknown class 'Context'` → ESC mouse ölür |
-| Her frame `ActivateAction` / `ActivateContext` Overlay | ESC cursor + menü çatışması |
-| `ActionInput` sınıfı | Tüm input kırılır |
-| `resourceDatabase.rdb` silmek | Wrong GUID; conf/texture çözülmez |
-| gproj’u sürekli M360_Input’a çekmek | Dedicated client çoğu boot’ta conf’u yüklemiyor / kararsız |
-| Steam’den direkt Oyna / kalıcı `-client` | Eski oturum / Init Error |
+| `InputBinding.Save` (enesg) | Profil boşalması |
+| Text `Context` / Overlay spam | ESC / input ölüm |
+| `ActionInput` | Tüm input kırılır |
+| rdb silmek | Wrong GUID |
+| Hijack + Tab hâlâ Inventory | Tab=Life |
+| ActivateAction “köprü” sonsuz deneme | Dedicated’da kanıtsız |
+| Steam Oyna / kalıcı `-client` | Eski oturum / Init Error |
 
-**Dosya:** `m360-life/Scripts/Game/M360/Arayuz/M360_PlayerControllerI.c`  
-**Log:** `[M360] Inventory <- I (Tab + I = Life canta)`
+**Eski kanıt (2026-07-28 sabah PC — hedef DEĞİŞTİ):** Inventory hijack + I bind + **Save** → Tab+I ikisi Life. O gün hedef buydu; **şimdi Tab vanilla olmalı** — o yol tek başına yetmez.
 
-**Ev / başka PC’de devam:**
+**Kod (şu an — dedicated kırık):**  
+`M360_PlayerControllerI.c` · `M360_TusYoneticisi.c` · `M360_CantaHudBileseni.c` (Play=Debug I) · `addon.gproj` Input=vanilla · `M360_Input.conf` yedek `M360_LifeCanta`
 
-1. pull `enesgulcu/M360-Life`
-2. Steam: Reforger + Reforger Server
-3. Workbench KAPALI → `tools\bagla-oyun-klasoru.ps1`
-4. `tools\dedicated\` secrets yerelde (git’te yok)
-5. Cursor → “docs/15 §C oku”
+**Sabah AI önerilen yol:** Workbench Config Editor ile action’ı `CharacterMovementContext`’e ekle + `AddActionListener` bir kez; **hijack kaldır** veya Inventory’de yalnız I kalıcı (Save’siz tutan yol). Tab Inventory’den ayrı. Log kanıtı olmadan “çalıştı” deme.
 
-Secrets push ile gelmez; USB/kopya ile taşı.
+### C.6 Bu oturum (enesg gece)
+
+Dual-PC (`M360.bat` / `M360-Oyna.bat` / `pc-hazirla`) · junction · yapı TR iskelet · I/Tab lab (yukarı) · kullanıcı: gece bitti, sabah işte bakar.
 
 ---
 
@@ -80,7 +105,7 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | **Önceki süreç** | Tasarım + ilk kod **Claude Agent / Claude Code** ile yapıldı. Şimdi **Cursor + enfusion-mcp**. Klasör: `...\addons\M360-Life`. |
 | **Docker istemiyor** | Neon hosted PG; yerel PG yok. Docker yok. |
 | **Kapsam büyüdü ama acele yok** | MVP geniş (15 iş, polis/doktor, klan); süre esnek. Faz sırası önemli. |
-| **Life envanter tuşu** | **I + Tab** → Life çanta. Yol: `ActionOpenInventory` + `InputBinding` I (`M360_PlayerControllerI.c`). WB’de yalnız Debug/I conf yolları; dedicated’da InputBinding Save **kalır**. Custom Context/ActivateAction **yasak** (§C / §7e). |
+| **Life envanter tuşu** | **Hedef:** **I** = Life HUD · **Tab** = **vanilla** (HUD değil). WB Play’de I kanıtlı (`Debug.KeyState`). Dedicated çözüm **açık** (§C.5). Custom text Context / Overlay / enesg’de `Save()` **yasak**. |
 | **Kod dili / isim (ANA DÜSTUR)** | Değiştirilebilir her şey **Türkçe ASCII**: class, metod, üye, Attribute, dosya adı, oyuncu metni. **Yorumlar Türkçe**. Motor override/API İngilizce dokunulmaz. Prefab + `.et` birlikte. `EnfusionMCP` araç kodu hariç. Bkz. **11.2.1 / 13.2**. |
 | **Oyun içi HUD** | Hedef: Life tarzı kenar HUD. **Lab yolu (kanıtlı):** `CreateWidget` + `FrameSlot` + alpha texture. Elle `.layout` + `CreateWidgets` = **Play/WB donması** — yasak. Ürün hedefi ileride Layout Editor. HTML/NUI yok. Detay: **10.8** + **7c**. |
 | **Özen / tekrar etme** | Aynı UI ayarını 5 kez deneme. Önce doğru teknik (9-slice, soft AA, CreateWidgets yasak), sonra bir net sonuç. Kullanıcı güven + yol arkadaşı ister. |
@@ -415,7 +440,7 @@ Actions { ActionInput Inventory { ... } }
 | Lab UI | `CreateWidget` + `FrameSlot` |
 | Texture | Gerçek alpha; köşe **sabit** (9-slice / pill L-mid-R); soft AA |
 | I tuşu (WB) | `Debug.KeyState` yedek |
-| I tuşu (dedicated) | `ActivateAction(M360_EnvanterAc)` + edge; menüde dokunma; **Context Flags Overlay / ActionInput yasak** |
+| I tuşu (dedicated) | **AÇIK BUG (01:55):** Tab=Life, I ölü. Hedef I=Life / Tab=vanilla. §C.5. Overlay/ActionInput/enesg Save yasak |
 | Dedicated bağlan | Önce sunucu; Steam’de `-client` kalıcı **yazma**; `baglan-istemci.ps1` |
 | Dedicated lokal start | `-server world` + `-addonsDir` + `-addons` (`-config` ile birlikte değil) |
 | Lab ışık | **Tepeden:** `angles -90 0 0` + saat 12 + Cloudy; eğince parlama = yan güneş (§7e) |

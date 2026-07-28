@@ -2,7 +2,10 @@
 # resourceDatabase.rdb ASLA silme.
 
 $ErrorActionPreference = "Stop"
-$addonsDir = Join-Path $PSScriptRoot "addons"
+$here = $PSScriptRoot
+. (Join-Path $here "..\Resolve-M360Paths.ps1")
+
+$addonsDir = Join-Path $here "addons"
 $modGuid = "69F4E91377BCC9A5"
 
 $proc = Get-Process -Name "ArmaReforgerServer" -ErrorAction SilentlyContinue
@@ -17,8 +20,8 @@ Get-Process -Name "ArmaReforger","ArmaReforgerSteam","ArmaReforger_BE" -ErrorAct
 }
 Start-Sleep -Seconds 2
 
-$steam = "C:\Program Files (x86)\Steam\steam.exe"
-if (-not (Test-Path -LiteralPath $steam)) { throw "steam.exe yok" }
+$steam = Find-M360SteamExe
+if (-not $steam) { throw "steam.exe yok" }
 
 Write-Host ("Dedicated OK PID {0}" -f ($proc.Id -join ","))
 Write-Host "Steam aciliyor..."

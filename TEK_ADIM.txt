@@ -1,0 +1,28 @@
+M360 Life - SENIN TEK ISIN
+===========================
+
+PC degistirince veya gune baslarken:
+
+  1) Bu klasordeki  M360.bat  dosyasina CIFT TIK
+
+Baska komut yazmana gerek yok.
+(git pull + junction + secrets + server yolu otomatik)
+
+Oynamak icin:
+
+  M360-Oyna.bat   (veya  M360.bat oyna)
+  -> Oyun kapaninca CMD ve dedicated sunucu da kapanir (bilerek; sorun yok).
+
+Cursor'a soylemen gereken:
+  - "commit ve push" (gun sonunda / diger PC oncesi)
+  - Yeni sohbette hicbir sey demene gerek yok (kural docs/15 §C okur)
+
+Ilk kurulum (sadece bir kez, o PC'de eksikse):
+  - Steam: Arma Reforger + Tools + Arma Reforger Server
+  - api\.env dosyasi (diger PC'den kopyala; git'te yok)
+
+GUVENLIK: M360.bat / M360-Oyna.bat
+  - Kaydedilmemis yerel is varken git pull YAPMAZ (islerin silinmez).
+  - git pull --ff-only sifirlama/hard reset degildir.
+
+Masaustu kisayol: M360.bat'a sag tik > Gonder > Masaustu (kisayol olustur)

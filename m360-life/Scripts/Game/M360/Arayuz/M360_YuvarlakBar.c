@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------------
-//! Circle status ring — tek badge texture (disc+ikon+halka) + ustunde maskeli progress ring
+//! Yuvarlak durum halkasi — tek badge texture (disk+ikon+halka) + ustunde maskeli progress ring
 //------------------------------------------------------------------------------------------------
 class M360_YuvarlakBar
 {
