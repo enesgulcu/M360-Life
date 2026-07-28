@@ -1,5 +1,5 @@
 -- M360 Life — job_definitions (Dokuman 5.1b / 11.8)
--- Uygula: psql -U m360 -d m360_life -f 001_job_definitions.sql
+-- Neon SQL Editor'de calistir (yerel psql yok)
 
 CREATE TABLE IF NOT EXISTS job_definitions (
   id              SERIAL PRIMARY KEY,

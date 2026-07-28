@@ -20,17 +20,18 @@ Bu repo yalnızca “topla-sat eklentisi” değil; sunucu yetkili, panelden aya
 
 ---
 
-## Repo düzeni (aynı hizada)
+## İki disk yolu + monorepo
 
-| Yol | Rol |
+| Disk yolu | Rol |
 |---|---|
-| `m360-life/` | Enfusion addon — Workbench bunu açar |
-| `api/` | Next.js game-api → Vercel Root Directory: `api` |
-| `web/` | Admin panel (sonraki faz) |
-| `packages/db/` | Neon migration SQL |
-| `docs/` | Tasarım + lab |
+| `Documents\GitHub\M360-Life` | **Git + api + web + docs** — Cursor |
+| `...\addons\M360-Life` | Workbench (tercihen **junction** → `m360-life/`) |
+| `...\GitHub\M360-Life\m360-life` | Oyun kaynakları (git) |
 
-**Yerelde sadece oyun** (`m360-life/`). API ve DB bulutta (Vercel + Neon).
+Repo: `m360-life/` · `api/` · `web/` · `packages/db/` · `docs/`
+
+Kopyasız senkron: `tools/bagla-oyun-klasoru.ps1` ([docs/18](docs/18_calisma_duzeni.md)).  
+API: Vercel + Neon. Güvenlik: [docs/19](docs/19_guvenlik.md). Metrik: `/istatistik`.
 
 Remote: https://github.com/enesgulcu/M360-Life
 
@@ -56,7 +57,9 @@ Yeni sohbette okuma sırası: **`docs/00` → ilgili konu → `docs/15` + `docs/
 | 14 | [14_mevcut_modlar_araclar.md](docs/14_mevcut_modlar_araclar.md) | Araçlar / referans; enfusion-mcp = Cursor |
 | **15** | [15_gelistirme_notlari.md](docs/15_gelistirme_notlari.md) | Kanıt / tuzak |
 | **16** | [16_dosya_envanteri.md](docs/16_dosya_envanteri.md) | Dosya ilişki kataloğu |
-| **17** | [17_yerel_kurulum.md](docs/17_yerel_kurulum.md) | Yerel PG + Next + Dedicated rehber |
+| **17** | [17_yerel_kurulum.md](docs/17_yerel_kurulum.md) | Neon + Vercel |
+| **18** | [18_calisma_duzeni.md](docs/18_calisma_duzeni.md) | Junction + iki yol |
+| **19** | [19_guvenlik.md](docs/19_guvenlik.md) | Rate limit / anti-manipülasyon |
 
 Konuşma geçmişi kaynak değildir. Güncel gerçek: bu dökümanlar + kod.
 

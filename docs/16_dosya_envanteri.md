@@ -19,7 +19,7 @@
 
 ## 1. Senkron kuralı (kritik)
 
-- Workbench → GitHub: `tools/sync-addon-to-github.ps1`
+- Workbench → GitHub: `tools/bagla-oyun-klasoru.ps1 (+ sync-game-to-github.ps1)`
 - **`robocopy /MIR` yasak** — `apps/` ve `packages/` silinir.
 - Platform kodu yalnız `Documents\GitHub\M360-Life\apps|packages`.
 
@@ -56,7 +56,7 @@
 | `UI/layouts/M360/*.layout` | Diskte; **runtime yüklenmez** (CreateWidgets yasak) | — | bekleyen |
 | `tools/gen_circle_hud_textures.py` | Badge/radial DDS üretici | Textures | lab |
 | `tools/icon_src/` | MDI/Iconify SVG+PNG kaynak (`node_modules` ignore) | gen script | lab |
-| `tools/sync-addon-to-github.ps1` | Workbench → GitHub (MIR yasak) | GitHub repo | canlı |
+| `tools/bagla-oyun-klasoru.ps1 (+ sync-game-to-github.ps1)` | Workbench → GitHub (MIR yasak) | GitHub repo | canlı |
 | `.cursor/rules/m360-reforger-hud.mdc` | Agent HUD kuralları | Cursor | canlı |
 
 ## 3. Prefab
@@ -91,10 +91,10 @@ Entity: `M360_PirincTopla` (~20,20) · `PirincIsle` (26,20) · `PirincSat` (~31,
 
 | Yol | Amaç | Durum |
 |---|---|---|
-| `apps/game-api` | Next.js API :3100 (`/api/health`, `/api/jobs`) | iskelet |
-| `apps/admin-web` | Admin panel | yer tutucu |
+| `api/` | Next.js API :3100 (`/api/health`, `/api/jobs`) | iskelet |
+| `web/` | Admin panel | yer tutucu |
 | `packages/db/migrations/001_job_definitions.sql` | İş tanım tablosu | iskelet |
-| `tools/sync-addon-to-github.ps1` | Güvenli senkron | canlı |
+| `tools/bagla-oyun-klasoru.ps1 (+ sync-game-to-github.ps1)` | Güvenli senkron | canlı |
 
 ---
 

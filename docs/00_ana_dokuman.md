@@ -90,14 +90,14 @@ Temel fark: yazılı kurallara mümkün olduğunca oyun içi karşılık üretme
 - Yılda bir tam global wipe.
 - Sınırsız araç/ev sahipliği; yalnızca dünyadaki aktif entity sayısı yönetilir.
 - Polis kotası aktif nüfusun max %20'si, doktor %15'i (ihtiyaç eşikleri %10/%5 başlangıç).
-- Next.js fullstack + PostgreSQL yerelde geliştirilecek; Redis ölçek/dağıtık koruma gerektiğinde eklenecek.
+- Next.js API **Vercel**’de; PostgreSQL **Neon** (hosted). Yerel PG yok. Redis ölçek/dağıtık koruma gerektiğinde.
 - Kapalı kaynak, **yıllık lisans modeli** (3/6/12 aylık seçenekten yıllık tek pakete sadeleştirildi) — ama önce kendi sunucumuzda kanıtlanacak.
 - Karakter oluşturma sadeleştirildi: yalnızca ad-soyad + spawn noktası seçimi; doğum yeri alanı kaldırıldı.
 - İlerleme kademeleri 6'dan 4'e indirildi: Yeni Oyuncu (0-20s) → Yerleşik (20-150s) → Gelişmiş (150-500s) → Kıdemli (500+s).
 - Nüfus/risk katsayısı basit ortalamaya çevrildi: Kfinal = (K1+K2+K3)/3.
 - **MVP Core kapsamı 3 kez genişledi:** iş sayısı 3→15 (10 yasal+5 yasa dışı), Polis/Doktor MVP Core'a alındı, Klan MVP Core'a alındı. Bu, roadmap süresini esnek/belirsiz bırakıyor (bkz. Döküman 12).
 - Sigorta MVP'de sadece Sağlık + Araç; Silah/Ev/Hırsızlık sigortası Kapalı Alfa/Beta'ya ertelendi.
-- PostgreSQL geliştirme ortamında Docker'sız, native kurulum ile çalışacak.
+- PostgreSQL: **Neon** (yerel native PG yok). Migration: `packages/db` + Neon SQL Editor.
 - Git/GitHub kullanılacak.
 - **İş sistemi mikro-mekaniği netleşti:** toplama (tick-tabanlı, alet gerektirir, alan sınırsız/herkese açık) → işleme (kişiye özel oturum, batch sınırlı, makine paylaşılan state tutmaz) → satış (anlık). Detay Döküman 5.
 - **Denge felsefesi netleşti:** yapay tavan/kısıtlama yok; denge nüfus/risk katsayısı, klan gideri ve doğal oyun mekaniğiyle kendiliğinden oluşur. Detay Döküman 4.8.
@@ -113,7 +113,7 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 
 - [ ] Stüdyo/marka ismi kesinleşmedi ("Medyanes 360 / M360 Life" geçici) — kritik değil, ileride değişebilir
 - [ ] Kurgusal ülke ismi — bilinçli olarak yer tutucu bırakıldı, panelden de değiştirilebilir (para birimi ismi onaylandı: "M360 Lirası")
-- [ ] Hosting/sunucu sağlayıcısı — local'den sonra karar verilecek (bilinçli erteleme)
+- [x] ~~Hosting/sunucu sağlayıcısı~~ — API/DB: Vercel + Neon. Dedicated oyun host’u sonra.
 - [x] ~~Görsel/asset üretim planı~~ — netleşti: MVP'de orijinal Arma asset'leri + küçük dış müdahaleler (Döküman 1.5)
 - [x] ~~Oyun içi lisans fiyatlandırma modeli~~ — netleşti: bir kez alınır, wipe'a kadar geçerli, iş/role göre değişken fiyat (Döküman 3.4)
 - [ ] Ticari (sunucu satış) yıllık lisans fiyatı — bilinçli olarak açık bırakıldı, tamamen kullanıcının ticari kararı (Döküman 12.2)
@@ -142,7 +142,9 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 | 14 | [Mevcut Modlar, Framework'ler & Geliştirme Araçları](./14_mevcut_modlar_araclar.md) | ✅ Güncel — enfusion-mcp = Cursor |
 | 15 | [Geliştirme Notları (AI oturum belleği / kanıtlanmış bulgular)](./15_gelistirme_notlari.md) | ✅ Canlı — her oturumda güncellenir |
 | 16 | [Dosya / İçerik Envanteri (ilişki kataloğu)](./16_dosya_envanteri.md) | ✅ Canlı — her yeni dosyada güncelle |
-| 17 | [Yerel tek cihaz kurulum (PG + Next + Dedicated)](./17_yerel_kurulum.md) | ✅ Rehber — adım adım |
+| 17 | [Kurulum (Neon + Vercel)](./17_yerel_kurulum.md) | ✅ Güncel — yerel PG yok |
+| 18 | [Çalışma düzeni (junction + iki yol)](./18_calisma_duzeni.md) | ✅ Workbench ↔ GitHub |
+| 19 | [Güvenlik & rate limit](./19_guvenlik.md) | ✅ Canlı API koruma + yol haritası |
 
 ---
 

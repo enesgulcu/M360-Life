@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
 import { getPool } from "@/lib/db";
+import { withApiKoruma } from "@/lib/guvenlik/with-api-koruma";
 
 export const runtime = "nodejs";
 
-export async function GET() {
+async function jobsHandler() {
   const pool = getPool();
   if (!pool) {
     return NextResponse.json(
       {
         ok: false,
         kaynak: "env-yok",
-        mesaj: "DATABASE_URL yok — Vercel env veya .env.local",
+        mesaj: "DATABASE_URL yok — Vercel env veya .env",
         isler: [],
       },
       { status: 200 }
@@ -39,3 +40,5 @@ export async function GET() {
     );
   }
 }
+
+export const GET = withApiKoruma("/api/jobs", jobsHandler);

@@ -1,4 +1,4 @@
-# Döküman 11 — Teknik Mimari (Arma Reforger + Web)
+﻿# Döküman 11 — Teknik Mimari (Arma Reforger + Web)
 
 *Bağlı olduğu: [00 - Ana Döküman](./00_ana_dokuman.md)*
 
@@ -50,50 +50,44 @@ Arma Reforger İstemcisi          Dedicated Oyun Sunucusu          M360 Web/API 
 
 ## 11.3 Next.js Fullstack + PostgreSQL Kararı
 
-Next.js fullstack ve PostgreSQL yerel bilgisayarda birlikte çalıştırılabilir. Next.js Route Handlers oyun sunucusu ve admin paneli için HTTP API sunar.
+Next.js Route Handlers oyun sunucusu ve admin paneli için HTTP API sunar. **Karar (2026-07):** API → **Vercel** (pi/), PostgreSQL → **Neon** (hosted). Yerel PG yok. Yerel 
+pm run dev isteğe bağlı.
 
-**Mimari öneri:** MVP'de tek Next.js uygulaması kullanılacak; fakat iş mantığı route dosyalarına yazılmayacak. Domain servisleri, veritabanı ve kural motoru ayrı paketlerde tutulacak. Yük arttığında game API aynı kodu kullanarak ayrı Node servisine çıkarılabilir. Böylece ilk gün gereksiz mikroservis karmaşası olmaz, gelecekte yeniden yazım gerekmez.
+**Mimari öneri:** MVP'de pi/ tek Next.js uygulaması; iş mantığı route dosyalarına gömülmez. Domain / DB / sözleşmeler packages/ altında büyür.
 
-## 11.4 PostgreSQL Kurulumu — Karar: Docker'sız, Native Kurulum
+## 11.4 PostgreSQL — Karar: Neon (Docker'sız, yerel PG yok)
 
-**Sen Docker istemediğini belirttin — bu tercih desteklendi.** PostgreSQL, Windows üzerine doğrudan (native installer ile) kurulacak. Bu, Docker'a göre biraz daha "elle" bir kurulum ama:
-- Tek seferlik kurulum, sonra arka planda Windows servisi olarak çalışır.
-- Docker Desktop'ın ek kaynak tüketimi ve öğrenme yükü olmaz.
-- İleride hosting'e geçerken (gerçek sunucu ortamı) genelde yönetilen PostgreSQL servisleri kullanılacağı için bu native kurulum sadece **geliştirme ortamına özgü** bir tercih — üretim ortamı kararını etkilemez.
-
-> Bu adımın somut kurulum talimatlarını (indirme linki, kurulum adımları, ilk veritabanı/kullanıcı oluşturma) Faz 0'a geçtiğimizde adım adım vereceğim.
+PostgreSQL **Neon** üzerinde. Migration: packages/db/migrations/ + Neon SQL Editor. Docker yok.
 
 ## 11.5 Önerilen Monorepo Yapısı
 
 | Dizin | Sorumluluk |
 |---|---|
-| `apps/admin-web` | Next.js admin paneli ve yetkili yönetim ekranları |
-| `apps/game-api` | İlk aşamada Next.js Route Handlers veya ayrı Node uygulaması; oyun sunucusu API'leri |
-| `packages/domain` | Para, item, araç, iş, rol, sigorta ve kural motoru |
-| `packages/db` | PostgreSQL şema, migration ve transaction katmanı |
-| `packages/contracts` | Oyun sunucusu ile API arasında sürümlü DTO/mesaj sözleşmeleri |
-| `packages/config` | Ortak doğrulama, environment ve feature flag |
-| `infra` | Reverse proxy, PostgreSQL/Redis notları, gözlemleme (Docker'sız native kurulum notlarıyla güncellenecek) |
-| `arma-addon` | Enfusion addon, prefab, UI, script ve config kaynakları |
+| web/ | Next.js admin paneli (sonraki faz) |
+| pi/ | Next.js Route Handlers — oyun HTTP API → Vercel |
+| packages/db | Neon şema / migration |
+| packages/domain | (plan) Para, item, iş, kural motoru |
+| packages/contracts | (plan) Sürümlü DTO |
+| m360-life/ | Enfusion addon (Workbench junction: ddons\M360-Life) |
+| 	ools/ | agla-oyun-klasoru.ps1, sync, texture |
 
-Git/GitHub kullanılacak (onaylandı) — her çalışan adım commit/tag olarak işaretlenecek; deneme kodundan ürün koduna kontrollü taşıma yapılacak.
+Detay: [18](./18_calisma_duzeni.md).
 
 ## 11.6 PostgreSQL ve Redis
 
-PostgreSQL, para ve sahiplik işlemlerinde transaction ve kilit mekanizmaları sağlayan ana veritabanıdır. **Redis başlangıçta zorunlu değildir** — sistem tek API instance'ı ve sınırlı oyuncuyla çalışırken bellek tabanlı sayaçlar kullanılabilir. Birden fazla instance veya yoğun eş zamanlılık başladığında Redis merkezi rate limit, kısa süreli lock, cache ve kuyruk için eklenir.
+PostgreSQL ana DB. **Redis başlangıçta yok** — bellek rate limit (pi/src/lib/guvenlik). Çok instance'ta Redis.
 
-## 11.7 Yerel Geliştirme Ortamı — Güncel Durum
+## 11.7 Geliştirme Ortamı — Güncel Durum
 
 | Bileşen | Durum | Not |
 |---|---|---|
-| Arma Reforger Client | ✅ Denenmiş | Workbench'te küçük scriptler yazıldı (AI yönlendirmesiyle) |
-| Arma Reforger Dedicated Server | ⏳ **Henüz denenmedi — bir sonraki somut adım** | Faz 0'ın ilk pratik görevi bu olacak |
-| Next.js / Node | ⏳ Kurulacak | Cursor ile büyük ölçüde bağımsız ilerleyebilirsin |
-| PostgreSQL | ⏳ Kurulacak | Native (Docker'sız) kurulum — bkz. 11.4 |
-| Redis | İhtiyaç oluştuğunda | MVP başlangıcında gerekli değil |
-| Git | ✅ Kullanılacak | Onaylandı |
-
-İkinci bilgisayar zorunlu değildir; ilk server/client ve API testleri tek cihazda yapılabilir. Gerçek replication ve oyuncu davranış testleri için zamanla ikinci istemci veya test oyuncuları gerekir.
+| Arma Reforger Client | ✅ | Workbench lab |
+| Dedicated Server | ⏳ | Faz 0 |
+| Next.js API | ✅ | Vercel m360-life |
+| PostgreSQL | ✅ | Neon + job_definitions |
+| Rate limit / metrik | ✅ | [19](./19_guvenlik.md) |
+| Redis | İhtiyaçta | |
+| Git | ✅ | |
 
 ## 11.8 İlk Veri Tabanı Çekirdeği
 
@@ -120,7 +114,7 @@ Kritik işlem güvenlik hattı (satın alma, garaj, para transferi, rol değişt
 |---|---|
 | İstemci UI | Buton yükleniyor durumu, debounce, çift tıklama önleme |
 | Oyun sunucusu | Kullanıcı/işlem cooldown, rol ve dünya durumu doğrulama |
-| API | Kimlik doğrulama, imzalı sunucu isteği, schema validation, rate limit |
+| API | Kimlik: `M360_SERVER_KEY`; rate limit; schema validation (sonra); bkz. [19](./19_guvenlik.md) |
 | İşlem kimliği | Her satın alma/garaj/transfer için idempotency key |
 | PostgreSQL | Transaction, unique constraint, sıra/versiyon ve atomic ledger |
 | Redis | Dağıtık rate limit ve kısa süreli resource lock (ihtiyaç oluşunca) |
@@ -142,9 +136,9 @@ Gecikmeyi minimumda tutmak için üç ilke:
 
 | İlke | Basit Türkçesi | Neden |
 |---|---|---|
-| Aynı makine/ağda barındırma | Next.js API'yi dedicated server ile aynı sunucuda çalıştır | Farklı sunucularda olursa gerçek internet gecikmesi eklenir; aynı makinede gecikme birkaç milisaniyeye iner |
-| Asenkron (eş zamanlı olmayan) çağrılar | Oyuncu "satın al" dediğinde oyun donmaz; istek arka planda gönderilir, sonuç gelince ekran güncellenir | Enfusion'un bunun için hazır bir yöntemi var (Async API) — kullanıcı beklerken oyun kilitlenmez |
-| Önbellekleme (cache) | Sık okunan ama az değişen veri (market fiyatları, iş tanımları) her seferinde API'ye sorulmaz; belirli aralıkla (örn. 5 dakika) tazelenir | Gereksiz ağ trafiğini azaltır, API'ye yük bindirmez |
+| Aynı makine/ağda barındırma (ideal) | Dedicated ile API aynı DC’de | Vercel+Neon uzak; lab için kabul. Üretimde düşük latency bölgesi seç |
+| Asenkron çağrılar | RestApi callback; oyun donmaz | `M360_ApiIstemci` |
+| Önbellekleme | `job_definitions` vb. aralıklı tazele | Prefab Attribute lab; sonra API cache |
 
 **Özet karar:** Mimari doğru — sadece "hangi işlemin bu yoldan geçtiği" net tutulmalı. Oyun akışı (hareket/çatışma) hiç etkilenmez; sadece ekonomik olaylar (saniyede az sayıda) bu köprüden geçer, o da asenkron ve önbellekli şekilde.
 
@@ -164,7 +158,8 @@ Koordinatlar her karede kaydedilmez; belirli aralıkla örneklenir, önemli olay
 
 ## 11.12 Sıradaki Somut Adım
 
-Workbench'te client tarafını denedin ama **dedicated server'ı hiç çalıştırmadın** — bu, Faz 0'ın ilk ve en öncelikli pratik görevi olacak. Tasarım dökümanları bittiğinde, sana adım adım (hangi ayarlar, hangi dosya, nasıl başlatılır) dedicated server'ı yerel olarak ayağa kaldırmanı sağlayacağım.
+**Tamamlanan (2026-07-28):** Neon + Vercel `api`, `/api/health`+`/api/jobs`, rate limit iskeleti, `/istatistik`, oyun `M360_ApiIstemci`.
 
----
-*Önceki: [10 - Panel, HUD & Admin](./10_panel_hud_admin.md) · Sıradaki: Döküman 12 — Lisans, Ticari Model & Roadmap*
+**Sırada:** Workbench junction (`bagla-oyun-klasoru.ps1`), Play’de API bağlantı testi, dedicated server ilk ayağa kaldırma, `M360_SERVER_KEY` üretimde zorunlu.
+
+---\n*Önceki: [10](./10_panel_hud_admin.md) · Sonraki: [12](./12_lisans_roadmap.md) · Güvenlik: [19](./19_guvenlik.md)\n

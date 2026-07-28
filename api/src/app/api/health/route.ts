@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { getPool } from "@/lib/db";
+import { withApiKoruma } from "@/lib/guvenlik/with-api-koruma";
 
 export const runtime = "nodejs";
 
-export async function GET() {
+async function healthHandler() {
   const pool = getPool();
   let db: "bagli" | "env-yok" | "hata" = "env-yok";
   let dbMesaj: string | undefined;
@@ -26,3 +27,5 @@ export async function GET() {
     ...(dbMesaj ? { dbMesaj } : {}),
   });
 }
+
+export const GET = withApiKoruma("/api/health", healthHandler);

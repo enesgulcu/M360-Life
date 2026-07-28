@@ -24,6 +24,9 @@ tools/__pycache__/
 # Secrets
 .env
 .env.*
+!.env.example
+!api/.env.example
+!web/.env.example
 *.pem
 credentials.json
 

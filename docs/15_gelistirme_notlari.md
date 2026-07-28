@@ -62,9 +62,9 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 
 | Bileşen | Değer |
 |---|---|
-| Addon | `C:\Users\enesg\Documents\My Games\ArmaReforgerWorkbench\addons\M360 Life` |
-| Cursor MCP | `C:\Users\enesg\.cursor\mcp.json` → sunucu adı oturumda `user-enfusion-mcp` |
-| Workbench | `...\Arma Reforger Tools\Workbench\ArmaReforgerWorkbenchSteamDiag.exe` |
+| Addon | `C:\Users\Enes\Documents\My Games\ArmaReforgerWorkbench\addons\M360-Life` |
+| Cursor MCP | `C:\Users\Enes\.cursor\mcp.json` → sunucu `enfusion-mcp` (oturumda `user-enfusion-mcp`) |
+| Workbench | `D:\SteamLibrary\steamapps\common\Arma Reforger Tools\Workbench\ArmaReforgerWorkbenchSteamDiag.exe` |
 | Oyun | `...\Steam\steamapps\common\Arma Reforger` (veri `.pak`) |
 | Terrain data | `Worlds/LabDuzZemin/` (+ `M360_LabDuzZemin_Layers/`); eski TestWorld kaldırıldı |
 | Lab world | `Worlds/LabDuzZemin/M360_LabDuzZemin.ent` — **boş .ent = boş harita** (bkz. §8e) |
@@ -278,7 +278,7 @@ Kullanıcı Play: **yüzde sayacı** + **I ile M360 çanta listesi** çalıştı
 | I tuşu | `Debug.KeyState(KC_I)` canta; Tab’a bağlama |
 | HUD stil | Circle rings + nakit pill + canta panel; HTML yok |
 | Lab 3P kamera | M360 değil; labda 1. şahıs |
-| Git | Workbench addon → `sync-addon-to-github.ps1` → `Documents\GitHub\M360-Life` push (`/MIR` yasak) |
+| Git | Workbench addon → `bagla-oyun-klasoru.ps1 / sync-game-to-github.ps1` → `Documents\GitHub\M360-Life` push (`/MIR` yasak) |
 | Kod isim | Türkçe ASCII (11.2.1) |
 
 ---
@@ -331,7 +331,7 @@ Wiki: `Action_Context_Setup`.
 
 - Tasarım 0–14: tamam.
 - Faz 0 lab: Workbench Play + test dünya ilerliyor.
-- Dedicated server / Next.js / PostgreSQL: henüz yok (sıradaki büyük kapı).
+- Neon + Vercel api canlı (health/jobs). Dedicated server hâlâ sırada. Güvenlik iskeleti: docs/19.
 - EveronLife: referans only, dependency asla.
 
 ---
@@ -404,3 +404,12 @@ Layer default {
 ---
 
 *İlgili: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [14](./14_mevcut_modlar_araclar.md) · [16](./16_dosya_envanteri.md) · [17](./17_yerel_kurulum.md)*
+
+
+### 2026-07-28 — Vercel + Neon + güvenlik iskeleti
+
+- API: https://m360-life.vercel.app (/api/health, /api/jobs, /api/metrik, /istatistik)
+- Koruma: withApiKoruma rate limit + opsiyonel M360_SERVER_KEY
+- Oyun: Scripts/Game/M360/Ag/M360_ApiIstemci.c
+- Senkron: 	ools/bagla-oyun-klasoru.ps1 (junction; Workbench kapalı çalıştır)
+- Docs: 11/17/18/19 güncellendi
