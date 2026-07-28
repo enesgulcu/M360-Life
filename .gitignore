@@ -51,3 +51,8 @@ web/.env
 web/.env.local
 packages/**/.env
 
+# Dedicated sirlar + yerel kurulum yolu
+tools/dedicated/secrets/**
+!tools/dedicated/secrets/.gitkeep
+tools/dedicated/addons/
+

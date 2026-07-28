@@ -78,9 +78,21 @@ class M360_CantaHudBileseni : ScriptComponent
 		GetGame().GetCallqueue().CallLater(GirisIpucuGoster, 2000, false);
 
 		if (m_bWidgetHazir)
-			Print("[M360] CantaHud baslat — Life HUD OK", LogLevel.NORMAL);
+			Print("[M360] CantaHud baslat — Life HUD OK (I=PlayerController)", LogLevel.NORMAL);
 		else
 			Print("[M360] CantaHud baslat — widget FAIL, hint yedek", LogLevel.WARNING);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! I/Tab: M360_PlayerControllerI (ActionOpenInventory). F>Envanter dogrudan EnvanterAcKapa.
+	//! Burada Debug.KeyState sadece Workbench Play yedegi.
+	protected void ITusunuKontrolEt()
+	{
+		if (Debug.KeyState(KeyCode.KC_I))
+		{
+			Debug.ClearKey(KeyCode.KC_I);
+			EnvanterAcKapa();
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -113,16 +125,6 @@ class M360_CantaHudBileseni : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void ITusunuKontrolEt()
-	{
-		if (!Debug.KeyState(KeyCode.KC_I))
-			return;
-
-		Debug.ClearKey(KeyCode.KC_I);
-		EnvanterAcKapa();
-	}
-
-	//------------------------------------------------------------------------------------------------
 	protected void GirisIpucuGoster()
 	{
 		if (m_bIpucuGosterildi)
@@ -131,12 +133,12 @@ class M360_CantaHudBileseni : ScriptComponent
 
 		if (m_bWidgetHazir)
 			SCR_HintManagerComponent.ShowCustomHint(
-				"Nakit | Saat | Yemek/Su/Can | I = canta",
+				"Nakit | Saat | Yemek/Su/Can | Tab = canta (I sonra)",
 				"M360",
 				8);
 		else
 			SCR_HintManagerComponent.ShowCustomHint(
-				"I = M360 Envanter (hint)  |  Widget olusmadi",
+				"Tab = M360 Envanter (hint)  |  Widget olusmadi",
 				"M360",
 				8);
 	}

@@ -38,4 +38,13 @@ npm run dev
 
 ## Dedicated
 
-Yerel/oyun host; HTTP ile cloud API. RestApi: `M360_ApiIstemci.BaglantiTesti()`.
+Taşınabilir paket: [`tools/dedicated/README.md`](../tools/dedicated/README.md)
+
+```powershell
+powershell -File tools\dedicated\install-server.ps1   # bir kez (SteamCMD 1874900)
+powershell -File tools\dedicated\bagla-addon.ps1
+# secrets\server.json + secrets\M360_ApiLabKey.txt
+powershell -File tools\dedicated\start.ps1
+```
+
+İstemci: Direct Connect `127.0.0.1:2001`. Senaryo: LabDuzZemin. HTTP → Vercel API (`M360_ApiIstemci`).

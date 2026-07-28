@@ -12,7 +12,7 @@
 | Bu sürüm | Parçalanmış döküman seti — v1 |
 | Ekip | Tek kişi (sen) + AI teknik ortak (şimdi **Cursor + enfusion-mcp**; önceki Claude Code oturumları) |
 | İlk hedef | Kendi/topluluk sunucusu; lisans satışı ileride ikinci aşama |
-| Geliştirme ortamı | Lab harita + Vercel/Neon; dedicated taşınabilir paket sırada; Everon yerleştirme en sonda |
+| Geliştirme ortamı | Lab + Vercel/Neon + `tools/dedicated/` paket; Everon yerleştirme en sonda |
 
 ---
 
@@ -159,4 +159,4 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 
 ---
 
-*Sıradaki adım: canlı iskelet (Neon+Vercel+junction+lab) kurulu — Play API testi + dedicated; bkz. [15](./15_gelistirme_notlari.md) §2026-07-28 · mimari [11.1b](./11_teknik_mimari.md).*
+*Sıradaki adım: dedicated kur (`tools/dedicated/install-server.ps1`) → Direct Connect doğrula; bkz. [15](./15_gelistirme_notlari.md) · [tools/dedicated/README](../tools/dedicated/README.md).*

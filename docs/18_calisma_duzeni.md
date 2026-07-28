@@ -47,11 +47,11 @@ M360-Life/
 
 ## Geliştirme sırası (kesin — 2026-07-28)
 
-1. **LabDuzZemin** — tüm sistem/prefab burada bitirilir  
-2. **Dedicated** — yerel + cihazlar arası taşınabilir paket; modüler  
-3. **Harita seçimi / Everon yerleştirme** — lab + dedicated doğrulandıktan **sonra**
+1. **LabDuzZemin** — sistem/prefab burada  
+2. **Dedicated** — `tools/dedicated/` taşınabilir paket; MP doğrulama burada  
+3. **Harita / Everon** — lab + dedicated sonrası
 
-Prefab’lar haritadan bağımsızdır; lab’da kanıt → sonra Everon’a konur.
+Prefab’lar haritadan bağımsızdır; lab’da kanıt → dedicated MP → Everon.
 
 ## Bulut
 

@@ -4,7 +4,34 @@
 >
 > **Yeni sohbette zorunlu okuma sırası:** `docs/00`–`14` → **bu dosya (15)** → sonra işe başla.
 >
-> **Son güncelleme:** 2026-07-27 — HUD/Canta lab dilimi kapatıldı (§7c v3 soft9); kamera notu §7d; kritik özet §B güncellendi.
+> **Son güncelleme:** 2026-07-28 ~17:05 (TR) — Lab ışık OK. Çanta şimdilik **Tab**. I/ESC input conf sorunu açık. **SON DURUM → §C.**
+
+---
+
+## C. SON DURUM / el değiştirme (yeni sohbet buradan)
+
+> Yeni pencere/oturum: önce **§C** + **§B** + **§7e** oku. Günlük değil; kaldığımız yer + kırılmalar.
+
+| | |
+|---|---|
+| **Tarih** | 2026-07-28 ~17:05 Europe/Istanbul |
+| **Neredeyiz** | Lab + dedicated OK. Güneş yok → ışık OK. Life çanta **Tab** ile açılıyor (`ActionOpenInventory`). |
+| **I tuşu** | **Açık bug.** Notlardaki `M360_Input` + `ActivateAction` yolu dedicated istemcide çoğu boot’ta `InputManager config load … M360_Input` **hiç gelmiyor** (16:55+). `InputBinding.Save` / Tab hijack denemeleri I vermedi; conf `Context` ESC mouse öldürdü. |
+| **ESC mouse** | `Context` / `ActivateAction` spam / bozuk `InputBinding` ile kırıldı. Şu an gproj **vanilla** `chimeraInputCommon` — ESC’yi buna göre dene (tam quit + baglan). |
+| **Geçici UX** | **Tab = Life çanta.** I eve Workbench’te Play doğrulaması + InputManager load logu şart. |
+| **rdb** | `resourceDatabase.rdb` **ASLA silme** (baglan artık silmiyor). |
+| **Sıradaki (ev)** | Workbench’te M360 aç → Play’de I dene → logda `InputManager config load … M360_Input` ara → dedicated’a taşı. Push yapıldıysa pull ile devam. |
+| **Commit** | Kullanıcı “push” dediğinde AI commit+push yapabilir. |
+
+**Ev / başka PC’de devam (evet, mümkün):**
+
+1. GitHub’dan clone/pull: `enesgulcu/M360-Life` (veya remote URL’in).
+2. Steam: Arma Reforger + **Arma Reforger Server** (Araçlar).
+3. Workbench KAPALI → `tools\bagla-oyun-klasoru.ps1` (junction).
+4. Dedicated: `tools\dedicated\` — `server-root.txt` / secrets (`M360_ApiLabKey.txt` **git’te yok**; evde yeniden oluştur veya USB ile taşı).
+5. Cursor’da bu repo’yu aç → agent’a “docs/15 §C oku” de.
+
+Secrets (API key, PASSWORDS) gitignore’da → push ile gelmez; ayrı taşı.
 
 ---
 
@@ -30,7 +57,7 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | **Önceki süreç** | Tasarım + ilk kod **Claude Agent / Claude Code** ile yapıldı. Şimdi **Cursor + enfusion-mcp**. Klasör: `...\addons\M360-Life`. |
 | **Docker istemiyor** | Neon hosted PG; yerel PG yok. Docker yok. |
 | **Kapsam büyüdü ama acele yok** | MVP geniş (15 iş, polis/doktor, klan); süre esnek. Faz sırası önemli. |
-| **Life envanter tuşu** | Arma 3 Life = **I**. Reforger `"Inventory"` ≈ **Tab**. **Kanıtlı lab yolu (2026-07-27):** `Debug.KeyState(KeyCode.KC_I)` + `ClearKey` → M360 aç/kapa. Tab’ı `ActionOpenInventory` ile M360’ye **bağlama**. Input.conf / runtime remap Play’de **tutmadı** — ayrıntı **7b**. |
+| **Life envanter tuşu** | Arma 3 Life = **I**. Reforger `"Inventory"` ≈ **Tab** (M360’ye bağlama). **Workbench Play:** `Debug.KeyState(KC_I)` yeterliydi. **Dedicated/canlı istemci:** Debug kapalı → `M360_EnvanterAc` + `ActivateContext("M360LifeContext")` + `AddActionListener` (§7b / §7e). |
 | **Kod dili / isim (ANA DÜSTUR)** | Değiştirilebilir her şey **Türkçe ASCII**: class, metod, üye, Attribute, dosya adı, oyuncu metni. **Yorumlar Türkçe**. Motor override/API İngilizce dokunulmaz. Prefab + `.et` birlikte. `EnfusionMCP` araç kodu hariç. Bkz. **11.2.1 / 13.2**. |
 | **Oyun içi HUD** | Hedef: Life tarzı kenar HUD. **Lab yolu (kanıtlı):** `CreateWidget` + `FrameSlot` + alpha texture. Elle `.layout` + `CreateWidgets` = **Play/WB donması** — yasak. Ürün hedefi ileride Layout Editor. HTML/NUI yok. Detay: **10.8** + **7c**. |
 | **Özen / tekrar etme** | Aynı UI ayarını 5 kez deneme. Önce doğru teknik (9-slice, soft AA, CreateWidgets yasak), sonra bir net sonuç. Kullanıcı güven + yol arkadaşı ister. |
@@ -184,39 +211,47 @@ Kullanıcı Play: **yüzde sayacı** + **I ile M360 çanta listesi** çalıştı
 | 2 | Sadece `InputManager.AddActionListener("Inventory" / "InventoryOpen")` veya `GetActionTriggered` | Action adı kısmen doğru olsa da **I tuşu bu action değil**. Ayrıca BI zaten Inventory’yi `SCR_PlayerController`’a bağlamış; dışarıdan listener güvenilmez / yetersiz kaldı. |
 | 3 | Programatik `CreateWidgetInWorkspace` (Frame, flags=0) “Life popup” | Kullanıcı panel görmedi. Progress’te de görünen şey **widget bar değil**, `SCR_HintManager` yüzde sayacıydı. Widget panel = henüz kanıtlanmadı; hint = kanıtlandı. |
 | 4 | `InputBinding` runtime remap: Inventory klavye → `KC_I` + `Save()` | Workbench **Play’de tutmadı** — Tab kaldı, I yok. |
-| 5 | `M360_Input.conf` (parent=chimeraInputCommon) + `addon.gproj` `InputManagerSettings.Default` + ayrı `M360_EnvanterAc` action | Conf/gproj Play’e yansımadı veya override uygulanmadı; kullanıcı: **hâlâ sadece Tab**. |
+| 5 | `M360_Input.conf` içinde **`ActionInput Inventory`** (yanlış sınıf) + Inventory→I | Dedicated: `Unknown class` → **tüm input kırılır** (hareket/kamera). Vanilla `chimeraInputCommon`’a geri dönüldü. |
+| 6 | Sadece `Debug.KeyState(KC_I)` | Workbench Play’de OK; **dedicated/canlı istemcide I ölür** (Debug API kapalı). |
 
 ### Son başarılı denemede farklı olan (KRİTİK)
 
 1. **Boot kapısı:** `IsEditMode` yasak. `SetEventMask(FRAME)` + `GetGame().InPlayMode()` olunca lazy `Baslat()`. Progress hint ancak bundan sonra aktı.
 2. **Görünürlük garantisi:** Açılışta `SCR_HintManagerComponent.ShowCustomHint` ile Life listesi. Widget denemesi yan ürün; kullanıcıya kanıtlanan UI = **hint**.
-3. **I tusu (asıl kırılma — 2026-07-27):** ActionManager / Inventory action / conf remap **atlandı**. FRAME’de ham klavye:
-   - `if (Debug.KeyState(KeyCode.KC_I)) { Debug.ClearKey(KeyCode.KC_I); EnvanterAcKapa(); }`
-   - Desen kaynağı: BI `SCR_DebugEditorComponent` (aynı `KeyState` + `ClearKey`).
-   - **Neden kritik:** `"Inventory"` action’ın fiziksel tuşu preset’e bağlı (çoğu kurulumda **Tab**). Action adını dinlemek ≠ **I** dinlemek. Conf/remap Play lab’da güvenilir olmadı; ham `KeyCode` güvenilir oldu.
-4. **Tab ayrımı:** `modded ActionOpenInventory` → M360 **kaldırıldı**. Tab artık M360 açmaz (vanilla Inventory yolu). M360 sadece **I**.
+3. **I tusu — Workbench (2026-07-27):** FRAME’de `Debug.KeyState(KC_I)` + `ClearKey` → Play lab kanıtı. `"Inventory"` ≠ I (çoğu kurulumda Tab).
+4. **I tusu — Dedicated (2026-07-28):** `Debug.KeyState` **yetersiz**. Doğru yol:
+   - `Configs/System/M360_Input.conf` → parent `chimeraInputCommon`
+   - `Action M360_EnvanterAc` + `InputSourceSum` / `InputSourceValue` + `keyboard:KC_I` (**`ActionInput` sınıfı YASAK**)
+   - `Context M360LifeContext` (Priority 0, Flags Overlay) + Actions listesinde action
+   - `addon.gproj` → `InputManagerSettings.Default` = bu conf
+   - HUD: her frame `ActivateContext("M360LifeContext")` + `AddActionListener(..., EActionTrigger.DOWN, ...)`
+   - Log kanıtı: `InputManager config load ... M360_Input.conf` · `CantaHud input: M360_EnvanterAc (I) dinleniyor`
+5. **Tab ayrımı:** Tab = vanilla Inventory; M360 sadece **I** (`M360_EnvanterAc`).
 
 ### Tuş gerçeği (UNUTMA)
 
 | Tuş | Sonuç |
 |---|---|
 | **Tab** | BI `"Inventory"` → native envanter (M360 **değil**). |
-| **I** | `Debug.KeyState(KC_I)` → M360 çanta (hint). **Kanıtlandı.** |
-| **Hedef (ürün)** | İleride gerçek input action / kullanıcı ayarı; lab’da Debug.KeyState yeterli ve doğru. |
+| **I (WB Play)** | `Debug.KeyState(KC_I)` yedek / eski lab yolu. |
+| **I (dedicated / ürün)** | `M360_EnvanterAc` + context + listener — **kanıtlı 2026-07-28**. |
+| **Hedef** | InputManager action kalıcı; Debug yalnızca conf yüklenmezse yedek. |
 
 | Parça | Dosya |
 |---|---|
-| HUD + I tusu | `M360_CantaHudBileseni.ITusunuKontrolEt` (`Debug.KeyState(KC_I)`) |
-| Action hook | ~~`M360_PlayerController`~~ kaldırıldı — Tab M360 açmaz |
+| HUD + I | `M360_CantaHudBileseni` — `InputDinleyiciKur` + `ITusunuKontrolEt` (ActivateContext) |
+| Input conf | `Configs/System/M360_Input.conf` + `addon.gproj` Default |
+| Action hook | ~~`M360_PlayerController`~~ yok — Tab M360 açmaz |
 | F yedek | `M360_DurumAksiyonu` → `Envanter` |
 
 ### İlke (sonraki UI / input işleri) — KRİTİK ÖZET
 
 - Progress / envanter feedback önce **hint ile kanıtla**, sonra layout/widget güzelleştir.
-- **Action adı ≠ klavye harfi.** `"Inventory"` çoğu zaman Tab’dır; I için ayrı çözüm gerekir.
-- Workbench Play’de **Input.conf Default / runtime InputBinding remap’e güvenme** (bu projede tutmadı). Lab’da ham tuş: `Debug.KeyState` + `ClearKey`.
-- Oyuncu tuşu için BI’nın hangi `Action*` sahibini bul; kör `GetActionTriggered("I")` uydurma.
-- Tab’ı M360’ye bağlamak kolay ama kullanıcı istemiyor → M360’yi Inventory action’dan **ayır**.
+- **Action adı ≠ klavye harfi.** `"Inventory"` çoğu zaman Tab’dır; I için **ayrı action** (`M360_EnvanterAc`).
+- Conf’de **`ActionInput` yazma** — sınıf yok; `Action` + `InputSourceSum` / `InputSourceValue` kullan. Bozuk conf = dedicated’da WASD/kamera ölümü.
+- `Debug.KeyState` = Workbench/diag; **canlı MP istemcide güvenme.**
+- Yeni action context’te olmalı + her frame `ActivateContext`; listener tek başına yetmez.
+- Tab’ı M360’ye bağlama — kullanıcı istemiyor.
 
 ---
 
@@ -268,17 +303,119 @@ Kullanıcı Play: **yüzde sayacı** + **I ile M360 çanta listesi** çalıştı
 
 ---
 
-## B. Kritik özet kartı (hızlı bakış — 2026-07-27)
+## 7e. Dedicated lokal MP — KANITLANDI (2026-07-28)
+
+Lab → portable dedicated → istemci bağlandı; HUD/API/I tuşu/ışık düzeltmeleri bu oturumda.
+
+### Binary / yollar
+
+| Madde | Gerçek |
+|---|---|
+| Exe | `D:\SteamLibrary\steamapps\common\Arma Reforger Server\ArmaReforgerServer.exe` (Steam Araçlar). Boş “Dedicated Server” klasörü ≠ exe. |
+| Addon junction | `tools/dedicated/addons/M360-Life` → repo `m360-life/` |
+| Profil | `-profile M360Dedicated` → `Documents\My Games\M360Dedicated\profile\` (**ArmaReforger\profile altında değil**) |
+| API key | `secrets/M360_ApiLabKey.txt` → profile’a kopyalanır (`start.ps1`) |
+| Scriptler | `tools/dedicated/start.ps1` · `stop.ps1` · `baglan-istemci.ps1` · `status.ps1` |
+
+### BI kısıtlar (UNUTMA)
+
+1. **`-config` ile `-addons` aynı anda kullanılamaz** (lokal yayınlanmamış mod). Lokal: `-server "{GUID}Worlds/...ent"` + `-addonsDir` + `-addons 69F4E91377BCC9A5`.
+2. `server.json` `mods: []` — lokal GUID workshop’ta “Addon not found” verir. Workshop publish sonrası `-config` + `mods[]` yolu.
+3. UI **Direct Join** → backend lookup → “No server found” (UDP 2001 dinlese bile). Lokal bağlan: istemci CLI `-client 127.0.0.1` + aynı `-addonsDir` / `-addons`.
+
+### Başlatma / bağlanma disiplini
+
+| Kural | Neden |
+|---|---|
+| Önce `start.ps1`, sonra istemci | `-client` handshake timeout → **Game Initialization Error** (oyun hiç açılmaz) |
+| Steam kalıcı launch: **sadece** `-addonsDir ... -addons 69F4E91377BCC9A5` | `-client` kalıcı yazılırsa sunucu kapalıyken Init Error |
+| Bağlanmak | `baglan-istemci.ps1` (sunucu PID/2001 kontrol eder, sonra `-client` ile açar) |
+| Log | İstemci: `My Games\ArmaReforger\logs\...\console.log` — `handshake timeout` / `Unable to connect as client to '127.0.0.1'` = sunucu yok |
+
+### Siyah ekran / oynanamaz (dedicated lab)
+
+| Belirti | Kök / çözüm |
+|---|---|
+| Siyah / kamera ayakkabıda / Tab envanter var hareket yok | Kırık input conf (`ActionInput`) + lab’da eksik managers |
+| Fix | Vanilla input (sonra düzgün `M360_Input.conf`); layer’a `SCR_CameraManager`, `EnvProbe`, `FogHaze`, `GenericWorldPP`, `PerceptionManager`, `SCR_AIWorld`, `RadioManager`; spawn Y≈3 |
+| Lab 3P | Hâlâ kötü → **1. şahıs (V)** (§7d) |
+
+### Lab ışık / hava — kritik kırılma
+
+| | |
+|---|---|
+| **Belirti** | Dik bakınca OK; bakışı yana/yataya eğince beyaz grid **parlama / yanma**; ufuk üstü siyah |
+| **Neden** | (1) Güneş açılı → beyaz zeminde grazing specular + HDR. (2) Saat 10:00 hâlâ yan güneş. (3) Hava state yoksa gökyüzü void. |
+| **Yanlış yol** | Sadece soft açı (`-78 35`) — gölge hâlâ uzun, eğince parlıyor |
+| **Kırılma** | `Lighting_Default` **silindi** (Direct Light yok). Lab: EnvProbe + Fog + PP + `Overcast`. Parlama kaynağı sert Direct’ti. |
+| **Silince ne olur** | Sert gölge/specular yok; düz ambient. Çok karanlıksa sonra **düşük LV** soft ışık eklenir (Lighting_Default değil). |
+| **Sıfırdan** | İleride kendi soft prefab; default Lighting alma. |
+
+### I tuşu dedicated — kritik kırılma
+
+| | |
+|---|---|
+| **Belirti** | I ölü; F→obje→Envanter ile HUD açılır; ESC’de mouse tıklamaz (sadece ok tuşu) |
+| **Neden (HUD)** | F menü `EnvanterAcKapa()` **doğrudan** çağırır — InputManager gerekmez. I yolu InputManager ister. |
+| **Neden (I/mouse)** | Özel `M360LifeContext` + `Flags Overlay` + her frame `ActivateContext` → ESC CursorVisible bozulur; context FRAME sonunda geç kalıp I tetiklenmeyebilir. `Debug.KeyState` canlıda zaten kapalı. |
+| **Kırılma (conf)** | `Action` kökte değil → `Actions { Action ... }`. `Contexts`/`Context` bu parent formatında **Unknown class** verdi → context yok; sadece Actions. |
+| **Kırılma (okuma)** | `modded SCR_PlayerController.OnUpdate` + `ActivateAction("M360_EnvanterAc")` (entity FRAME geç; dedicated InputManager sunucuda yüklenmeyebilir — **istemci** conf şart). |
+| **Doğrula** | İstemciyi tamamen kapatıp `baglan-istemci` → I; logda `Unknown keyword/class Action|Context` **olmamalı** |
+
+### Input conf — doğru / yanlış
+
+```
+# YANLIŞ — Unknown keyword 'Action'/'Context' (kokte)
+ActionManager : parent {
+ Action M360_EnvanterAc { ... }
+ Context M360LifeContext { ... }
+}
+
+# YANLIŞ — ActionInput sinifi yok
+Actions { ActionInput Inventory { ... } }
+
+# DOĞRU
+ActionManager : "{795...}chimeraInputCommon.conf" {
+ Actions {
+  Action M360_EnvanterAc {
+   InputSource InputSourceSum "{...}" {
+    Sources {
+     InputSourceValue "{...}" { Input "keyboard:KC_I" }
+    }
+   }
+  }
+ }
+ Contexts {
+  Context M360LifeContext {
+   Priority 0
+   Actions { M360_EnvanterAc 0 }
+  }
+ }
+}
+```
+
+### Bilinen uyarılar (şimdilik OK)
+
+- Pirinç prefab `Wrong GUID/name` / `inherited-name` — resource rebuild / Workbench teyidi sonra.
+- Direct Join / workshop listing — publish sonrası.
+
+---
+
+## B. Kritik özet kartı (hızlı bakış — 2026-07-28)
 
 | Konu | Kural |
 |---|---|
 | `CreateWidgets` + elle `.layout` | **YASAK** (Play/WB donar) |
 | Lab UI | `CreateWidget` + `FrameSlot` |
 | Texture | Gerçek alpha; köşe **sabit** (9-slice / pill L-mid-R); soft AA |
-| I tuşu | `Debug.KeyState(KC_I)` canta; Tab’a bağlama |
+| I tuşu (WB) | `Debug.KeyState` yedek |
+| I tuşu (dedicated) | `ActivateAction(M360_EnvanterAc)` + edge; menüde dokunma; **Context Flags Overlay / ActionInput yasak** |
+| Dedicated bağlan | Önce sunucu; Steam’de `-client` kalıcı **yazma**; `baglan-istemci.ps1` |
+| Dedicated lokal start | `-server world` + `-addonsDir` + `-addons` (`-config` ile birlikte değil) |
+| Lab ışık | **Tepeden:** `angles -90 0 0` + saat 12 + Cloudy; eğince parlama = yan güneş (§7e) |
 | HUD stil | Circle rings + nakit pill + canta panel; HTML yok |
 | Lab 3P kamera | M360 değil; labda 1. şahıs |
-| Git | Workbench addon → `bagla-oyun-klasoru.ps1 / sync-game-to-github.ps1` → `Documents\GitHub\M360-Life` push (`/MIR` yasak) |
+| Git | junction / `sync-game-to-github.ps1` → push (`/MIR` yasak) |
 | Kod isim | Türkçe ASCII (11.2.1) |
 
 ---
@@ -331,7 +468,7 @@ Wiki: `Action_Context_Setup`.
 
 - Tasarım 0–14: tamam.
 - Faz 0 lab: Workbench Play + test dünya ilerliyor.
-- Neon + Vercel api canlı (health/jobs). Dedicated server hâlâ sırada. Güvenlik iskeleti: docs/19.
+- Neon + Vercel api canlı (health/jobs). **Dedicated lokal lab MP kanıtlandı** (§7e). Güvenlik: docs/19.
 - EveronLife: referans only, dependency asla.
 
 ---
@@ -343,9 +480,11 @@ Wiki: `Action_Context_Setup`.
 - [x] TEST spawner: F + scroll UserAction — Play teyidi + **temizlik yapıldı**
 - [x] JobStation Topla/İşle/Sat F menüsü — lab’a yerleştirildi
 - [x] HUD: yüzde sayacı + M360 envanter listesi (Play teyidi)
-- [x] Inventory tuşu **I** — `Debug.KeyState(KC_I)` kanıtlandı; Tab M360 açmaz
+- [x] Inventory tuşu **I** — WB: Debug; dedicated: `M360_EnvanterAc` (§7b/7e); Tab M360 açmaz
 - [x] Life tarzı `.layout` HUD çerçevesi lab v1 (CekirdekHud + CantaPanel — docs 10.8 / 7c)
-- [ ] Dedicated server ilk çalıştırma
+- [x] Dedicated lokal ilk çalıştırma + istemci bağlanma (2026-07-28 §7e)
+- [ ] Workshop publish → `-config` + Direct Join / dış oyuncu
+- [ ] Pirinç prefab GUID / resource rebuild uyarıları
 
 ---
 
@@ -429,11 +568,12 @@ Layer default {
 6. **Ölçek:** Yeni endpoint = `endpoint-katalog.ts` satırı + (gerekirse) tip görünüm; ham JSON her zaman yedek.
 
 **Hâlâ eksik (bilinçli)**
-- ~~Play’de RestApi kanıtı~~ → **KANITLANDI 2026-07-28** (aşağıda)
-- Dedicated server
+- ~~Play’de RestApi kanıtı~~ → **KANITLANDI 2026-07-28**
+- ~~Dedicated paket iskeleti~~ → `tools/dedicated/` + **lokal MP kanıtlandı** (§7e)
 - Yazma endpoint’leri + idempotency + audit
 - `web/` admin paneli
 - Anahtarın yalnız dedicated’ta kalması (oyuncu build’ine gömme)
+- Workshop publish (Direct Join / `-config` + mods)
 
 **Play API kanıtı (2026-07-28 ~11:53)**
 - Entity: `M360_ApiTest` + `M360_ApiBaglantiTestiBileseni` (LabDuzZemin)
@@ -442,6 +582,20 @@ Layer default {
   - `OK health http=200 sure~1093ms` · `db: bagli`
   - `OK jobs http=200 sure~1612ms` · Pirinc satırı Neon’dan
 - Sonuç: Workbench Play → Vercel → Neon zinciri çalışıyor
+
+**Lab mahalle nizamı (2026-07-28)**
+- `LabDuzZemin`: 5 geniş alan (40 m) — 1 Hub · 2 İşler · 3 Ekonomi · 4 Araç · 5 Rol
+- Ayırıcı: crash barrier; önünde `M360_LabTabela_1`…`_5`; ışık yok
+- Spawn Hub (20,25); Pirinç alan 2 (50/60/70, Z25)
+- Yeniden üret: `tools/gen_lab_mahalle.py` · detay: `m360-life/Worlds/LabDuzZemin/README.md`
+
+**Dedicated lokal MP (2026-07-28 öğleden sonra) — özet; ayrıntı §7e**
+- Paket: `tools/dedicated/` · exe Steam `Arma Reforger Server` · profil `M360Dedicated`
+- Start: `-server` lab world + `-addonsDir` + `-addons` (GUID); **`-config`+`-addons` yasak**
+- Bağlan: önce sunucu → `baglan-istemci.ps1`; Steam’de `-client` **kalıcı değil** (Init Error)
+- ~15:55 siyah/oynanamaz: kırık `ActionInput` conf + eksik CameraManager/EnvProbe/PP → düzeltildi
+- ~16:01 aşırı parlak: `M360_LabOrtam` Cloudy + güneş açısı
+- ~16:10 I tuşu dedicated: `M360_EnvanterAc` + context + listener (Debug yetmez)
 
 ---
 

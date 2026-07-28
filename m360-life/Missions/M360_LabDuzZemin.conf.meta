@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{7C2E9A41B8D05F36}Missions/M360_LabDuzZemin.conf"
+ Configurations {
+  ConfResourcePCClass PC {
+  }
+  ConfResourcePCClass XBOX_ONE : PC {
+  }
+  ConfResourcePCClass XBOX_SERIES : PC {
+  }
+  ConfResourcePCClass PS4 : PC {
+  }
+  ConfResourcePCClass PS5 : PC {
+  }
+  ConfResourcePCClass HEADLESS : PC {
+  }
+ }
+}
