@@ -19,6 +19,7 @@ powershell -File C:\Users\Enes\Documents\GitHub\M360-Life\tools\bagla-oyun-klaso
 
 - Geri al: `...\bagla-oyun-klasoru.ps1 -Coz`
 - Junction yoksa geçici kopya: `tools\sync-game-to-github.ps1`
+- Launcher’da proje yoksa: **+ Add Project** → `addons\M360-Life\addon.gproj`
 
 `resourceDatabase.rdb` gitignore’da (yerel cache).
 
@@ -34,18 +35,38 @@ M360-Life/
 └── tools/
 ```
 
+## Sistem nasıl konuşur (özet)
+
+1. **Geliştirme:** Cursor monorepo’da `api/` + `docs/`; Workbench junction’daki oyunu düzenler.
+2. **Kalıcılık:** Oyun parametreleri / ekonomi → Neon. API Vercel’de Neon’a bağlanır (`DATABASE_URL`).
+3. **Oyun → API:** Enforce `RestApi` / `RestContext` → `https://m360-life.vercel.app` + header `X-M360-Server-Key`.
+4. **İnceleme:** Tarayıcı lab UI (`/`) key ile jobs/health/metrik; istatistik `/istatistik`.
+5. **Güvenlik:** Anahtarsız jobs/metrik = 401. Health açık (uptime). Detay [19](./19_guvenlik.md).
+
+Üretim hedefi: HTTP’yi **dedicated** atar; oyuncu istemcisi sahte fiyat gönderemez — sunucu DB’den okur.
+
+## Geliştirme sırası (kesin — 2026-07-28)
+
+1. **LabDuzZemin** — tüm sistem/prefab burada bitirilir  
+2. **Dedicated** — yerel + cihazlar arası taşınabilir paket; modüler  
+3. **Harita seçimi / Everon yerleştirme** — lab + dedicated doğrulandıktan **sonra**
+
+Prefab’lar haritadan bağımsızdır; lab’da kanıt → sonra Everon’a konur.
+
 ## Bulut
 
 | Bileşen | Nerede |
 |---|---|
 | PostgreSQL | Neon (yerel PG yok) |
 | API | Vercel → `https://m360-life.vercel.app` |
-| Metrik paneli | `https://m360-life.vercel.app/istatistik` |
+| Lab UI | `/` (katalog + tablolar) |
+| Metrik | `/istatistik` |
 | Güvenlik | [docs/19](./19_guvenlik.md) |
+| Mimari diyagram | [docs/11 §11.1b](./11_teknik_mimari.md) |
 
 ## Günlük akış
 
-1. Workbench → `addons\M360-Life` (junction ise = git klasörü)
+1. Workbench → `addons\M360-Life` (junction = git klasörü)
 2. Cursor → `Documents\GitHub\M360-Life` (`api/`, `docs/`)
-3. Oyun değişince doğrudan `git add m360-life` (junction ile)
+3. Oyun değişince `git add m360-life` (junction ile kopya yok)
 4. API değişince push → Vercel otomatik deploy

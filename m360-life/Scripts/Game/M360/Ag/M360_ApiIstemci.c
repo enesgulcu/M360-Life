@@ -125,6 +125,31 @@ class M360_ApiBaglantiTestiBileseni : ScriptComponent
 	[Attribute("1", desc: "Play basinda otomatik health+jobs testi")]
 	bool m_bPlayBasindaTest;
 
+	//------------------------------------------------------------------------------------------------
+	//! Lab: Attribute bos ise $profile:M360_ApiLabKey.txt (git'e girmez)
+	protected string AnahtarCoz()
+	{
+		if (m_sSunucuAnahtari && m_sSunucuAnahtari.Length() > 0)
+			return m_sSunucuAnahtari;
+
+		string yol = "$profile:M360_ApiLabKey.txt";
+		if (!FileIO.FileExists(yol))
+			return "";
+
+		FileHandle fh = FileIO.OpenFile(yol, FileMode.READ);
+		if (!fh)
+			return "";
+
+		string satir;
+		fh.ReadLine(satir);
+		fh.Close();
+		if (!satir)
+			return "";
+		satir.Replace("\r", "");
+		satir.Replace("\n", "");
+		return satir;
+	}
+
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
@@ -138,8 +163,12 @@ class M360_ApiBaglantiTestiBileseni : ScriptComponent
 
 		if (m_sApiKok && m_sApiKok.Length() > 0)
 			M360_ApiIstemci.ApiKokAyarla(m_sApiKok);
-		if (m_sSunucuAnahtari && m_sSunucuAnahtari.Length() > 0)
-			M360_ApiIstemci.SunucuAnahtariAyarla(m_sSunucuAnahtari);
+
+		string anahtar = AnahtarCoz();
+		if (anahtar && anahtar.Length() > 0)
+			M360_ApiIstemci.SunucuAnahtariAyarla(anahtar);
+		else
+			Print("[M360 API] Uyari: sunucu anahtari yok — jobs 401 olabilir. $profile:M360_ApiLabKey.txt yaz.", LogLevel.WARNING);
 
 		GetGame().GetCallqueue().CallLater(GecikmeliTest, 1500, false);
 	}

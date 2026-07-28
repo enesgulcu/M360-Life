@@ -27,8 +27,8 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | **Dosya envanteri** | Her yeni/değişen dosya **docs/16**’ya işlenir (amaç, ilişki, istemci/sunucu/API). İşlem bitince kontrol et. |
 | **Test konumu** | Spawn/spawner/istasyon **0,0’da olmasın** — X/Z ~20 civarı (kenar/dip hissi olmasın). |
 | **Play’e odak** | Mümkünse AI script reload + dünya hazırlığını yapsın; kullanıcı sadece Play ile test etsin. NET API yoksa AI uzaktan reload yapamaz — kullanıcıya tek adım bırak. |
-| **Önceki süreç** | Tasarım + ilk kod **Claude Agent / Claude Code** ile yapıldı. Şimdi çalışma ortamı **Cursor + enfusion-mcp**. Klasör aynı: `...\addons\M360 Life`. |
-| **Docker istemiyor** | PostgreSQL native (Döküman 11). |
+| **Önceki süreç** | Tasarım + ilk kod **Claude Agent / Claude Code** ile yapıldı. Şimdi **Cursor + enfusion-mcp**. Klasör: `...\addons\M360-Life`. |
+| **Docker istemiyor** | Neon hosted PG; yerel PG yok. Docker yok. |
 | **Kapsam büyüdü ama acele yok** | MVP geniş (15 iş, polis/doktor, klan); süre esnek. Faz sırası önemli. |
 | **Life envanter tuşu** | Arma 3 Life = **I**. Reforger `"Inventory"` ≈ **Tab**. **Kanıtlı lab yolu (2026-07-27):** `Debug.KeyState(KeyCode.KC_I)` + `ClearKey` → M360 aç/kapa. Tab’ı `ActionOpenInventory` ile M360’ye **bağlama**. Input.conf / runtime remap Play’de **tutmadı** — ayrıntı **7b**. |
 | **Kod dili / isim (ANA DÜSTUR)** | Değiştirilebilir her şey **Türkçe ASCII**: class, metod, üye, Attribute, dosya adı, oyuncu metni. **Yorumlar Türkçe**. Motor override/API İngilizce dokunulmaz. Prefab + `.et` birlikte. `EnfusionMCP` araç kodu hariç. Bkz. **11.2.1 / 13.2**. |
@@ -123,7 +123,7 @@ Kanıtlı örnekler: GameMode_Plain, PlayerSpawnPoint, ConcretePanel, M151A2, FF
 | `M151A2.et` | `F649585ABB3706C4` |
 | `UAZ469.et` | `259EE7B78C51B624` |
 | `S1203_transport_beige.et` | `543799AC5C52989C` |
-| `M360_JobCollect_Pirinc.et` | `ADF987310AA53059` |
+| `M360_Topla_Pirinc.et` | `ADF987310AA53059` |
 | `M360_JobProcess_Pirinc.et` | `ADF987310AA5305A` |
 | `M360_JobSell_Pirinc.et` | `ADF987310AA5305B` |
 | `SackUniversal_01.et` | `F4CA533A99B20DAE` |
@@ -156,7 +156,7 @@ Wiki: `Arma_Reforger:New_Terrain_Setup`, Terrain Preparation Tutorial.
 | Oturum sayac | `M360_IsOturumlari` (oyuncuId → ham/islenmis/nakit) |
 | Siteler | `M360_ToplamaAlaniBileseni` / `IslemeMakinesiBileseni` / `SatisNoktasiBileseni` |
 | Aksiyonlar | `M360_ToplaAksiyonu`, `IsleAksiyonu`, `SatAksiyonu`, `DurumAksiyonu` |
-| Prefab dosya | `M360_JobCollect/Process/Sell_Pirinc.et` (GUID path; icerik Turkce class) |
+| Prefab dosya | `M360_Topla/Isle/Sat_Pirinc.et` |
 | Lab dunya | `M360_PirincTopla` · `PirincIsle` · `PirincSat` · `M360_CantaHud` |
 
 **Lab config (Play):** adim=4, verim=2, parti=20, isleme=**10sn**, fiyat=600, maxTasima=40.  
@@ -374,7 +374,7 @@ Wiki: `Action_Context_Setup`.
 - **Gün sonu final:** Doc 13 üç-site rewrite; 5.7a/b sefer+lab|üretim tablosu; 14 mcp=Cursor; 04/07 zaman hizası; 08/09 stale checkbox; README güncellendi; GitHub push.
 - **Türkçe ASCII class rename:** `Job*` → `IsAyar` / `ToplamaAlaniBileseni` / `CantaHudBileseni`…; Attribute `m_iAdim*`; docs **11.2.1 ANA DÜSTUR**; son push.
 - **Docs 16:** Dosya/içerik envanteri açıldı (script+prefab+dünya+ileride API). Her işlemde güncelleme kuralı; sunucu-yetkili hatırlatma §0.
-- **Yerel lab planı uygulandı:** klasör `Isler/` + `LabDuzZemin`; mesafe iptali (`m_fIptalMesafesi`); docs 17; GitHub `apps/game-api` + `packages/db`; sync MIR yasak.
+- **Yerel lab planı uygulandı:** klasör `Isler/` + `LabDuzZemin`; mesafe iptali (`m_fIptalMesafesi`); docs 17; GitHub `api/` + `packages/db`; sync MIR yasak.
 - **Play lab onay (2026-07-27):** Pirinç topla/işle/sat + mesafe iptali OK. Boş harita kök nedeni §8e.
 - **Layout HUD lab v1:** `UI/layouts/M360/` + CreateWidgets; hint panel yolu kaldırıldı (§7c). MCP `layout_create` Children/tırnaklı Slot **yanlış** — vanilla `Slot FrameWidgetSlot "{GUID}"`. Play teyidi: kullanıcı (WB Play).
 
@@ -403,13 +403,46 @@ Layer default {
 
 ---
 
-*İlgili: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [14](./14_mevcut_modlar_araclar.md) · [16](./16_dosya_envanteri.md) · [17](./17_yerel_kurulum.md)*
+*İlgili: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [14](./14_mevcut_modlar_araclar.md) · [16](./16_dosya_envanteri.md) · [17](./17_yerel_kurulum.md) · [18](./18_calisma_duzeni.md) · [19](./19_guvenlik.md)*
 
+---
 
-### 2026-07-28 — Vercel + Neon + güvenlik iskeleti
+<!-- oturum notlari asagida devam — 8e ustte kalir -->
 
-- API: https://m360-life.vercel.app (/api/health, /api/jobs, /api/metrik, /istatistik)
-- Koruma: withApiKoruma rate limit + opsiyonel M360_SERVER_KEY
-- Oyun: Scripts/Game/M360/Ag/M360_ApiIstemci.c
-- Senkron: 	ools/bagla-oyun-klasoru.ps1 (junction; Workbench kapalı çalıştır)
-- Docs: 11/17/18/19 güncellendi
+### 2026-07-28 — Vercel + Neon + güvenlik + lab UI
+
+**Kurulan iskelet**
+- Neon PG + migration `job_definitions` (Pirinc)
+- Vercel `api/` Root Directory; URL: `https://m360-life.vercel.app`
+- `M360_SERVER_KEY` → jobs/metrik kilitli; health açık
+- Junction: Workbench `addons\M360-Life` → GitHub `m360-life` (`bagla-oyun-klasoru.ps1`)
+- Lab UI: `/` katalog + tip görünüm; `/istatistik` süreler
+- Oyun istemci: `Scripts/Game/M360/Ag/M360_ApiIstemci.c` — Play health/jobs **kanitli**
+- Docs: 11.1b canlı mimari, 18 iletişim, 19 güvenlik
+
+**Çıkarımlar (önemli)**
+1. **Env ≠ kod:** Vercel’e sadece `M360_SERVER_KEY` eklemek yetmez; koruma kodu push edilmeden eski deploy açık kalır.
+2. **Tarayıcı ≠ API istemcisi:** Adres çubuğundan custom header yok → lab UI şart; ham `/api/jobs` bilerek 401.
+3. **Inline `<script>` + Next hydration:** click listener kaybolur → `"use client"` React handler kullan.
+4. **Junction:** kopya senkronu öldürür; Launcher projeyi unutursa `+ Add Project` → `addon.gproj`.
+5. **DB sızmaz, API sızabilir:** URL bilmek Neon’a girmez; açık GET endpoint veri sızdırır → key + rate limit minimum.
+6. **Ölçek:** Yeni endpoint = `endpoint-katalog.ts` satırı + (gerekirse) tip görünüm; ham JSON her zaman yedek.
+
+**Hâlâ eksik (bilinçli)**
+- ~~Play’de RestApi kanıtı~~ → **KANITLANDI 2026-07-28** (aşağıda)
+- Dedicated server
+- Yazma endpoint’leri + idempotency + audit
+- `web/` admin paneli
+- Anahtarın yalnız dedicated’ta kalması (oyuncu build’ine gömme)
+
+**Play API kanıtı (2026-07-28 ~11:53)**
+- Entity: `M360_ApiTest` + `M360_ApiBaglantiTestiBileseni` (LabDuzZemin)
+- Anahtar: `$profile:M360_ApiLabKey.txt` (git’e girmez; Attribute boş)
+- Log:
+  - `OK health http=200 sure~1093ms` · `db: bagli`
+  - `OK jobs http=200 sure~1612ms` · Pirinc satırı Neon’dan
+- Sonuç: Workbench Play → Vercel → Neon zinciri çalışıyor
+
+---
+
+*İlgili: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [14](./14_mevcut_modlar_araclar.md) · [16](./16_dosya_envanteri.md) · [17](./17_yerel_kurulum.md) · [18](./18_calisma_duzeni.md) · [19](./19_guvenlik.md)*

@@ -24,6 +24,15 @@ GenericEntity M360_CantaHud {
  }
  coords 0 0 0
 }
+GenericEntity M360_ApiTest {
+ components {
+  M360_ApiBaglantiTestiBileseni "{A1B2C3D4E5F60718}" {
+   m_sApiKok "https://m360-life.vercel.app"
+   m_bPlayBasindaTest 1
+  }
+ }
+ coords 0 1 0
+}
 SCR_SpawnPoint M360_PlayerSpawn : "{5392C4D80E4B18F8}Prefabs/MP/Spawning/SpawnPoint_FFA.et" {
  coords 18 0.5 20
 }

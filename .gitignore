@@ -40,6 +40,7 @@ build/
 # Workbench regenerated
 resourceDatabase.rdb
 *.rdb
+**/.EditorData/
 
 # Node / Next (api + web)
 node_modules/

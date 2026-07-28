@@ -32,7 +32,7 @@
 
 | Faz | İçerik | Süre göstergesi |
 |---|---|---|
-| **0 — Yerel Lab** | Addon, Git, junction senkron, Neon+Vercel `api`, ilk RestApi çağrısı, dedicated ilk çalıştırma | Gösterge: 2-4 hafta |
+| **0 — Yerel Lab** | LabDuzZemin’de sistem, Git/junction, Neon+Vercel `api`, Play RestApi, **taşınabilir dedicated** ilk çalıştırma | Gösterge: 2-4 hafta |
 | **1 — Life Core** | Karakter, hesap, rol state, aktif süre/AFK ölçümü, banka/ledger, temel HUD, admin panel ilk config, rate limit/idempotency/audit altyapısı | Gösterge: 4-8 hafta |
 | **2 — İlk Dikey Dilim** | Bağlan→doğ→ATM→lisans→iş yap→sat→market→araç al→garaja koy→restart sonrası korunur | Gösterge: 6-10 hafta |
 | **3 — MVP Core (genişletilmiş)** | 15 iş, kapasite envanteri, sağlık+araç sigortası, araç+kiralama+garaj, **Polis/Doktor rütbe ve çağrı sistemi**, **Klan (kuruluş, gider, kiralık nokta)**, saldırgan profil sistemi | Gösterge: orijinal 4-6 aydan daha uzun — kapsam büyüdüğü için gerçekçi süre ilerledikçe netleşecek |

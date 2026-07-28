@@ -46,7 +46,7 @@ Döküman 5’teki “tek çekirdek, çok iş” fikrinin motor karşılığı:
 
 | Component | Aşama | Prefab dosyası (GUID path) |
 |---|---|---|
-| `M360_ToplamaAlaniBileseni` | Toplama | `M360_JobCollect_Pirinc.et` |
+| `M360_ToplamaAlaniBileseni` | Toplama | `M360_Topla_Pirinc.et` |
 | `M360_IslemeMakinesiBileseni` | İşleme | `M360_JobProcess_Pirinc.et` |
 | `M360_SatisNoktasiBileseni` | Satış | `M360_JobSell_Pirinc.et` |
 
@@ -64,26 +64,25 @@ Her birinde `m_Ayar` → `M360_IsAyar`. Aksiyonlar: `M360_ToplaAksiyonu` / `Isle
 - Ürün: PostgreSQL `job_definitions` + Next.js API → runtime override (Döküman 11)
 - DB yoksa prefab değeri; DB varsa DB üstün
 
-## 13.5 Script / Prefab Klasör Yapısı (gerçek addon)
+## 13.5 Script / Prefab Klasör Yapısı (gerçek)
 
 ```
-addons/M360 Life/
+m360-life/   (= Workbench addons\M360-Life via junction)
 ├── addon.gproj
 ├── Scripts/Game/M360/
-│   ├── Isler/             # IsAyar, Oturum, Topla/Isle/Sat bilesen + aksiyon
-│   ├── Arayuz/            # CantaHud
-│   ├── Core/ Economy/ …   # iskelet
-│   └── Net/
+│   ├── Isler/
+│   ├── Arayuz/
+│   ├── Ag/                 # RestApi istemci (lab)
+│   └── Core/ Economy/ …    # iskelet (bos stub)
 ├── Prefabs/M360/
-│   ├── Isler/Pirinc/      # Topla / Isle / Sat .et
+│   ├── Isler/Pirinc/       # Topla / Isle / Sat .et
 │   ├── Arayuz/ Dunya/ Pazarlar/ Araclar/
-├── Worlds/LabDuzZemin/    # duz zemin lab
-├── Configs/
-├── docs/                  # 00–17
-└── tools/sync-addon-to-github.ps1
+├── Worlds/LabDuzZemin/     # lab harita (asıl gelistirme zemini)
+├── UI/ Configs/
+└── Scripts/WorkbenchGame/EnfusionMCP/   # arac, urun degil
 ```
 
-`Scripts/WorkbenchGame/EnfusionMCP/` — MCP Workbench handler’ları (ürün değil, araç).
+Repo kokunde ayrica: `api/` `web/` `packages/db/` `docs/` `tools/bagla-oyun-klasoru.ps1`
 
 ## 13.6 Lab’da Kanıtlanan İlk Adım (tamam)
 
@@ -92,17 +91,17 @@ addons/M360 Life/
 - [x] UserAction F menü
 - [x] Play: ilerleme ipucu + I ile çanta
 - [x] Class/Attribute Türkçe ASCII geçişi (11.2.1)
-- [ ] Dedicated + PG (13.4)
+- [ ] Dedicated (yerel, tasinabilir paket) + Neon/API (13.4)
 
 Sayılar: lab vs üretim tablosu → **Döküman 5.7b** + kök README.
 
 ## 13.7 Açık Maddeler
 
-- [ ] Runtime PostgreSQL override (RPC/HTTP)
+- [x] ~~Runtime PostgreSQL override (RPC/HTTP)~~ — lab RestApi health/jobs kanitli; yazma sonra
 - [ ] Alet şartı (Döküman 5.1b) — lab’da henüz yok
 - [ ] Gerçek kapasite envanteri (lab = `m_iMaxTasima` sayaç)
 - [x] ~~Tek vs üç site~~ — üç site kesin
-- [x] ~~UserAction `additionalActions`~~ — 15 §7
+- [ ] Everon yerlestirme — lab + dedicated bitince (harita secimi en sonda)- [x] ~~UserAction `additionalActions`~~ — 15 §7
 
 ---
 *Önceki: [12 - Lisans & Roadmap](./12_lisans_roadmap.md) · Sıradaki: [14](./14_mevcut_modlar_araclar.md)*

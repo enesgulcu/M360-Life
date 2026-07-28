@@ -22,6 +22,43 @@ Arma Reforger İstemcisi          Dedicated Oyun Sunucusu          M360 Web/API 
 
 **Temel ilke:** İstemci talep eder; oyun sunucusu doğrular; PostgreSQL kalıcı kaydı tutar; Redis yalnızca geçici koruma sağlar.
 
+## 11.1b Canlı mimari (2026-07-28 — ne kurduk, nasıl konuşuyor)
+
+```
+┌─────────────────────┐     junction      ┌──────────────────────────┐
+│ Workbench / Play    │ ←───────────────→ │ GitHub monorepo          │
+│ addons\M360-Life    │   aynı dosyalar   │ m360-life/  api/  docs/  │
+└─────────┬───────────┘                   └────────────┬─────────────┘
+          │ RestApi (HTTP)                             │ git push
+          ▼                                            ▼
+┌─────────────────────┐                   ┌──────────────────────────┐
+│ Vercel  api/        │ ←──── SQL ──────→ │ Neon PostgreSQL          │
+│ m360-life.vercel.app│                   │ job_definitions …        │
+│ /api/health|jobs|…  │                   └──────────────────────────┘
+│ Lab UI /istatistik  │
+└─────────────────────┘
+```
+
+| Katman | Ne yapar | Ne yapmaz |
+|---|---|---|
+| **Oyun (`m360-life`)** | HUD, aksiyon, lab iş akışı, ileride RestApi ile API çağrısı | Para/ledger’a doğrudan yazmaz; istemci kaynak değil |
+| **API (`api/` → Vercel)** | HTTP JSON; Neon okur/yazar; rate limit + `M360_SERVER_KEY` | Oyuncu tarayıcısından açık veri sızdırmamalı |
+| **DB (Neon)** | Gerçeklik kaynağı (`job_definitions` …) | İnternete doğrudan açık değil |
+| **Lab UI (`/`)** | Key ile health/jobs/metrik inceler | Üretim admin paneli değil (`web/` sonra) |
+| **Dedicated** | (henüz) Sunucu-yetkili kurallar + API’ye imzalı istek | — |
+
+**İletişim kuralı (hedef):**  
+Oyuncu → (görsel) istemci → **dedicated doğrular** → HTTP (`X-M360-Server-Key`) → Vercel API → Neon.  
+Lab’da şimdilik: Play / script `M360_ApiIstemci` doğrudan API’ye test çağrısı atabilir; üretimde anahtar yalnız dedicated’ta kalır.
+
+**Web tarafı ayrımı:**
+- `api/` = oyun + lab HTTP (canlı)
+- `web/` = ileride admin panel (ayrı Vercel proje veya monorepo ikinci root)
+- Tarayıcıda ham `/api/jobs` anahtarsız **401**; lab UI key’i session’da tutar
+
+Detay: [18](./18_calisma_duzeni.md) · [19](./19_guvenlik.md) · lab katalog: `api/src/lib/lab/endpoint-katalog.ts`
+
+
 ## 11.2 Arma Reforger İlkeleri
 
 - Paylaşılan entity ve etkiler Enfusion replication sistemiyle istemcilere aktarılır; ağda görünmesi gereken entity'ler uygun RplComponent ve replication düzenine sahip olmalıdır.
@@ -46,7 +83,7 @@ Arma Reforger İstemcisi          Dedicated Oyun Sunucusu          M360 Web/API 
 
 Örnek: `JobConfig` → `IsAyar`; `TickDuration` → `AdimSuresi`; `CollectAction` → `ToplaAksiyonu`; `StartProcessing` → `IslemeBaslat`.
 
-**Dokunulmayanlar:** BI/Enfusion API, `Scripts/WorkbenchGame/EnfusionMCP/*` (araç handler’ları), resource GUID path’lerindeki dosya adları (prefab dosya adı `M360_JobCollect_Pirinc.et` GUID için sabit kalabilir; içindeki class Türkçe).
+**Dokunulmayanlar:** BI/Enfusion API, `Scripts/WorkbenchGame/EnfusionMCP/*` (araç handler’ları), resource GUID path’lerindeki dosya adları (örn. eski `M360_JobCollect_Pirinc.et` GUID’si; disk adı artık `M360_Topla_Pirinc.et`; içindeki class Türkçe).
 
 ## 11.3 Next.js Fullstack + PostgreSQL Kararı
 
@@ -158,8 +195,12 @@ Koordinatlar her karede kaydedilmez; belirli aralıkla örneklenir, önemli olay
 
 ## 11.12 Sıradaki Somut Adım
 
-**Tamamlanan (2026-07-28):** Neon + Vercel `api`, `/api/health`+`/api/jobs`, rate limit iskeleti, `/istatistik`, oyun `M360_ApiIstemci`.
+**Tamamlanan (2026-07-28):** Neon + Vercel pi, güvenlik anahtarı, lab UI, junction, Play RestApi health/jobs.
 
-**Sırada:** Workbench junction (`bagla-oyun-klasoru.ps1`), Play’de API bağlantı testi, dedicated server ilk ayağa kaldırma, `M360_SERVER_KEY` üretimde zorunlu.
+**Geliştirme sırası:** LabDuzZemin → dedicated (taşınabilir) → Everon yerleştirme (en sonda).
 
----\n*Önceki: [10](./10_panel_hud_admin.md) · Sonraki: [12](./12_lisans_roadmap.md) · Güvenlik: [19](./19_guvenlik.md)\n
+**Sırada:** Dedicated lab paketi (yerel ayağa kaldırma + başka cihaza taşınabilir yapı).
+
+---
+*Önceki: [10](./10_panel_hud_admin.md) · Sonraki: [12](./12_lisans_roadmap.md) · Güvenlik: [19](./19_guvenlik.md)*
+

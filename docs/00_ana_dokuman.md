@@ -12,7 +12,7 @@
 | Bu sürüm | Parçalanmış döküman seti — v1 |
 | Ekip | Tek kişi (sen) + AI teknik ortak (şimdi **Cursor + enfusion-mcp**; önceki Claude Code oturumları) |
 | İlk hedef | Kendi/topluluk sunucusu; lisans satışı ileride ikinci aşama |
-| Geliştirme ortamı | Başlangıçta local cihaz (test/deneme); büyüdükçe uygun hosting'e taşınacak |
+| Geliştirme ortamı | Lab harita + Vercel/Neon; dedicated taşınabilir paket sırada; Everon yerleştirme en sonda |
 
 ---
 
@@ -159,4 +159,4 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 
 ---
 
-*Sıradaki adım: tasarım seti tamam — lab/ürün için [15](./15_gelistirme_notlari.md) + kök [README](../README.md).*
+*Sıradaki adım: canlı iskelet (Neon+Vercel+junction+lab) kurulu — Play API testi + dedicated; bkz. [15](./15_gelistirme_notlari.md) §2026-07-28 · mimari [11.1b](./11_teknik_mimari.md).*

@@ -19,9 +19,10 @@
 
 ## 1. Senkron kuralı (kritik)
 
-- Workbench → GitHub: `tools/bagla-oyun-klasoru.ps1 (+ sync-game-to-github.ps1)`
-- **`robocopy /MIR` yasak** — `apps/` ve `packages/` silinir.
-- Platform kodu yalnız `Documents\GitHub\M360-Life\apps|packages`.
+- Tercih: `tools/bagla-oyun-klasoru.ps1` (junction — kopya yok)
+- Yedek: `tools/sync-game-to-github.ps1`
+- **`robocopy /MIR` yasak** — `api/` / `web/` / `packages/` / `docs/` silinir.
+- Platform: `api/` `web/` `packages/`; oyun: `m360-life/`
 
 ---
 
@@ -44,6 +45,7 @@
 | `Arayuz/M360_YuvarlakBar.c` | Badge + maskeli progress ring | CekirdekHud | lab UI | lab |
 | `Arayuz/M360_CantaPanelWidgetlari.c` | I canta v3 soft9 (9-slice + satır havuzu) | CantaHudBileseni | lab UI | lab |
 | `Arayuz/M360_HudYazi.c` | NakitFormat (binlik nokta) | Cekirdek + Canta | lab UI | lab |
+| `Ag/M360_ApiIstemci.c` | Vercel RestApi health/jobs | BaglantiTesti + lab entity | lab Ag | kanitli |
 | `WorkbenchGame/EnfusionMCP/*` | MCP köprü | Cursor | WB only | arac |
 
 ---
@@ -83,7 +85,7 @@ Harita değişince: aynı `Isler/*` prefab’ları yerleştir.
 | `.../M360_LabDuzZemin_Layers/default.layer` | Pirinç + spawn + HUD | lab |
 | `.../M360_Terrain/` | GenericTerrain data | lab |
 
-Entity: `M360_PirincTopla` (~20,20) · `PirincIsle` (26,20) · `PirincSat` (~31,20) · `M360_CantaHud` · FFA managers.
+Entity: `M360_PirincTopla` (~20,20) · `PirincIsle` (26,20) · `PirincSat` (~31,20) · `M360_CantaHud` · `M360_ApiTest` · FFA managers.
 
 ---
 
@@ -91,10 +93,10 @@ Entity: `M360_PirincTopla` (~20,20) · `PirincIsle` (26,20) · `PirincSat` (~31,
 
 | Yol | Amaç | Durum |
 |---|---|---|
-| `api/` | Next.js API :3100 (`/api/health`, `/api/jobs`) | iskelet |
+| `api/` | Next.js → Vercel (`/api/health`, `/api/jobs`, `/api/metrik`, lab UI `/`) | canlı |
 | `web/` | Admin panel | yer tutucu |
-| `packages/db/migrations/001_job_definitions.sql` | İş tanım tablosu | iskelet |
-| `tools/bagla-oyun-klasoru.ps1 (+ sync-game-to-github.ps1)` | Güvenli senkron | canlı |
+| `packages/db/migrations/001_job_definitions.sql` | Neon iş tanım tablosu | canlı |
+| `tools/bagla-oyun-klasoru.ps1` (+ sync) | Junction / senkron | canlı |
 
 ---
 
@@ -105,7 +107,9 @@ Entity: `M360_PirincTopla` (~20,20) · `PirincIsle` (26,20) · `PirincSat` (~31,
 | `00`–`14` | Tasarım |
 | `15` | Kanıt / tuzak |
 | `16` | Bu envanter |
-| `17` | Yerel kurulum rehberi |
+| `17` | Neon + Vercel kurulum |
+| `18` | Junction + iletişim |
+| `19` | Güvenlik / rate limit |
 | `docs/arsiv/` | Eski konuşma notları |
 
 ---
@@ -120,4 +124,4 @@ Oyuncu F/I → Prefab Isler/Pirinc → Aksiyon → Bilesen (+ mesafe iptal)
                    IsOturumlari (lab) → CantaHud
 ```
 
-Ürün: bilesen talep → dedicated → game-api → PostgreSQL.
+Ürün: bilesen talep → dedicated → `api/` (Vercel) → Neon PostgreSQL.
