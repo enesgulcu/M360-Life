@@ -38,10 +38,12 @@ build/
 resourceDatabase.rdb
 *.rdb
 
-# Node / Next (platform apps — GitHub kökünde)
+# Node / Next (api + web)
 node_modules/
 .next/
-apps/**/.env
-apps/**/.env.local
+api/.env
+api/.env.local
+web/.env
+web/.env.local
 packages/**/.env
 

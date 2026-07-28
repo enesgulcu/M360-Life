@@ -1,20 +1,16 @@
 import { NextResponse } from "next/server";
-import { Pool } from "pg";
+import { getPool } from "@/lib/db";
 
-function poolOlustur() {
-  const url = process.env.DATABASE_URL;
-  if (!url) return null;
-  return new Pool({ connectionString: url });
-}
+export const runtime = "nodejs";
 
 export async function GET() {
-  const pool = poolOlustur();
+  const pool = getPool();
   if (!pool) {
     return NextResponse.json(
       {
         ok: false,
         kaynak: "env-yok",
-        mesaj: "DATABASE_URL yok — packages/db/.env.example bak",
+        mesaj: "DATABASE_URL yok — Vercel env veya .env.local",
         isler: [],
       },
       { status: 200 }
@@ -28,10 +24,8 @@ export async function GET() {
        FROM job_definitions
        ORDER BY is_adi`
     );
-    await pool.end();
     return NextResponse.json({ ok: true, kaynak: "postgresql", isler: sonuc.rows });
   } catch (err) {
-    await pool.end().catch(() => undefined);
     const mesaj = err instanceof Error ? err.message : String(err);
     return NextResponse.json(
       {

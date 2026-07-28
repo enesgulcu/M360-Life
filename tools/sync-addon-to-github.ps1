@@ -1,19 +1,22 @@
-# M360 Life — Workbench addon → GitHub senkron (MIR YASAK)
-# apps/ ve packages/ GitHub tarafinda kalir; silinmez.
+# M360 Life — Workbench addon ↔ GitHub senkron (MIR YASAK)
+# Repo duzeni: m360-life/ (oyun) | api/ | web/ | packages/
 #
 # Kullanim:
 #   powershell -File tools/sync-addon-to-github.ps1
 
 $ErrorActionPreference = "Stop"
-$src = "c:\Users\enesg\Documents\My Games\ArmaReforgerWorkbench\addons\M360 Life"
-$dst = "C:\Users\enesg\Documents\GitHub\M360-Life"
+
+# Kaynak: Workbench'te acik addon koku (Scripts/Prefabs burada)
+$src = "c:\Users\Enes\Documents\My Games\ArmaReforgerWorkbench\addons\M360-Life\m360-life"
+# Hedef: ayni monorepo icindeki m360-life (bu makinede kaynak=hedef olabilir)
+$dst = "c:\Users\Enes\Documents\My Games\ArmaReforgerWorkbench\addons\M360-Life\m360-life"
 
 if (-not (Test-Path $src)) { throw "Kaynak yok: $src" }
 if (-not (Test-Path $dst)) { New-Item -ItemType Directory -Force -Path $dst | Out-Null }
 
-# Sadece Enfusion addon klasor/dosyalari (platform apps dokunulmaz)
-$includeDirs = @("Configs", "docs", "Prefabs", "Scripts", "Worlds", "UI", "tools", ".cursor")
-$includeFiles = @("addon.gproj", "README.md", ".gitignore")
+# Sadece Enfusion addon — api/ web/ packages/ dokunulmaz
+$includeDirs = @("Configs", "Prefabs", "Scripts", "Worlds", "UI")
+$includeFiles = @("addon.gproj")
 
 foreach ($d in $includeDirs) {
   $from = Join-Path $src $d
@@ -32,15 +35,6 @@ foreach ($f in $includeFiles) {
   }
 }
 
-# Kokteki gereksiz konusma notlarini GitHub'dan temizleme (arsiv docs'ta)
-@(
-  "cursor agent konusmalar.md",
-  "cursor code konusmalar.md"
-) | ForEach-Object {
-  $p = Join-Path $dst $_
-  if (Test-Path $p) { Remove-Item $p -Force; Write-Host "silindi $_" }
-}
-
 Write-Host ""
-Write-Host "Senkron bitti. apps/ ve packages/ korunur."
-Write-Host "Sonraki: cd `"$dst`"; git add -A; git status; git commit; git push"
+Write-Host "Senkron bitti. api/ web/ packages/ docs/ korunur."
+Write-Host "Sonraki: git add -A; git status; git commit; git push"

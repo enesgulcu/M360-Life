@@ -1,13 +1,15 @@
 # M360 Life (GitHub monorepo)
 
+Ayni hizada uc ana bolum:
+
 | Bolum | Yol | Aciklama |
 |---|---|---|
-| Enfusion addon | kokteki `Scripts/`, `Prefabs/`, `Worlds/`, `docs/`… | Workbench `addons\M360 Life` ile senkron |
-| Oyun API | `apps/game-api` | Next.js :3100 |
-| Admin | `apps/admin-web` | sonra |
-| DB | `packages/db` | PostgreSQL migration |
-| Sync | `tools/sync-addon-to-github.ps1` | MIR yasak |
+| Oyun (Enfusion addon) | `m360-life/` | Scripts, Prefabs, Worlds, UI, Configs, addon.gproj |
+| API | `api/` | Next.js game-api → Vercel (Root Directory: `api`) |
+| Web | `web/` | Admin panel (sonraki faz) → Vercel |
+| DB | `packages/db` | PostgreSQL migration (Neon) |
+| Docs | `docs/` | Tasarim + lab notlari |
+| Sync | `tools/` | Workbench senkron scriptleri |
 
-Kurulum: **[docs/17_yerel_kurulum.md](docs/17_yerel_kurulum.md)**  
-Envanter: **[docs/16_dosya_envanteri.md](docs/16_dosya_envanteri.md)**  
-Ana README (urun ozeti): asagida eski addon README icerigi korunur / birlestirilir.
+**Yerel PC:** Workbench addon koku = `m360-life/` (veya senkron ile duz addon klasoru).  
+**Bulut:** Neon (PG) + Vercel (`api`, sonra `web`). Yerel PG/Next zorunlu degil.

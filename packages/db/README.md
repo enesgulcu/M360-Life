@@ -1,23 +1,20 @@
 # packages/db — PostgreSQL sema
 
-## Kurulum (ozet — detay docs/17)
+**Hedef:** Hosted PostgreSQL ([Neon](https://neon.tech)) — yerel PG kurulmaz.
 
-1. PostgreSQL native kur (Docker yok).
-2. Kullanici/DB olustur (ornek):
+## Ilk kurulum (Neon)
+
+1. https://console.neon.tech → proje `m360-life`.
+2. Connection string — **Pooled connection** (Vercel icin).
+3. Neon SQL Editor'de `migrations/001_job_definitions.sql` calistir.
+4. Ayni URL:
+   - Yerel test: `api/.env` → `DATABASE_URL=...` (git'e girmez)
+   - Vercel: Project Settings → Environment Variables → `DATABASE_URL`
+
+## Kontrol
 
 ```sql
-CREATE USER m360 WITH PASSWORD 'm360_lab';
-CREATE DATABASE m360_life OWNER m360;
+SELECT is_adi, satis_fiyati, iptal_mesafesi FROM job_definitions;
 ```
 
-3. Migration:
-
-```bat
-psql -U m360 -d m360_life -f migrations/001_job_definitions.sql
-```
-
-4. `apps/game-api/.env` icine:
-
-```
-DATABASE_URL=postgresql://m360:m360_lab@localhost:5432/m360_life
-```
+Beklenen: `Pirinc` satiri.

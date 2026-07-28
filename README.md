@@ -14,20 +14,23 @@ Bu repo yalnızca “topla-sat eklentisi” değil; sunucu yetkili, panelden aya
 | Lab bulguları (`docs/15`) | Canlı — kanıtlanmış tuzaklar buraya yazılır |
 | Pirinç dikey dilim (topla → işle → sat) | Workbench Play’de çalışıyor (oturum stub) |
 | HUD lab | **I** = M360 çanta hint; yüzde sayacı; gerçek `.layout` HUD henüz yok |
-| Dedicated / Next.js / PostgreSQL | Henüz yok — sıradaki büyük kapı |
+| API + PostgreSQL | Neon (hosted PG) + `api/` → Vercel (kurulum aşaması) |
 
 **Lab ≠ ürün.** Lab’da para/envanter stub (`M360_IsOturumlari`), yerel action, hint UI vardır. Ürün hedefi: sunucu yetkili ledger, gerçek envanter, replication, admin panel.
 
 ---
 
-## İki klasör (önemli)
+## Repo düzeni (aynı hizada)
 
 | Yol | Rol |
 |---|---|
-| `...\ArmaReforgerWorkbench\addons\M360 Life` | **Günlük çalışma** (Workbench burayı açar) |
-| `Documents\GitHub\M360-Life` | **Git / GitHub kopyası** (bu repo) |
+| `m360-life/` | Enfusion addon — Workbench bunu açar |
+| `api/` | Next.js game-api → Vercel Root Directory: `api` |
+| `web/` | Admin panel (sonraki faz) |
+| `packages/db/` | Neon migration SQL |
+| `docs/` | Tasarım + lab |
 
-Workbench klasörü git repo değildir. Push öncesi Workbench → bu klasöre senkron, sonra `commit` + `push`. Kaybolmaması gereken her şey GitHub’da olmalı.
+**Yerelde sadece oyun** (`m360-life/`). API ve DB bulutta (Vercel + Neon).
 
 Remote: https://github.com/enesgulcu/M360-Life
 
@@ -66,7 +69,7 @@ Konuşma geçmişi kaynak değildir. Güncel gerçek: bu dökümanlar + kod.
 - Açık Workbench varken **yeni Workbench açılmaz** (`wb_launch` yasak) → `wb_connect`.
 - Enfusion/Reforger’da varsayım yasak → resmi BI wiki / API.
 - **EveronLife** = fikir kaynağı, **asla dependency değil**.
-- Docker yok → PostgreSQL native.
+- Docker yok → PostgreSQL **Neon** (hosted); yerel PG yok.
 - Kod isimleri: **Türkçe anlam, ASCII** (`m_iNakit`, `ToplamaBaslat`); yorumlar Türkçe. Detay: docs 11.2.1 / 15-A.
 
 ---
@@ -79,10 +82,10 @@ Topla (çuval) → İşle (tezgâh) → Sat (kasiyer)
 
 | Parça | Konum |
 |---|---|
-| Script | `Scripts/Game/M360/Isler/` + `Arayuz/` |
-| Prefab | `Prefabs/M360/Isler/Pirinc/M360_{Topla,Isle,Sat}_Pirinc.et` |
-| HUD | `Scripts/Game/M360/Arayuz/M360_CantaHudBileseni.c` |
-| Lab dünya | `Worlds/LabDuzZemin/M360_LabDuzZemin.ent` |
+| Script | `m360-life/Scripts/Game/M360/Isler/` + `Arayuz/` |
+| Prefab | `m360-life/Prefabs/M360/Isler/Pirinc/M360_{Topla,Isle,Sat}_Pirinc.et` |
+| HUD | `m360-life/Scripts/Game/M360/Arayuz/M360_CantaHudBileseni.c` |
+| Lab dünya | `m360-life/Worlds/LabDuzZemin/M360_LabDuzZemin.ent` |
 
 ### Lab sayıları (prefab Attribute — Play’de bunlar geçerli)
 
@@ -143,25 +146,23 @@ Detay: [docs/15](docs/15_gelistirme_notlari.md).
 
 ```
 M360-Life/
-├── README.md / MONOREPO.md
-├── apps/game-api/            ← Next.js API :3100
-├── packages/db/              ← PostgreSQL migration
-├── tools/sync-addon-to-github.ps1
-├── docs/                     ← 00–17
-├── Scripts/Game/M360/Isler/  ← is scriptleri
-├── Prefabs/M360/Isler/Pirinc/
-└── Worlds/LabDuzZemin/       ← duz zemin lab
+├── m360-life/          ← oyun (Scripts, Prefabs, Worlds, …)
+├── api/                ← Next.js → Vercel
+├── web/                ← admin panel (sonra)
+├── packages/db/        ← Neon migration
+├── docs/               ← 00–17
+└── tools/
 ```
 
 ---
 
 ## Sonraki kapılar (sıra)
 
-1. Dedicated server ilk çalıştırma  
-2. PostgreSQL native + Next.js iskelet  
+1. Neon + Vercel (`api`) deploy  
+2. Dedicated server ilk çalıştırma  
 3. Gerçek envanter / banka ledger (stub’ı değiştir)  
 4. `.layout` Life HUD  
-5. Admin panel ile iş parametresi override  
+5. Admin panel (`web/`) ile iş parametresi override  
 
 Roadmap: [docs/12](docs/12_lisans_roadmap.md).
 

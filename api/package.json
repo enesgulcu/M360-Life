@@ -1,5 +1,5 @@
 {
-  "name": "@m360/game-api",
+  "name": "@m360/api",
   "version": "0.1.0",
   "private": true,
   "scripts": {
