@@ -6,6 +6,7 @@ const KEY_STORAGE = "m360_server_key";
 
 type MetrikKayit = {
   zaman?: string;
+  zamanTr?: string;
   yontem?: string;
   yol?: string;
   durum?: number;
@@ -192,7 +193,7 @@ export default function IstatistikPage() {
             ) : (
               kayitlar.map((k, i) => (
                 <tr key={`${k.zaman}-${i}`}>
-                  <td>{(k.zaman || "").replace("T", " ").replace("Z", "")}</td>
+                  <td>{k.zamanTr || (k.zaman || "").replace("T", " ").replace("Z", "")}</td>
                   <td>
                     {k.yontem} {k.yol}
                   </td>

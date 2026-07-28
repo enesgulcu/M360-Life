@@ -31,6 +31,10 @@ export function HealthGorunum({ data, httpDurum }: Props) {
           <dd>{String(d.servis ?? "—")}</dd>
         </div>
         <div>
+          <dt>Zaman (TR)</dt>
+          <dd className="mono">{String(d.zamanTr ?? "—")}</dd>
+        </div>
+        <div>
           <dt>Zaman (UTC)</dt>
           <dd className="mono">{String(d.zaman ?? "—")}</dd>
         </div>
@@ -161,7 +165,7 @@ export function MetrikGorunum({ data, httpDurum }: Props) {
             ) : (
               kayitlar.slice(0, 25).map((k, i) => (
                 <tr key={`${k.zaman}-${i}`}>
-                  <td>{String(k.zaman ?? "").replace("T", " ").replace("Z", "")}</td>
+                  <td>{String(k.zamanTr ?? k.zaman ?? "").replace("T", " ").replace("Z", "")}</td>
                   <td>
                     {String(k.yontem ?? "")} {String(k.yol ?? "")}
                   </td>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getPool } from "@/lib/db";
 import { withApiKoruma } from "@/lib/guvenlik/with-api-koruma";
+import { healthZamanAlanlari } from "@/lib/zaman";
 
 export const runtime = "nodejs";
 
@@ -22,7 +23,7 @@ async function healthHandler() {
   return NextResponse.json({
     ok: db === "bagli" || db === "env-yok",
     servis: "m360-game-api",
-    zaman: new Date().toISOString(),
+    ...healthZamanAlanlari(),
     db,
     ...(dbMesaj ? { dbMesaj } : {}),
   });
