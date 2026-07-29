@@ -1,0 +1,86 @@
+SizeLayoutWidgetClass {
+ Name "ClothingRowSize"
+ Slot LayoutSlot "{M360-CLOTH-ROW-SIZE-SLOT}" {
+  Padding 0 0 0 8
+ }
+ AllowHeightOverride 1
+ HeightOverride 52
+ {
+  ButtonWidgetClass "{M360-CLOTH-ROW-BUTTON}" {
+   Name "ClothingRowButton"
+   Slot AlignableSlot "{M360-CLOTH-ROW-BUTTON-SLOT}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+   Color 0 0 0 0
+   style blank
+   components {
+    SCR_ButtonTextComponent {
+     m_bMouseOverToFocus 1
+    }
+    SCR_ModularButtonComponent {
+     m_aEffects {
+      SCR_ButtonEffectColor {
+       m_eEvents 6144
+       m_sWidgetName "RowBg"
+       m_fAnimationTime 0.1
+       m_cFocusGained 0.14 0.55 0.48 0.48
+       m_cFocusLost 0.105 0.12 0.15 1
+      }
+     }
+     m_bFocusOnMouseEnter 1
+    }
+   }
+   {
+    OverlayWidgetClass "{M360-CLOTH-ROW-OVERLAY}" {
+     Name "RowOverlay"
+     Slot ButtonWidgetSlot "{M360-CLOTH-ROW-OVERLAY-SLOT}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     {
+      ImageWidgetClass "{M360-CLOTH-ROW-BG}" {
+       Name "RowBg"
+       Slot OverlayWidgetSlot "{M360-CLOTH-ROW-BG-SLOT}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+       Color 0.105 0.12 0.15 1
+      }
+      HorizontalLayoutWidgetClass "{M360-CLOTH-ROW-CONTENT}" {
+       Name "RowContent"
+       Slot OverlayWidgetSlot "{M360-CLOTH-ROW-CONTENT-SLOT}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+        Padding 14 0 14 0
+       }
+       {
+        TextWidgetClass "{M360-CLOTH-ROW-NAME}" {
+         Name "RowName"
+         Slot LayoutSlot "{M360-CLOTH-ROW-NAME-SLOT}" {
+          SizeMode Fill
+          FillWeight 1
+         }
+         Color 0.92 0.94 0.97 1
+         Text "Kiyafet"
+         "Font Size" 15
+         "Vertical Alignment" Center
+        }
+        TextWidgetClass "{M360-CLOTH-ROW-PRICE}" {
+         Name "RowPrice"
+         Slot LayoutSlot "{M360-CLOTH-ROW-PRICE-SLOT}" {
+         }
+         Color 0.47 0.9 0.62 1
+         Text "$0"
+         "Font Size" 14
+         "Horizontal Alignment" Right
+         "Vertical Alignment" Center
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

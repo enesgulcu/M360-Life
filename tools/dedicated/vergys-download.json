@@ -1,0 +1,32 @@
+{
+  "bindAddress": "0.0.0.0",
+  "bindPort": 2101,
+  "publicAddress": "127.0.0.1",
+  "publicPort": 2101,
+  "a2s": {
+    "address": "0.0.0.0",
+    "port": 2102
+  },
+  "game": {
+    "name": "M360 Vergys Downloader",
+    "password": "",
+    "passwordAdmin": "",
+    "scenarioId": "{ECC61978EDCC2B5A}Missions/23_Campaign.conf",
+    "maxPlayers": 1,
+    "visible": false,
+    "supportedPlatforms": [
+      "PLATFORM_PC"
+    ],
+    "gameProperties": {
+      "serverMaxViewDistance": 500,
+      "serverMinGrassDistance": 50,
+      "networkViewDistance": 500
+    },
+    "mods": [
+      {
+        "modId": "59B70A5A19E9B51E",
+        "name": "Vergys Custom Clothing"
+      }
+    ]
+  }
+}

@@ -434,7 +434,7 @@ GenericEntity M360_VanilArsenal : "{FF27B5E7B51F45F0}Prefabs/Compositions/Misc/C
  components {
   M360_MagazaNakitBileseni "{ADF987310AA53130}" {
    m_bSadeceListedekiler 0
-   m_iVarsayilanFiyat 25
+   m_iVarsayilanFiyat 0
    m_bIadeAcik 1
    m_aKayitlar {
     M360_MagazaFiyatKaydi "{ADF987310AA53111}" {
@@ -457,25 +457,20 @@ GenericEntity M360_VanilArsenal : "{FF27B5E7B51F45F0}Prefabs/Compositions/Misc/C
  }
  coords 56 0 40
 }
-GenericEntity M360_AracServis : "{40B7AAF72948A420}Prefabs/Compositions/Misc/CustomEntities/InteractionPoints/VehicleService_US_Small_NoAffiliation.et" {
+GenericEntity M360_ARGHAracGalerisi : "{2990AB9DCE64226B}Prefabs/trader.et" {
  components {
-  M360_MagazaNakitBileseni "{ADF987310AA53131}" {
-   m_bSadeceListedekiler 0
-   m_iVarsayilanFiyat 500
-   m_bIadeAcik 0
-   m_aKayitlar {
-    M360_MagazaFiyatKaydi "{ADF987310AA53121}" {
-     m_sPrefab "{F649585ABB3706C4}Prefabs/Vehicles/Wheeled/M151A2/M151A2.et"
-     m_iFiyat 1500
-     m_bAktif 1
-    }
-    M360_MagazaFiyatKaydi "{ADF987310AA53122}" {
-     m_sPrefab "{B55C6990A6A9411B}Prefabs/Vehicles/Wheeled/M998/M998_covered.et"
-     m_iFiyat 4000
-     m_bAktif 1
-    }
-   }
+  ARGH_VehicleDealerComponent "{0ED393C2E42B4D3C}" {
+   m_bForceOverlayUI 1
+   m_sSpawnPointEntityName "M360_ARGHAracSpawn"
   }
  }
- coords 64 0 40
+ coords 64 0.8 40
+ angles 0 180 0
+}
+GenericEntity M360_ARGHAracSpawn {
+ coords 78 0.8 40
+}
+GenericEntity M360_KiyafetMagaza : "{ADF987310AA53250}Prefabs/M360/Magaza/M360_KiyafetMagaza.et" {
+ coords 48 0.1 40
+ angles 0 90 0
 }

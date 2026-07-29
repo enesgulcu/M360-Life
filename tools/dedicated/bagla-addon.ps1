@@ -6,8 +6,14 @@ $ErrorActionPreference = "Stop"
 $here = $PSScriptRoot
 $addonsDir = Join-Path $here "addons"
 $repoRoot = (Resolve-Path (Join-Path $here "..\..")).Path
+$vendor = Join-Path $repoRoot "tools\vendor"
+$workshopVendor = Join-Path $repoRoot "tools\vendor-workshop\addons"
 
 $links = @(
+  @{ Name = "DynamicLoot"; Target = (Join-Path $vendor "DynamicLoot"); Required = $true },
+  @{ Name = "DynamicEconomy"; Target = (Join-Path $vendor "DynamicEconomy"); Required = $true },
+  @{ Name = "ARGH-AmbientVehiclePlugin"; Target = (Join-Path $vendor "ARGH-AmbientVehiclePlugin"); Required = $true },
+  @{ Name = "VergysCustomClothing"; Target = (Join-Path $workshopVendor "VergysCustomClothing_59B70A5A19E9B51E"); Required = $true },
   @{ Name = "M360-Life"; Target = (Join-Path $repoRoot "m360-life"); Required = $true }
 )
 

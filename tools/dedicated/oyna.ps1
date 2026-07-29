@@ -23,7 +23,7 @@ $repo = Get-M360RepoRoot
 $oyun = Get-M360OyunKaynak
 $wb = Get-M360WorkbenchAddon
 $addonsDir = Join-Path $here "addons"
-$modGuids = "69F4E91377BCC9A5"
+$modGuids = "59B70A5A19E9B51E,66B2F0B008DC590F,66F0560F1BDE732A,686A96CE03A95D30,69F4E91377BCC9A5"
 $bindPort = 2001
 
 function Write-Adim([string]$Msg) {
@@ -77,6 +77,9 @@ if (-not (Test-Path -LiteralPath (Join-Path $oyun "addon.gproj"))) {
 }
 
 if (-not $SkipJunctionCheck) {
+  & (Join-Path $here "kur-vergys.ps1")
+  & (Join-Path $here "kur-argh.ps1")
+  & (Join-Path $here "bagla-addon.ps1")
   $dedLink = Join-Path $addonsDir "M360-Life"
   if (-not (Test-JunctionHedef $dedLink $oyun)) {
     Write-Host "Dedicated addon junction eksik/yanlis - baglaniyor..."

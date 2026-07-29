@@ -13,10 +13,19 @@ modded class SCR_ArsenalInventorySlotUI : SCR_InventorySlotUI
 		if (!m_pItem || !m_pItem.GetOwner())
 			return 0;
 
-		IEntity storageEnt = GetStorageUI().GetCurrentNavigationStorage().GetOwner();
+		IEntity storageEnt;
+		if (GetStorageUI() && GetStorageUI().GetCurrentNavigationStorage())
+			storageEnt = GetStorageUI().GetCurrentNavigationStorage().GetOwner();
+
 		SCR_ArsenalComponent arsenalComponent;
 		if (storageEnt)
+			arsenalComponent = SCR_ArsenalComponent.FindArsenalComponent(storageEnt);
+		if (!arsenalComponent && storageEnt)
 			arsenalComponent = SCR_ArsenalComponent.Cast(storageEnt.FindComponent(SCR_ArsenalComponent));
+
+		IEntity magazaEnt = storageEnt;
+		if (arsenalComponent)
+			magazaEnt = arsenalComponent.GetOwner();
 
 		SCR_EntityCatalogManagerComponent entityCatalogManager = SCR_EntityCatalogManagerComponent.GetInstance();
 		if (!entityCatalogManager)
@@ -43,7 +52,7 @@ modded class SCR_ArsenalInventorySlotUI : SCR_InventorySlotUI
 				katalogSupply = data.GetSupplyCost(SCR_EArsenalSupplyCostType.DEFAULT);
 		}
 
-		int fiyat = M360_MagazaYardim.EsyaFiyat(storageEnt, prefab, katalogSupply);
+		int fiyat = M360_MagazaYardim.EsyaFiyat(magazaEnt, prefab, katalogSupply);
 		if (fiyat < 0)
 		{
 			m_fSupplyCost = -1;
@@ -75,11 +84,14 @@ modded class SCR_ArsenalInventorySlotUI : SCR_InventorySlotUI
 		if (m_CostResourceHolder)
 			m_CostResourceHolder.SetVisible(true);
 
+		// float.ToString → "6.000000" (kafa karistirir: 6 mi 6 milyon mu?)
+		// Tam sayi: "$6" / "$4000" — binlik nokta da yok (1.500 ≠ bir buçuk)
+		int fiyatInt = totalResources;
 		if (m_CostResourceHolderText)
-			m_CostResourceHolderText.SetText("$" + totalResources.ToString(0));
+			m_CostResourceHolderText.SetText(string.Format("$%1", fiyatInt));
 
 		IEntity localChar = SCR_PlayerController.GetLocalControlledEntity();
-		bool yeterli = M360_IsOturumlari.NakitYeterliMi(localChar, totalResources);
+		bool yeterli = M360_IsOturumlari.NakitYeterliMi(localChar, fiyatInt);
 		SetItemAvailability(yeterli);
 	}
 

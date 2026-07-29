@@ -1,0 +1,33 @@
+GenericEntity : "{51D31AB07AE3C1C7}Prefabs/Props/Commercial/CashierShop_01.et" {
+ components {
+  M360_KiyafetMagazaBileseni "{ADF987310AA53240}" {
+  }
+  ActionsManagerComponent "{ADF987310AA53241}" {
+   ActionContexts {
+    UserActionContext "{ADF987310AA53242}" {
+     UIInfo UIInfo "{ADF987310AA53243}" {
+      Name "Kiyafet Magazasi"
+     }
+     ContextName "m360_kiyafet"
+     Position PointInfo "{ADF987310AA53244}" {
+      Offset 0 1.2 0
+     }
+     Radius 2.5
+     Omnidirectional 1
+    }
+   }
+   additionalActions {
+    M360_KiyafetMagazaAksiyonu "{ADF987310AA53245}" {
+     ParentContextList {
+      "m360_kiyafet"
+     }
+     UIInfo UIInfo "{ADF987310AA53246}" {
+      Name "Kiyafet Magazasi"
+     }
+     VisibilityRange 5
+     Duration 0
+    }
+   }
+  }
+ }
+}

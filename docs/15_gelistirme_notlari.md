@@ -4,7 +4,7 @@
 >
 > **Yeni sohbette:** **[20](./20_kritik_kararlar.md)** → **bu dosya §C** → işe başla. Çelişince **20 kazanır**.
 >
-> **Son güncelleme:** 2026-07-29 ~17:10 (TR) — Arsenal/Arac nakit OK; fiyat-per-ürün sırada; gün sonu push.
+> **Son güncelleme:** 2026-07-30 ~00:40 (TR) — Kıyafet dikey kategori + zoom + satın alma önizleme.
 
 ---
 
@@ -33,29 +33,39 @@
 
 Senkron = **yalnızca git** (Cursor sohbet senkron değil). Secrets / Server exe / **`api/.env`** git’e girmez (lokal kalır; production’da kullanıcı değiştirir).
 
-### C.3 Tablo — 2026-07-29 ~17:10 (GÜN SONU — NAKIT CALISIYOR)
+### C.3 Tablo — 2026-07-29 ~21:45 (PC B — ARGH araç galerisi)
 
 | | |
 |---|---|
-| **PC** | A (`Enes`) |
-| **Durum** | Lab arsenal + arac = **M360 HUD nakit** · satin alma **calisiyor** |
-| **Addons** | yalniz M360 · istemci **dogrudan exe** (Steam LaunchOptions Shop/Bacon birlestirmez) |
-| **API** | `api/.env` lokal dolduruldu (`M360_SERVER_KEY` + `DATABASE_URL`) — **git ignore** |
-| **Siradaki** | **Fiyat per-urun:** su an HUD düsüsü her urunde ayni oranda gibi; her urunun kendi `m_iFiyat` / katalog fiyatina gore dusmeli — sonra kontrol |
-| **Cikis** | Oyun oturumundan cikis gerekmez; gun sonu = commit+push |
+| **PC** | B (`enesg`) |
+| **Durum** | F2 = mevcut ayarın **%15**i · hazır **ARGH Ambient Vehicle Plugin** galerisi aktif |
+| **Kullanıcı kararı** | Sıfırdan/custom UI yok; hazır mod UI’si kullanılacak |
+| **Galeri** | Spawn’ın yanında `M360_ARGHAracGalerisi`; F → hazır overlay |
+| **Araçlar** | M151A2 $15.000 · UAZ-469 $18.000 · S1203 $22.000 · BTR-70 $95.000 |
+| **Ekonomi** | ARGH ödeme sunucu tarafında M360 HUD nakdine köprülendi; DynamicEconomy bağımlılık olarak yüklü |
+| **Kanıt** | Dedicated + istemci derlendi; 4 araç yüklendi; M151A2 satın alma başarılı, nakit düştü ve araç spawn oldu |
+| **UI** | Koyu M360 tema; Türkçe yönlendirme; banka/alakasız bilgi gizli; başarı, yetersiz nakit, iade ve rate-limit mesajları açık |
+| **Tıklama düzeltmesi** | İç içe şeffaf buton kaldırıldı. Tek `BuyButton`; dekor hiyerarşisi `IGNORE_CURSOR`; satın alma `OnMouseButtonDown` ile basıldığı anda başlar. Oyun testi bekliyor. |
 
 | Obje | Prefab | Odeme |
 |---|---|---|
-| Arsenal | `ArsenalBox_US_NoAffiliation` + `M360_MagazaNakitBileseni` | HUD nakit |
-| Arac | `VehicleService_US_Small_NoAffiliation` + ayni bilesen | HUD nakit |
+| Arsenal | `ArsenalBox_US_NoAffiliation` + Magaza | HUD nakit |
+| Araç galerisi | ARGH `Prefabs/trader.et` | HUD nakit |
 
-**Fiyat / liste nasil degisir (kullanici):**
-1. `default.layer` icinde `M360_VanilArsenal` / `M360_AracServis` → `M360_MagazaNakitBileseni` → `m_aKayitlar`.
-2. `m_sPrefab` = GUID+path · `m_iFiyat` = nakit · `m_bAktif 0` = satilmaz.
-3. `m_bSadeceListedekiler 1` = sadece listedekiler; `0` = digerleri `m_iVarsayilanFiyat` (veya katalog supply).
-4. Dedicated yeniden (`M360-Oyna.bat`).
+Araç için sıfırdan UI/prefab/RPC geliştirme; hazır ARGH UI’sini ve yalnız M360 para köprüsünü kullan.
 
 **YASAK:** `default.layer` UTF-8 **BOM** → GameMode yok. · `api/.env` commit.
+
+### C.4 Kıyafet / eşya mağazası araştırması — 2026-07-29
+
+- Görseldeki gibi karakter üzerinde canlı kıyafet provası için doğru vanilla temel `SCR_LoadoutPreviewComponent`; yalnız `ItemPreviewWidget` tam karakter giydirme sağlamaz.
+- Hazır `Shop System` eşya/kıyafet satabilir fakat son hedefi Reforger **1.3**. KOTH Modern Clothing Shop **1.4** tabanlı ve KOTH'a bağlı. Bunları 1.7 ürün bağımlılığı olarak doğrudan alma.
+- Mevcut DynamicEconomy 1.7 item trader güncel ve sunucu dostu; fakat UI’si vanilla Arsenal tabanlı, görseldeki tam karakter prova ekranı değil.
+- En güvenli yön: vanilla kıyafetlerle küçük katalog + M360 sunucu tarafı nakit doğrulama + önce yerel preview kopyası, satın alınca gerçek envantere teslim. Dış kıyafet paketini ayrı içerik bağımlılığı olarak sonradan seç.
+- Kritikleri: preview entity yalnız istemcide; gerçek oyuncunun kıyafetini satın almadan değiştirme. Fiyat/prefab/slot doğrulaması ve nakit düşümü yalnız sunucuda. Envanter dolu/uyumsuz slotta para kesme veya güvenli iade yap.
+- **Kullanıcı seçimi:** Vergys Custom Clothing (`59B70A5A19E9B51E`, v0.1.29). Paket ~460 MB indirildi, `CivilianProject` olarak açıldı; bağımlılığı ve iki-PC otomatik indirme/junction akışı kuruldu.
+- **Uygulama (B):** Lab `M360_KiyafetMagaza` (x48 z40). F → MenuManager `MenuBase`; ESC kapatır. Sol: dikey kategori + yan ürün listesi. Orta: 3D prova (sürükle/zoom/sağ tık sıfır). Sağ: toplam/SATIN AL. Tıklama = prova yığını; SATIN AL anında toplu RPC. Satın sonrası `m_aSonAlinan` + 450 ms yenileme. Kategori değişince scroll üste. Katalog 97 Vergys wrapper.
+- **Vergys:** `*_item.et` yasak; wrapper GUID `rdb` path-sonrası LE.
 
 ### C.5 I/Tab + F2 — kısa
 
@@ -63,7 +73,7 @@ Senkron = **yalnızca git** (Cursor sohbet senkron değil). Secrets / Server exe
 |---|---|
 | I | Life HUD |
 | Tab | vanilla envanter |
-| F2 | Ses modu toggle (%85, VoiceChat aynı) |
+| F2 | Ses modu toggle (**%15**, VoiceChat aynı) |
 
 ---
 

@@ -6,7 +6,7 @@ $here = $PSScriptRoot
 . (Join-Path $here "..\Resolve-M360Paths.ps1")
 
 $addonsDir = Join-Path $here "addons"
-$modGuids = "69F4E91377BCC9A5"
+$modGuids = "59B70A5A19E9B51E,66B2F0B008DC590F,66F0560F1BDE732A,686A96CE03A95D30,69F4E91377BCC9A5"
 
 $proc = Get-Process -Name "ArmaReforgerServer" -ErrorAction SilentlyContinue
 if (-not $proc) {

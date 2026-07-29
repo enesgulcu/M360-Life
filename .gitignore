@@ -62,4 +62,5 @@ tools/dedicated/addons/
 # Workshop paketleri (yerel; Shop System oyna/bagla ile iner)
 tools/dedicated/workshop-cache/
 tools/vendor/
+tools/vendor-workshop/
 

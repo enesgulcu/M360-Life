@@ -1,0 +1,70 @@
+SizeLayoutWidgetClass {
+ Name "CategorySize"
+ Slot LayoutSlot "{M360-CLOTH-CATEGORY-SIZE-SLOT}" {
+  Padding 0 0 0 6
+ }
+ AllowWidthOverride 1
+ WidthOverride 102
+ AllowHeightOverride 1
+ HeightOverride 38
+ {
+  ButtonWidgetClass "{M360-CLOTH-CATEGORY-BUTTON}" {
+   Name "CategoryButton"
+   Slot AlignableSlot "{M360-CLOTH-CATEGORY-BUTTON-SLOT}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+   Color 0 0 0 0
+   style blank
+   components {
+    SCR_ButtonTextComponent {
+     m_bMouseOverToFocus 1
+    }
+    SCR_ModularButtonComponent {
+     m_aEffects {
+      SCR_ButtonEffectColor {
+       m_eEvents 6144
+       m_sWidgetName "CategoryBg"
+       m_fAnimationTime 0.1
+       m_cFocusGained 0.14 0.55 0.48 0.7
+       m_cFocusLost 0.105 0.12 0.15 1
+      }
+     }
+     m_bFocusOnMouseEnter 1
+    }
+   }
+   {
+    OverlayWidgetClass "{M360-CLOTH-CATEGORY-OVERLAY}" {
+     Name "CategoryOverlay"
+     Slot ButtonWidgetSlot "{M360-CLOTH-CATEGORY-OVERLAY-SLOT}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     {
+      ImageWidgetClass "{M360-CLOTH-CATEGORY-BG}" {
+       Name "CategoryBg"
+       Slot OverlayWidgetSlot "{M360-CLOTH-CATEGORY-BG-SLOT}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+       Color 0.105 0.12 0.15 1
+      }
+      TextWidgetClass "{M360-CLOTH-CATEGORY-TEXT}" {
+       Name "CategoryText"
+       Slot OverlayWidgetSlot "{M360-CLOTH-CATEGORY-TEXT-SLOT}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+        Padding 4 0 4 0
+       }
+       Color 0.85 0.88 0.92 1
+       Text "Hepsi"
+       "Font Size" 13
+       "Horizontal Alignment" Center
+       "Vertical Alignment" Center
+      }
+     }
+    }
+   }
+  }
+ }
+}

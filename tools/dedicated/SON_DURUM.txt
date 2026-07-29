@@ -1,12 +1,16 @@
-M360 dedicated — SON DURUM
-========================
-Gun sonu: 2026-07-29 ~17:10 (PC A / Enes)
+M360 Dedicated — SON DURUM
+==========================
+Tarih: 2026-07-29 ~22:16 (PC B)
 
-Lab addons: yalniz M360-Life (69F4E91377BCC9A5)
-Arsenal + VehicleService = M360 HUD nakit (supply kapali)
-Fiyat alinabilir: HUD nakit dusuyor
-SIRADAKI: her urunun kendi fiyati — simdilik tum urunler ayni oranda dusuyor gibi (kontrol edilecek)
-
-Istemci: dogrudan ArmaReforgerSteam.exe (Steam LaunchOptions Shop/Bacon karismaz)
-API: api/.env lokal (git YOK — Neon + M360_SERVER_KEY); Sync-M360ApiKeyFromEnv
-Oyna: M360-Oyna.bat
+F2 ses = mevcut ayarin %15'i (HEDEF_CARPAN 0.15)
+Arac magazasi = ARGH Ambient Vehicle Plugin hazir overlay UI
+UI = M360 koyu/modern tema, Turkce akış, banka/alakasiz alanlar gizli
+Satin alma = anlasilir sunucu dogrulama/basari/hata/iade mesajlari
+Buton = tum renkli yuzey tek tik; 3-2-1 geri sayim + nabiz + coklu tik kilidi
+Galeri = spawn yaninda M360_ARGHAracGalerisi, F ile acilir
+Liste = M151A2 / UAZ-469 / S1203 / BTR-70
+Odeme = ARGH sunucu servisi -> M360 HUD nakit koprusu
+Test = 4 arac yuklendi; M151A2 $15000 satin alma + spawn BASARILI
+Kurulum = M360.bat ARGH + DynamicLoot + DynamicEconomy kaynaklarini otomatik hazirlar
+Karar: sifirdan/custom arac UI yapma; hazir ARGH UI kullan
+Kullanici: M360-Oyna.bat

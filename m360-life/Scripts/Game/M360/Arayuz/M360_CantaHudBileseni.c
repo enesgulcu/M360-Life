@@ -131,7 +131,7 @@ class M360_CantaHudBileseni : ScriptComponent
 
 		if (m_bWidgetHazir)
 			SCR_HintManagerComponent.ShowCustomHint(
-				"I = Life canta | F2 = ses %85 (konusma ayni) | Tab = envanter",
+				"I = Life canta | F2 = ses %15 (konusma ayni) | Tab = envanter",
 				"M360",
 				8);
 		else

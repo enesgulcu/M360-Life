@@ -50,6 +50,10 @@ modded class SCR_ResourcePlayerControllerInventoryComponent : ScriptComponent
 		if (!arsenalComponent)
 			return;
 
+		IEntity magazaEnt = arsenalComponent.GetOwner();
+		if (!magazaEnt)
+			magazaEnt = resourcesOwner;
+
 		SCR_EntityCatalogManagerComponent entityCatalogManager = SCR_EntityCatalogManagerComponent.GetInstance();
 		if (!entityCatalogManager)
 			return;
@@ -69,7 +73,7 @@ modded class SCR_ResourcePlayerControllerInventoryComponent : ScriptComponent
 				katalogSupply = data.GetSupplyCost(arsenalComponent.GetSupplyCostType());
 		}
 
-		int nakitFiyat = M360_MagazaYardim.EsyaFiyat(resourcesOwner, resourceNameItem, katalogSupply);
+		int nakitFiyat = M360_MagazaYardim.EsyaFiyat(magazaEnt, resourceNameItem, katalogSupply);
 		if (nakitFiyat < 0)
 		{
 			Print(string.Format("[M360 Magaza] Esya satisa kapali: %1", resourceNameItem), LogLevel.WARNING);
@@ -121,11 +125,17 @@ modded class SCR_ResourcePlayerControllerInventoryComponent : ScriptComponent
 
 		ResourceName prefab = prefabData.GetPrefabName();
 		SCR_ArsenalComponent arsenalComponent = SCR_ArsenalComponent.FindArsenalComponent(resourcesOwner);
+		IEntity magazaEnt = resourcesOwner;
 		int katalogSupply = 0;
 		if (arsenalComponent)
+		{
+			magazaEnt = arsenalComponent.GetOwner();
+			if (!magazaEnt)
+				magazaEnt = resourcesOwner;
 			katalogSupply = SCR_ArsenalManagerComponent.GetItemRefundAmount(itemEnt, arsenalComponent, false);
+		}
 
-		int nakit = M360_MagazaYardim.EsyaFiyat(resourcesOwner, prefab, katalogSupply);
+		int nakit = M360_MagazaYardim.EsyaFiyat(magazaEnt, prefab, katalogSupply);
 		super.RpcAsk_ArsenalRefundItem_(resourceComponentRplId, inventoryItemRplId, resourceType);
 
 		SCR_PlayerController controller = SCR_PlayerController.Cast(GetOwner());

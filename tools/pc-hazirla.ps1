@@ -39,13 +39,21 @@ if (-not (Test-Path -LiteralPath $keep)) {
   Set-Content -Path $keep -Value "" -Encoding ascii
 }
 
-# --- 1) Dedicated addon junction (Workbench gerekmez)
-Write-Host "--- 1/4 dedicated addon junction ---"
+# --- 1) Kiyafet paketi
+Write-Host "--- 1/6 Vergys kiyafet paketi ---"
+& (Join-Path $dedicated "kur-vergys.ps1")
+
+# --- 2) Hazir arac galerisi bagimliliklari
+Write-Host "--- 2/6 ARGH arac galerisi ---"
+& (Join-Path $dedicated "kur-argh.ps1")
+
+# --- 3) Dedicated addon junction (Workbench gerekmez)
+Write-Host "--- 3/6 dedicated addon junction ---"
 & (Join-Path $dedicated "bagla-addon.ps1")
 
-# --- 2) Workbench <-> git junction
+# --- 4) Workbench <-> git junction
 Write-Host ""
-Write-Host "--- 2/4 Workbench junction ---"
+Write-Host "--- 4/6 Workbench junction ---"
 $wbProc = Get-Process -Name "ArmaReforgerWorkbenchSteamDiag" -ErrorAction SilentlyContinue
 if ($SkipWorkbench) {
   Write-Host "Atlandi (-SkipWorkbench)."
@@ -54,11 +62,12 @@ if ($SkipWorkbench) {
   Write-Host "  powershell -File tools\pc-hazirla.ps1"
 } else {
   & (Join-Path $tools "bagla-oyun-klasoru.ps1")
+  & (Join-Path $tools "bagla-argh-workbench.ps1")
 }
 
-# --- 3) server.json sablon
+# --- 5) server.json sablon
 Write-Host ""
-Write-Host "--- 3/4 secrets ---"
+Write-Host "--- 5/6 secrets ---"
 $sj = Join-Path $secrets "server.json"
 $tmpl = Join-Path $dedicated "server.json.template"
 if (-not (Test-Path -LiteralPath $sj)) {
@@ -81,9 +90,9 @@ if ($keyOk -and (Test-Path -LiteralPath $key)) {
   Write-Host "  Ornek: api/.env.example"
 }
 
-# --- 4) Dedicated binary yolunu bul / kaydet
+# --- 6) Dedicated binary yolunu bul / kaydet
 Write-Host ""
-Write-Host "--- 4/4 dedicated binary ---"
+Write-Host "--- 6/6 dedicated binary ---"
 if (-not $SkipServerDetect) {
   $root = Find-M360ReforgerServerRoot
   if ($root) {

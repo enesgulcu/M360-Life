@@ -6,7 +6,7 @@
 >
 > **Çelişki:** **20 + 19 > 15** günlük not. Eski 15 bölümleri (7b Overlay, 7e hijack+Save) **geçersiz** — bu dosya geçerli.
 >
-> **Son güncelleme:** 2026-07-29 ~17:10 (TR) — Arsenal/Arac = M360 nakit calisiyor; fiyat-per-ürün sırada.
+> **Son güncelleme:** 2026-07-30 ~00:40 (TR) — Kıyafet sol dikey kategori + zoom/scroll/satın-alma önizleme.
 
 ---
 
@@ -59,7 +59,7 @@ Inventory / Tab’a **dokunma**.
 | Madde | Değer |
 |---|---|
 | Tuş | F2 → `M360_SesModu` (§1 omurga ile aynı) |
-| Hedef | Oyun gürültüsü **mevcut ayarın %85’i** (`HEDEF_CARPAN = 0.85`) |
+| Hedef | Oyun gürültüsü **mevcut ayarın %15’i** (`HEDEF_CARPAN = 0.15`) |
 | Korunan | **VolumeVoiceChat** — dokunulmaz |
 | Kaynak | `GetEngineUserSettings().GetModule("AudioSettings")` |
 | Alanlar | `Volume`, `VolumeSfx`, `VolumeMusic`, `VolumeDialog` (**0..100**) |
@@ -72,15 +72,15 @@ Inventory / Tab’a **dokunma**.
 
 | API / alan | Ölçek | Örnek |
 |---|---|---|
-| `AudioSettings.VolumeSfx` vb. | **0..100** (menü kaydırıcı) | 100 → F2 → 85 |
-| `AudioSystem.Get/SetMasterVolume` | **0..1** | 1.0 → F2 → 0.85 |
+| `AudioSettings.VolumeSfx` vb. | **0..100** (menü kaydırıcı) | 100 → F2 → 15 |
+| `AudioSystem.Get/SetMasterVolume` | **0..1** | 1.0 → F2 → 0.15 |
 
 **YASAK:** `SetMasterVolume(AudioSystem.SFX, 75)` — 75 > 1 → **clamp 1.0** → ses hiç düşmez; ikon yine görünür.
 
 ### Kök neden araştırma sırası (benzer sorun rehberi)
 
 1. **Log oku** — `Documents\My Games\ArmaReforger\logs\...\script.log`  
-   - `[M360] F2 SES KIS` satırında `SFX 100->75` gibi **0..100** değerler mi?  
+   - `[M360] F2 SES KIS` satırında `SFX 100->15` gibi **0..100** değerler mi?  
    - Eski hatalı log: `SFX 1->0.75 ok=1` (SetMasterVolume yolu) + kullanıcı “ses yok” → ölçek şüphesi.
 2. **Ayar dosyası** — `profile\.save\...\settings\ReforgerEngineSettings.conf` → `VolumeSfx 100` (0..100 doğrula).
 3. **BI menü yolu** — `SCR_AudioSettingsSubMenu`: `SCR_SettingBindingEngine("AudioSettings", "VolumeSfx", ...)` — script ile aynı modül.
@@ -126,7 +126,8 @@ Inventory hijack · `InputBinding.Save` · Save’siz remap · `ActionInput` · 
 | Madde | Karar |
 |---|---|
 | Lab UI | `CreateWidget` + `FrameSlot` + gerçek alpha texture |
-| Yasak | Elle `.layout` + `CreateWidgets` → Play/WB **donar** |
+| Yasak | Elle `.layout` + `CreateWidgets` → Play/WB **donar**; istisna yok |
+| Araç mağazası | **Custom/sıfırdan UI yapılmayacak.** Hazır ARGH dealer overlay + M360 nakit köprüsü kullanılır |
 | Layout sözdizimi (ileride) | `Slot FrameWidgetSlot "{GUID}"` — MCP Children/tırnaklı Slot yanlış |
 | Stil | Circle rings + nakit pill (L-mid-R) + canta 9-slice; HTML/NUI yok |
 | Texture | Opak DDS = beyaz kare; köşe stretch etme; soft AA; lab’da tıklanır Kapat yok → **I** toggle |
@@ -140,7 +141,15 @@ Inventory hijack · `InputBinding.Save` · Save’siz remap · `ActionInput` · 
 
 > **Not (2026-07-29):** Eski CreateWidget Magaza HUD / Preview World denemesi **tamamen kaldirildi**. O HUD yoluna donulmez.
 >
-> **Magaza (2026-07-29 ~17:05):** Lab = vanilla **Arsenal kutusu** + **Vehicle Service** · odeme = **M360 HUD nakit** (`RplProp`) · Shop System / Bacon **yok**. Supply kapali (`IsArsenalUsingSupplies` / `IsSuppliesConsumptionEnabled`).
+> **Araç mağazası (2026-07-29 ~21:45):** Kullanıcı sıfırdan/custom UI istemiyor. Hazır `ARGH Ambient Vehicle Plugin` overlay’i kullanılır. Yalnız sunucu tarafı M360 HUD nakit köprüsü ve araç/fiyat yapılandırması bize aittir; ARGH UI’sini yeniden yazma.
+
+> **ARGH UI tıklama (2026-07-29 ~22:30):** İç içe `ButtonWidget` / dekor katmanına ayrı click handler güvenilmez. Tek ana `ButtonWidget`; içindeki renk-yazı hiyerarşisi `WidgetFlags.IGNORE_CURSOR`; işlem `OnMouseButtonDown` ile başlar. Async satın almada istemci kilidi + geri sayım, sunucuda bakiye/doğrulama/spawn, sonuç RPC’si ve kesin tutarlı bakiye gösterimi birlikte olmalı.
+
+> **Kıyafet mağazası (B, 2026-07-29 / güncel 2026-07-30):** Gerçek `MenuBase` + `MenuManager`. Sol panel **dikey**: kategori sütunu (`CategoryList`) + yan yana ürün listesi (`ItemScroll`/`ItemList`). Üst yatay kategori şeridi kullanılmaz (taşma). Liste tıklaması **prova**; **SATIN AL** provadakilerin hepsini tek RPC ile giydirir. Geri sayım yok. Satın alma sonrası önizleme `m_aSonAlinan` ile yeni kıyafetleri tutar (istemci loadout sync gecikmesine karşı) + 450 ms `CallLater` yenileme. Kategori değişince `ItemScroll.SetSliderPos(0,0)`. Karakter prova: oyuncu loadout kopyası + son alınan + prova. Vergys yalnız içerik.
+
+> **Kıyafet mouse/kamera kanıtı:** Ürün yolu MenuManager. İlk kadraj `SetPreviewItem(..., null, true)`. Kullanıcı döndür/zoom: yaw/zoom state tutulur, her seferinde **yeni** `PreviewRenderAttributes` + `forceRefresh`. Handler hem `PreviewContainer` hem root’ta. Sağ tık null’a sıfırlar. Kümülatif ZoomCamera biriktirme **yasak** (FOV kaçar).
+
+> **Vergys prefab kanıtı:** `*_item.et` yasak. Katalog ~97 wrapper (`Uniform_Base` / `Footwear_Base` / `Headgear_Base` / `Vest_Base`).
 >
 > ~~Magaza denemesi (~15:35): Shop/DE/Reloadz…~~ · ~~Shop System (~14:10)~~ (gecersiz)
 

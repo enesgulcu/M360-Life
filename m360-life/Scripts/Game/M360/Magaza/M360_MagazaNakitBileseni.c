@@ -12,7 +12,7 @@ class M360_MagazaNakitBileseni : ScriptComponent
 	[Attribute("0", desc: "1 = sadece listedeki aktif urunler")]
 	bool m_bSadeceListedekiler;
 
-	[Attribute("25", desc: "Listede yoksa varsayilan nakit (0 = katalog supply sayisi)")]
+	[Attribute("0", desc: "Listede yoksa ve katalog 0 ise son care nakit (0 = yok)")]
 	int m_iVarsayilanFiyat;
 
 	[Attribute(desc: "Prefab → nakit satirlari")]
@@ -38,17 +38,23 @@ class M360_MagazaNakitBileseni : ScriptComponent
 
 	//------------------------------------------------------------------------------------------------
 	//! -1 = satilamaz
+	//! Oncelik: m_aKayitlar → lab GUID listesi → katalogSupply (urun basina) → varsayilan
 	int NakitFiyatCozumle(ResourceName prefab, int katalogSupply)
 	{
-		bool listedeVar = false;
 		if (m_aKayitlar)
 		{
 			foreach (M360_MagazaFiyatKaydi kayit : m_aKayitlar)
 			{
-				if (!kayit || kayit.m_sPrefab != prefab)
+				if (!kayit)
 					continue;
 
-				listedeVar = true;
+				string kayitPrefab = kayit.m_sPrefab;
+				if (!kayitPrefab || kayitPrefab.Length() < 1)
+					continue;
+
+				if (!M360_MagazaYardim.PrefabEslesir(kayit.m_sPrefab, prefab))
+					continue;
+
 				if (!kayit.m_bAktif)
 					return -1;
 
@@ -57,16 +63,31 @@ class M360_MagazaNakitBileseni : ScriptComponent
 		}
 
 		if (m_bSadeceListedekiler)
+		{
+			Print(string.Format("[M360 Magaza] Fiyat LISTE-DISI kapali prefab=%1", FilePath.StripPath(prefab)), LogLevel.WARNING);
 			return -1;
+		}
 
-		if (listedeVar)
-			return -1;
+		// Layer Attribute eslesmese bile lab GUID tablosu
+		int lab = M360_MagazaYardim.LabListeFiyat(prefab);
+		if (lab >= 0)
+		{
+			Print(string.Format("[M360 Magaza] Fiyat LAB-LISTE prefab=%1 fiyat=%2", FilePath.StripPath(prefab), lab), LogLevel.NORMAL);
+			return lab;
+		}
+
+		// KRITIK: once katalog (her urun farkli) — varsayilan sabit degil
+		if (katalogSupply > 0)
+		{
+			Print(string.Format("[M360 Magaza] Fiyat KATALOG prefab=%1 fiyat=%2", FilePath.StripPath(prefab), katalogSupply), LogLevel.NORMAL);
+			return katalogSupply;
+		}
 
 		if (m_iVarsayilanFiyat > 0)
+		{
+			Print(string.Format("[M360 Magaza] Fiyat VARSAYILAN prefab=%1 fiyat=%2", FilePath.StripPath(prefab), m_iVarsayilanFiyat), LogLevel.NORMAL);
 			return m_iVarsayilanFiyat;
-
-		if (katalogSupply > 0)
-			return katalogSupply;
+		}
 
 		return 0;
 	}

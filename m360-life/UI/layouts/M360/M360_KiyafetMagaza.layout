@@ -1,0 +1,452 @@
+FrameWidgetClass {
+ Name "M360_KiyafetMagazaRoot"
+ Slot FrameWidgetSlot "{M360-CLOTH-ROOT}" {
+  Anchor 0 0 1 1
+ }
+ {
+  ImageWidgetClass "{M360-CLOTH-DIM}" {
+   Name "DimBg"
+   Slot FrameWidgetSlot "{M360-CLOTH-DIM-SLOT}" {
+    Anchor 0 0 1 1
+    OffsetRight 0
+    OffsetBottom 0
+   }
+   Color 0.01 0.015 0.025 0.82
+  }
+  FrameWidgetClass "{M360-CLOTH-DIALOG}" {
+   Name "DialogFrame"
+   Slot FrameWidgetSlot "{M360-CLOTH-DIALOG-SLOT}" {
+    Anchor 0.06 0.06 0.94 0.94
+    OffsetRight 0
+    OffsetBottom 0
+   }
+   {
+    ImageWidgetClass "{M360-CLOTH-BG}" {
+     Name "DialogBackground"
+     Slot FrameWidgetSlot "{M360-CLOTH-BG-SLOT}" {
+      Anchor 0 0 1 1
+      OffsetRight 0
+      OffsetBottom 0
+     }
+     Color 0.055 0.065 0.085 0.98
+    }
+    VerticalLayoutWidgetClass "{M360-CLOTH-MAIN}" {
+     Name "MainLayout"
+     Slot FrameWidgetSlot "{M360-CLOTH-MAIN-SLOT}" {
+      Anchor 0 0 1 1
+      OffsetRight 0
+      OffsetBottom 0
+     }
+     {
+      SizeLayoutWidgetClass "{M360-CLOTH-HEADER-SIZE}" {
+       Name "HeaderSize"
+       Slot LayoutSlot "{M360-CLOTH-HEADER-SIZE-SLOT}" {
+       }
+       AllowHeightOverride 1
+       HeightOverride 62
+       {
+        OverlayWidgetClass "{M360-CLOTH-HEADER}" {
+         Name "Header"
+         Slot AlignableSlot "{M360-CLOTH-HEADER-SLOT}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         {
+          ImageWidgetClass "{M360-CLOTH-HEADER-BG}" {
+           Name "HeaderBg"
+           Slot OverlayWidgetSlot "{M360-CLOTH-HEADER-BG-SLOT}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+           }
+           Color 0.075 0.09 0.115 1
+          }
+          TextWidgetClass "{M360-CLOTH-TITLE}" {
+           Name "TitleText"
+           Slot OverlayWidgetSlot "{M360-CLOTH-TITLE-SLOT}" {
+            HorizontalAlign 0
+            VerticalAlign 3
+            Padding 24 0 0 0
+           }
+           Color 0.95 0.97 1 1
+           Text "M360 KIYAFET MAGAZASI"
+           "Font Size" 24
+           "Vertical Alignment" Center
+          }
+          TextWidgetClass "{M360-CLOTH-CASH}" {
+           Name "CashText"
+           Slot OverlayWidgetSlot "{M360-CLOTH-CASH-SLOT}" {
+            HorizontalAlign 2
+            VerticalAlign 3
+            Padding 0 0 104 0
+           }
+           Color 0.47 0.9 0.62 1
+           Text "$0"
+           "Font Size" 18
+           "Vertical Alignment" Center
+          }
+          ButtonWidgetClass "{M360-CLOTH-CLOSE}" {
+           Name "CloseButton"
+           Slot OverlayWidgetSlot "{M360-CLOTH-CLOSE-SLOT}" {
+            HorizontalAlign 2
+            VerticalAlign 3
+            Padding 0 0 22 0
+           }
+           Color 0 0 0 0
+           style blank
+           {
+            TextWidgetClass "{M360-CLOTH-CLOSE-TEXT}" {
+             Name "CloseText"
+             Slot ButtonWidgetSlot "{M360-CLOTH-CLOSE-TEXT-SLOT}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+             }
+             Color 0.95 0.96 0.98 1
+             Text "KAPAT  X"
+             "Font Size" 15
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      HorizontalLayoutWidgetClass "{M360-CLOTH-BODY}" {
+       Name "BodyLayout"
+       Slot LayoutSlot "{M360-CLOTH-BODY-SLOT}" {
+        Padding 16 16 16 12
+        SizeMode Fill
+        FillWeight 1
+       }
+       {
+        SizeLayoutWidgetClass "{M360-CLOTH-LEFT-SIZE}" {
+         Name "LeftSize"
+         Slot LayoutSlot "{M360-CLOTH-LEFT-SIZE-SLOT}" {
+          Padding 0 0 14 0
+         }
+         AllowWidthOverride 1
+         WidthOverride 460
+         {
+          OverlayWidgetClass "{M360-CLOTH-LEFT}" {
+           Name "LeftPanel"
+           Slot AlignableSlot "{M360-CLOTH-LEFT-SLOT}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+           }
+           {
+            ImageWidgetClass "{M360-CLOTH-LEFT-BG}" {
+             Name "LeftBg"
+             Slot OverlayWidgetSlot "{M360-CLOTH-LEFT-BG-SLOT}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+             }
+             Color 0.08 0.095 0.12 0.98
+            }
+            HorizontalLayoutWidgetClass "{M360-CLOTH-LEFT-CONTENT}" {
+             Name "LeftContent"
+             Slot OverlayWidgetSlot "{M360-CLOTH-LEFT-CONTENT-SLOT}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+              Padding 12 12 12 12
+             }
+             {
+              SizeLayoutWidgetClass "{M360-CLOTH-CAT-COL-SIZE}" {
+               Name "CategoryColumnSize"
+               Slot LayoutSlot "{M360-CLOTH-CAT-COL-SIZE-SLOT}" {
+                Padding 0 0 10 0
+               }
+               AllowWidthOverride 1
+               WidthOverride 118
+               {
+                OverlayWidgetClass "{M360-CLOTH-CAT-COL}" {
+                 Name "CategoryColumn"
+                 Slot AlignableSlot "{M360-CLOTH-CAT-COL-SLOT}" {
+                  HorizontalAlign 3
+                  VerticalAlign 3
+                 }
+                 {
+                  ImageWidgetClass "{M360-CLOTH-CAT-COL-BG}" {
+                   Name "CategoryColumnBg"
+                   Slot OverlayWidgetSlot "{M360-CLOTH-CAT-COL-BG-SLOT}" {
+                    HorizontalAlign 3
+                    VerticalAlign 3
+                   }
+                   Color 0.055 0.065 0.085 1
+                  }
+                  ScrollLayoutWidgetClass "{M360-CLOTH-CAT-SCROLL}" {
+                   Name "CategoryScroll"
+                   Slot OverlayWidgetSlot "{M360-CLOTH-CAT-SCROLL-SLOT}" {
+                    HorizontalAlign 3
+                    VerticalAlign 3
+                    Padding 8 8 8 8
+                   }
+                   {
+                    VerticalLayoutWidgetClass "{M360-CLOTH-CATS}" {
+                     Name "CategoryList"
+                     Slot AlignableSlot "{M360-CLOTH-CATS-SLOT}" {
+                      HorizontalAlign 3
+                      VerticalAlign 0
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+              ScrollLayoutWidgetClass "{M360-CLOTH-SCROLL}" {
+               Name "ItemScroll"
+               Slot LayoutSlot "{M360-CLOTH-SCROLL-SLOT}" {
+                SizeMode Fill
+                FillWeight 1
+               }
+               {
+                VerticalLayoutWidgetClass "{M360-CLOTH-LIST}" {
+                 Name "ItemList"
+                 Slot AlignableSlot "{M360-CLOTH-LIST-SLOT}" {
+                  HorizontalAlign 3
+                  VerticalAlign 0
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        FrameWidgetClass "{M360-CLOTH-PREVIEW-AREA}" {
+         Name "PreviewArea"
+         Slot LayoutSlot "{M360-CLOTH-PREVIEW-AREA-SLOT}" {
+          Padding 0 0 14 0
+          SizeMode Fill
+          FillWeight 1
+         }
+         {
+          OverlayWidgetClass "{M360-CLOTH-PREVIEW-OVERLAY}" {
+           Name "PreviewContainer"
+           Slot FrameWidgetSlot "{M360-CLOTH-PREVIEW-OVERLAY-SLOT}" {
+            Anchor 0 0 1 1
+            OffsetRight 0
+            OffsetBottom 0
+           }
+           {
+            ImageWidgetClass "{M360-CLOTH-PREVIEW-BG}" {
+             Name "PreviewBackground"
+             Slot OverlayWidgetSlot "{M360-CLOTH-PREVIEW-BG-SLOT}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+             }
+             Color 0.025 0.035 0.05 1
+            }
+            ItemPreviewWidgetClass "{M360-CLOTH-PREVIEW}" {
+             Name "playerRender"
+             Slot OverlayWidgetSlot "{M360-CLOTH-PREVIEW-SLOT}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+              Padding 22 18 22 18
+             }
+             Color 0.025 0.035 0.05 1
+            }
+            TextWidgetClass "{M360-CLOTH-PREVIEW-HINT}" {
+             Name "PreviewHint"
+             Slot OverlayWidgetSlot "{M360-CLOTH-PREVIEW-HINT-SLOT}" {
+              HorizontalAlign 1
+              VerticalAlign 2
+              Padding 0 0 0 18
+             }
+             Color 0.48 0.54 0.64 1
+             Text "3D KARAKTER PROVASI"
+             "Font Size" 13
+             "Horizontal Alignment" Center
+            }
+           }
+          }
+         }
+        }
+        SizeLayoutWidgetClass "{M360-CLOTH-RIGHT-SIZE}" {
+         Name "RightSize"
+         Slot LayoutSlot "{M360-CLOTH-RIGHT-SIZE-SLOT}" {
+         }
+         AllowWidthOverride 1
+         WidthOverride 310
+         {
+          OverlayWidgetClass "{M360-CLOTH-RIGHT}" {
+           Name "RightPanel"
+           Slot AlignableSlot "{M360-CLOTH-RIGHT-SLOT}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+           }
+           {
+            ImageWidgetClass "{M360-CLOTH-RIGHT-BG}" {
+             Name "RightBg"
+             Slot OverlayWidgetSlot "{M360-CLOTH-RIGHT-BG-SLOT}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+             }
+             Color 0.08 0.095 0.12 0.98
+            }
+            VerticalLayoutWidgetClass "{M360-CLOTH-RIGHT-CONTENT}" {
+             Name "RightContent"
+             Slot OverlayWidgetSlot "{M360-CLOTH-RIGHT-CONTENT-SLOT}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+              Padding 18 20 18 18
+             }
+             {
+              TextWidgetClass "{M360-CLOTH-SELECTED-LABEL}" {
+               Name "SelectedLabel"
+               Slot LayoutSlot "{M360-CLOTH-SELECTED-LABEL-SLOT}" {
+                Padding 0 0 0 8
+               }
+               Color 0.46 0.82 0.78 1
+               Text "SECILEN URUN"
+               "Font Size" 13
+              }
+              TextWidgetClass "{M360-CLOTH-SELECTED}" {
+               Name "SelectedName"
+               Slot LayoutSlot "{M360-CLOTH-SELECTED-SLOT}" {
+                Padding 0 0 0 18
+               }
+               Color 0.96 0.97 0.99 1
+               Text "Bir kiyafet sec"
+               "Font Size" 20
+               Wrap 1
+              }
+              TextWidgetClass "{M360-CLOTH-PRICE}" {
+               Name "PriceText"
+               Slot LayoutSlot "{M360-CLOTH-PRICE-SLOT}" {
+                Padding 0 0 0 14
+               }
+               Color 0.47 0.9 0.62 1
+               Text "Fiyat: -"
+               "Font Size" 18
+              }
+              TextWidgetClass "{M360-CLOTH-INFO}" {
+               Name "InfoText"
+               Slot LayoutSlot "{M360-CLOTH-INFO-SLOT}" {
+                Padding 0 0 0 20
+               }
+               Color 0.7 0.74 0.8 1
+               Text "Secilen parca karakter uzerinde gecici olarak gosterilir. Satin alindiginda envanterine teslim edilir."
+               "Font Size" 14
+               Wrap 1
+              }
+              FrameWidgetClass "{M360-CLOTH-SPACER}" {
+               Name "RightSpacer"
+               Slot LayoutSlot "{M360-CLOTH-SPACER-SLOT}" {
+                SizeMode Fill
+                FillWeight 1
+               }
+              }
+              TextWidgetClass "{M360-CLOTH-STATUS}" {
+               Name "StatusText"
+               Slot LayoutSlot "{M360-CLOTH-STATUS-SLOT}" {
+                Padding 0 0 0 14
+               }
+               Color 0.84 0.86 0.9 1
+               Text "Kategori sec, urunu dene."
+               "Font Size" 14
+               Wrap 1
+              }
+              SizeLayoutWidgetClass "{M360-CLOTH-BUY-SIZE}" {
+               Name "BuySize"
+               Slot LayoutSlot "{M360-CLOTH-BUY-SIZE-SLOT}" {
+               }
+               AllowHeightOverride 1
+               HeightOverride 62
+               {
+                OverlayWidgetClass "{M360-CLOTH-BUY-PANEL}" {
+                 Name "BuyPanel"
+                 Slot AlignableSlot "{M360-CLOTH-BUY-PANEL-SLOT}" {
+                  HorizontalAlign 3
+                  VerticalAlign 3
+                 }
+                 {
+                  ImageWidgetClass "{M360-CLOTH-BUY-BG}" {
+                   Name "BuyBg"
+                   Slot OverlayWidgetSlot "{M360-CLOTH-BUY-BG-SLOT}" {
+                    HorizontalAlign 3
+                    VerticalAlign 3
+                   }
+                   Color 0.12 0.56 0.45 1
+                  }
+                  ButtonWidgetClass "{M360-CLOTH-BUY}" {
+                   Name "BuyButton"
+                   Slot OverlayWidgetSlot "{M360-CLOTH-BUY-SLOT}" {
+                    HorizontalAlign 3
+                    VerticalAlign 3
+                   }
+                   Color 0 0 0 0
+                   style blank
+                   {
+                    TextWidgetClass "{M360-CLOTH-BUY-TEXT}" {
+                     Name "BuyText"
+                     Slot ButtonWidgetSlot "{M360-CLOTH-BUY-TEXT-SLOT}" {
+                      HorizontalAlign 3
+                      VerticalAlign 3
+                     }
+                     Color 1 1 1 1
+                     Text "SATIN AL"
+                     "Font Size" 18
+                     "Horizontal Alignment" Center
+                     "Vertical Alignment" Center
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      SizeLayoutWidgetClass "{M360-CLOTH-FOOTER-SIZE}" {
+       Name "FooterSize"
+       Slot LayoutSlot "{M360-CLOTH-FOOTER-SIZE-SLOT}" {
+       }
+       AllowHeightOverride 1
+       HeightOverride 38
+       {
+        OverlayWidgetClass "{M360-CLOTH-FOOTER}" {
+         Name "Footer"
+         Slot AlignableSlot "{M360-CLOTH-FOOTER-SLOT}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         {
+          ImageWidgetClass "{M360-CLOTH-FOOTER-BG}" {
+           Name "FooterBg"
+           Slot OverlayWidgetSlot "{M360-CLOTH-FOOTER-BG-SLOT}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+           }
+           Color 0.045 0.055 0.075 1
+          }
+          TextWidgetClass "{M360-CLOTH-FOOTER-TEXT}" {
+           Name "FooterText"
+           Slot OverlayWidgetSlot "{M360-CLOTH-FOOTER-TEXT-SLOT}" {
+            HorizontalAlign 1
+            VerticalAlign 3
+           }
+           Color 0.55 0.59 0.66 1
+           Text "Sol: kategori  |  Orta: 3D prova (surukle/zoom)  |  ESC kapat"
+           "Font Size" 12
+           "Horizontal Alignment" Center
+           "Vertical Alignment" Center
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -42,7 +42,7 @@
 | `Isler/M360_SatAksiyonu.c` | F Sat | Sell | UserAction | lab |
 | `Isler/M360_DurumAksiyonu.c` | F Envanter | HUD | UserAction | lab |
 | `Arayuz/M360_TusYoneticisi.c` | Tuş omurgası (I canta, F2 ses; yalnız UI) | Input conf + PlayerController | istemci | kanitli |
-| `Arayuz/M360_SesModuYoneticisi.c` | F2: AudioSettings → %85 + SetMasterVolume(x/100); VoiceChat dokunulmaz; ikon | TusYoneticisi + CantaHud | istemci | ürün |
+| `Arayuz/M360_SesModuYoneticisi.c` | F2: AudioSettings → mevcut ayarın %15'i + SetMasterVolume(x/100); VoiceChat dokunulmaz | TusYoneticisi + CantaHud | istemci | ürün |
 | `Arayuz/M360_PlayerControllerI.c` | Yerel `Kur()` — hijack yok | TusYoneticisi | istemci | kanitli |
 | `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + panel + SesModu.Tick | TusYoneticisi | istemci | lab |
 | `Configs/System/M360_Input.conf` | `M360_LifeCanta`+`M360_SesModu` + CharacterMovementContext ActionRefs | gproj Default | istemci | lab |
@@ -51,8 +51,10 @@
 | `Arayuz/M360_YuvarlakBar.c` | Badge + maskeli progress ring | CekirdekHud | lab UI | lab |
 | `Arayuz/M360_CantaPanelWidgetlari.c` | I canta v3 soft9 (9-slice + satır havuzu) | CantaHudBileseni | lab UI | lab |
 | `Arayuz/M360_HudYazi.c` | NakitFormat (binlik nokta) | Cekirdek + Canta | lab UI | lab |
-| `Ag/M360_ApiIstemci.c` | Vercel RestApi health/jobs | BaglantiTesti + lab entity | lab Ag | kanitli |
-| `WorkbenchGame/EnfusionMCP/*` | MCP köprü | Cursor | WB only | arac |
+| `Magaza/M360_ARGH_NakitKoprusu.c` | Hazır ARGH galerisi ödeme/refund ve bakiye görünümü → M360 HUD nakit | ARGH dealer servisi/UI | dedicated + istemci | kanıtlı |
+| `Magaza/M360_KiyafetKatalogu.c` + `M360_KiyafetMagazaUI.c` + aksiyon/RPC | Vergys 97 wrapper + prova yığını + anında toplu alım | MenuManager layout | lab | güncel |
+| `Prefabs/M360/Magaza/M360_KiyafetMagaza.et` | Kıyafet mağaza terminali | lab layer | lab | yeni |
+| `UI/layouts/M360/M360_KiyafetMagaza.layout` + `M360_KiyafetSatir.layout` + `M360_KiyafetKategori.layout` | Tam ekran kıyafet menüsü, düzenli ürün/kategori satırları | Overlay UI | lab | yeni |
 
 ---
 
@@ -61,7 +63,6 @@
 | Yol | Amaç | Birlikte | Durum |
 |---|---|---|---|
 | `UI/Textures/M360/m360_*_UI.png` / `.edds` | Badge, radial, pill, panel 9-slice, item ikon | HudIkonlari | lab |
-| `UI/layouts/M360/*.layout` | Diskte; **runtime yüklenmez** (CreateWidgets yasak) | — | bekleyen |
 | `tools/gen_circle_hud_textures.py` | Badge/radial DDS üretici | Textures | lab |
 | `tools/icon_src/` | MDI/Iconify SVG+PNG kaynak (`node_modules` ignore) | gen script | lab |
 | `tools/bagla-oyun-klasoru.ps1 (+ sync-game-to-github.ps1)` | Workbench → GitHub (MIR yasak) | GitHub repo | canlı |
@@ -77,10 +78,9 @@
 | `Prefabs/M360/Isler/README.md` | Klasör notu | — | lab |
 | `Prefabs/M360/Arayuz/` | İleride prefab HUD | layout’lar `UI/layouts/M360/` | taslak |
 | `Prefabs/M360/Dunya/` | İleride spawn prefab | — | taslak |
-| `Prefabs/M360/Pazarlar/` `Araclar/` | İleride | — | taslak |
-| `Configs/Magaza/M360_*.conf` | Referans katalog (opsiyonel); lab urunleri `default.layer` `m_AdditionalMerchandise` | Shop System | lab |
-| `tools/dedicated/indir-shop-system.ps1` | Workshop Shop System (packed+rdb) indir | canlı |
-| `tools/dedicated/bagla-addon.ps1` | M360 + ShopSystem (workshop oncelikli) junction | canlı |
+| `tools/dedicated/kur-argh.ps1` | ARGH + DynamicEconomy + DynamicLoot kaynaklarını her PC’de hazırlar | canlı |
+| `tools/dedicated/kur-vergys.ps1` + `vergys-download.json` | Vergys Custom Clothing Workshop paketini her PC’de indirir | canlı |
+| `tools/dedicated/bagla-addon.ps1` | M360 + ARGH + Vergys bağımlılık junction’ları | canlı |
 
 Harita değişince: aynı `Isler/*` prefab’ları yerleştir.
 
@@ -91,10 +91,10 @@ Harita değişince: aynı `Isler/*` prefab’ları yerleştir.
 | Yol | Amaç | Durum |
 |---|---|---|
 | `Worlds/LabDuzZemin/M360_LabDuzZemin.ent` | Düz zemin lab kök | lab |
-| `.../M360_LabDuzZemin_Layers/default.layer` | Pirinç + spawn + HUD + 3 Shop System NPC + 3 Wallet | lab |
+| `.../M360_LabDuzZemin_Layers/default.layer` | Pirinç + spawn + HUD + arsenal + ARGH araç galerisi/spawn noktası | lab |
 | `.../M360_Terrain/` | GenericTerrain data | lab |
 
-Entity: `M360_PirincTopla` · `PirincIsle` · `PirincSat` · `M360_CantaHud` · `M360_ApiTest` · `M360_SilahMagaza` · `M360_AracMagaza` · `M360_KiyafetMagaza` · FFA managers.
+Entity: `M360_PirincTopla` · `PirincIsle` · `PirincSat` · `M360_CantaHud` · `M360_ApiTest` · `M360_VanilArsenal` · `M360_ARGHAracGalerisi` · FFA managers.
 
 ---
 
@@ -106,10 +106,10 @@ Entity: `M360_PirincTopla` · `PirincIsle` · `PirincSat` · `M360_CantaHud` · 
 | `web/` | Admin panel | yer tutucu |
 | `packages/db/migrations/001_job_definitions.sql` | Neon iş tanım tablosu | canlı |
 | `tools/bagla-oyun-klasoru.ps1` (+ sync) | Junction / senkron | canlı |
-| `tools/dedicated/bagla-addon.ps1` | M360 + ShopSystem junction (workshop-cache) | canlı |
-| `tools/dedicated/indir-shop-system.ps1` | Shop System workshop paketi indir | canlı |
-| `tools/vendor/Reforger-Shop-System/` | Lab magazasinin vendor dependency'si | repoda |
-| `tools/vendor/DynamicEconomy/` / `ARGH_VEHICLE_TRADER_DE/` | Opsiyonel vendor kopyalari; labda yuklenmez | repoda |
+| `tools/dedicated/kur-argh.ps1` | Üç açık kaynak bağımlılığı `tools/vendor/` altına indirir ve 1.7 uyumluluğunu uygular | canlı |
+| `tools/dedicated/argh/M360_ARGH_VehicleDealer_Vehicles.conf` | 4 araç ve M360 fiyat yapılandırması | canlı |
+| `tools/vendor/DynamicLoot/` / `DynamicEconomy/` / `ARGH-AmbientVehiclePlugin/` | Yerel/ignore vendor kaynakları; `M360.bat` yeniden kurar | yerel |
+| `tools/vendor-workshop/.../VergysCustomClothing_59B70A5A19E9B51E/` | İndirilen paketlenmiş sivil kıyafet içeriği; git-ignore, `M360.bat` yeniden indirir | yerel |
 
 ---
 

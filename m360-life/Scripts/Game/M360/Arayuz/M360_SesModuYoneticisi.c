@@ -11,7 +11,7 @@
 //------------------------------------------------------------------------------------------------
 class M360_SesModuYoneticisi
 {
-	static const float HEDEF_CARPAN = 0.85;
+	static const float HEDEF_CARPAN = 0.15;
 	static const float GECIS_SN = 0.45;
 	static const float IKON_GECIS_SN = 0.12;
 
@@ -159,7 +159,7 @@ class M360_SesModuYoneticisi
 			s_fSfxKayit, s_fSfxHedef, voip), LogLevel.NORMAL);
 
 		SCR_HintManagerComponent.ShowCustomHint(
-			"Oyun sesi dusuruldu (konusma ayni) | F2 ile ac",
+			"Oyun sesi %15 (konusma ayni) | F2 ile ac",
 			"M360 Ses",
 			4);
 	}

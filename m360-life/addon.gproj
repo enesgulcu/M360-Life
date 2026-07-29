@@ -3,10 +3,19 @@ GameProject {
  GUID "69F4E91377BCC9A5"
  TITLE "M360 Life"
  Dependencies {
-  "58D0FB3206B6F859"
+  "58D0FB3206B6F859" "59B70A5A19E9B51E" "66B2F0B008DC590F" "66F0560F1BDE732A" "686A96CE03A95D30"
  }
  Configurations {
   GameProjectConfig PC {
+   SystemModuleSettings SystemModuleSettings "{5F10A1570304557B}" {
+    DefaultConfig "{7C9E720397CC6ACD}Configs/Systems/ConflictSystems.conf"
+   }
+   MenuManagerSettings MenuManagerSettings "{ADF987310AA53202}" {
+    MenuConfigs {
+     "{C747AFB6B750CE9A}Configs/System/chimeraMenus.conf"
+     "{ADF987310AA53200}Configs/System/M360_chimeraMenus.conf"
+    }
+   }
    InputManagerSettings InputManagerSettings "{ADF987310AA5305D}" {
     Default "{ADF987310AA5305C}Configs/System/M360_Input.conf"
     UiMappings "{0AD37213EFEB0B61}Configs/System/chimeraMapping.conf"

@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{ADF987310AA53200}Configs/System/M360_chimeraMenus.conf"
+ Configurations {
+  ConfResourceClass PC {
+  }
+  ConfResourceClass XBOX_ONE : PC {
+  }
+  ConfResourceClass XBOX_SERIES : PC {
+  }
+  ConfResourceClass PS4 : PC {
+  }
+  ConfResourceClass PS5 : PC {
+  }
+  ConfResourceClass HEADLESS : PC {
+  }
+ }
+}

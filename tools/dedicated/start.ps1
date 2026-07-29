@@ -20,7 +20,7 @@ $here = $PSScriptRoot
 $secrets = Join-Path $here "secrets"
 $addonsDir = Join-Path $here "addons"
 $keySrc = Join-Path $secrets "M360_ApiLabKey.txt"
-$modGuids = "69F4E91377BCC9A5"
+$modGuids = "59B70A5A19E9B51E,66B2F0B008DC590F,66F0560F1BDE732A,686A96CE03A95D30,69F4E91377BCC9A5"
 $world = "{60855889A2B4FE4E}Worlds/LabDuzZemin/M360_LabDuzZemin.ent"
 $bindPort = 2001
 
@@ -41,7 +41,11 @@ if (-not (Test-Path -LiteralPath $exe)) {
 }
 
 if (
-  -not (Test-Path -LiteralPath (Join-Path $addonsDir "M360-Life\addon.gproj"))
+  -not (Test-Path -LiteralPath (Join-Path $addonsDir "M360-Life\addon.gproj")) -or
+  -not (Test-Path -LiteralPath (Join-Path $addonsDir "DynamicLoot\addon.gproj")) -or
+  -not (Test-Path -LiteralPath (Join-Path $addonsDir "DynamicEconomy\addon.gproj")) -or
+  -not (Test-Path -LiteralPath (Join-Path $addonsDir "ARGH-AmbientVehiclePlugin\addon.gproj")) -or
+  -not (Test-Path -LiteralPath (Join-Path $addonsDir "VergysCustomClothing\addon.gproj"))
 ) {
   Write-Host "Addon junction yok - baglaniyor..."
   & (Join-Path $here "bagla-addon.ps1")
