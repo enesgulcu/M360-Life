@@ -1,19 +1,12 @@
-M360 Life — dedicated paket (guncel)
-Tarih: 2026-07-29 ~10:15 Europe/Istanbul
-DEVIR: sabah PC A → akşam PC B + yeni Cursor. Detay: docs/15 §C + docs/20
+M360 dedicated — SON DURUM
+========================
+Gun sonu: 2026-07-29 ~17:10 (PC A / Enes)
 
-=== SENKRON ===
-Akşam: git pull / M360.bat → oku docs/20 sonra docs/15 §C
-Push şart (secrets commit etme). Cursor sohbet senkron DEGIL.
+Lab addons: yalniz M360-Life (69F4E91377BCC9A5)
+Arsenal + VehicleService = M360 HUD nakit (supply kapali)
+Fiyat alinabilir: HUD nakit dusuyor
+SIRADAKI: her urunun kendi fiyati — simdilik tum urunler ayni oranda dusuyor gibi (kontrol edilecek)
 
-=== KANITLI BUGUN ===
-I = Life HUD | Tab = vanilla | F2 = ses %85 (VoiceChat ayni)
-Yontem: docs/20 §1 (input) + §1b (ses)
-Kod: M360_Input.conf, M360_TusYoneticisi, M360_SesModuYoneticisi
-
-=== YASAK ===
-docs/20 §9 — hijack/Save/Overlay/ActionInput/rdb/kalici -client
-
-=== SONRAKI ===
-Faz 0 devam; yeni tus = 20 §1 omurga
-Acik: Workshop, Pirinc GUID, yazma API
+Istemci: dogrudan ArmaReforgerSteam.exe (Steam LaunchOptions Shop/Bacon karismaz)
+API: api/.env lokal (git YOK — Neon + M360_SERVER_KEY); Sync-M360ApiKeyFromEnv
+Oyna: M360-Oyna.bat

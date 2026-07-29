@@ -6,7 +6,7 @@
 >
 > **Çelişki:** **20 + 19 > 15** günlük not. Eski 15 bölümleri (7b Overlay, 7e hijack+Save) **geçersiz** — bu dosya geçerli.
 >
-> **Son güncelleme:** 2026-07-29 ~11:25 (TR) — F2 ses kilidi + ölçek rehberi; hedef %85.
+> **Son güncelleme:** 2026-07-29 ~17:10 (TR) — Arsenal/Arac = M360 nakit calisiyor; fiyat-per-ürün sırada.
 
 ---
 
@@ -132,6 +132,17 @@ Inventory hijack · `InputBinding.Save` · Save’siz remap · `ActionInput` · 
 | Texture | Opak DDS = beyaz kare; köşe stretch etme; soft AA; lab’da tıklanır Kapat yok → **I** toggle |
 | Boot | `IsEditMode` ile HUD kapatma **yasak** (Play’de true kalabilir). `InPlayMode` + FRAME lazy `Baslat` |
 | Ürün hedefi | Layout Editor (sonra); şimdilik CreateWidget yolu |
+| Enforce scope | **Aynı fonksiyonda** `for (int i)` / `ImageWidget bg` / `cat` gibi isimler **tekrar tanımlanamaz** (blok `{}` ayırmaz). Her döngüde benzersiz isim (`katIdx`, `bgUrun`) veya helper metod kullan. |
+| Enforce method arg | `notnull ref array<...>` parametre **YASAK** → `array<...>` veya helper metod. |
+| ItemPreview CreateWidget | **`GameWidgetType.ItemPreviewWidgetTypeID`** — `WidgetType.ItemPreview...` **YOK** (compile: Can't find variable). |
+| ChimeraWorld | `GetGame().GetWorld()` zaten ChimeraWorld döner — **`ChimeraWorld.Cast(...)` YASAK** (Cast not supported). |
+| Prefab GUID | Yanlış GUID = çamur/boş RT. Lab’da yalnız **kanıtlı GUID** (docs/15). |
+
+> **Not (2026-07-29):** Eski CreateWidget Magaza HUD / Preview World denemesi **tamamen kaldirildi**. O HUD yoluna donulmez.
+>
+> **Magaza (2026-07-29 ~17:05):** Lab = vanilla **Arsenal kutusu** + **Vehicle Service** · odeme = **M360 HUD nakit** (`RplProp`) · Shop System / Bacon **yok**. Supply kapali (`IsArsenalUsingSupplies` / `IsSuppliesConsumptionEnabled`).
+>
+> ~~Magaza denemesi (~15:35): Shop/DE/Reloadz…~~ · ~~Shop System (~14:10)~~ (gecersiz)
 
 ---
 
@@ -140,11 +151,12 @@ Inventory hijack · `InputBinding.Save` · Save’siz remap · `ActionInput` · 
 | Madde | Karar |
 |---|---|
 | Exe | Steam `Arma Reforger Server` (`ArmaReforgerServer.exe`) — boş “Dedicated Server” klasörü ≠ exe |
-| Addon | `tools/dedicated/addons/M360-Life` → junction → repo `m360-life` |
+| Addon | `tools/dedicated/addons/M360-Life` → `m360-life` |
 | Lokal start | `-server "{GUID}Worlds/..." ` + `-addonsDir` + `-addons 69F4E91377BCC9A5` |
 | Yasak kombo | **`-config` + `-addons` aynı anda** (lokal yayınlanmamış mod) |
 | Bağlan | Önce sunucu → `baglan-istemci.ps1` / `M360-Oyna.bat` |
-| Steam kalıcı | Yalnız `-addonsDir` + `-addons` — **`-client` yazma** (Init Error) |
+| Steam kalıcı | Yalnız `-addonsDir` + `-addons 69F4E91377BCC9A5` — **`-client` / Shop / Bacon YAZMA** |
+| Istemci acilis | `oyna`/`baglan` → **dogrudan `ArmaReforgerSteam.exe`** (Steam LaunchOptions birlestirmesini atlar) |
 | Direct Join | Lokal’da “No server found” normal; CLI `-client 127.0.0.1` |
 | Profil | `-profile M360Dedicated` → `Documents\My Games\M360Dedicated\` |
 | Script değişince | Sunucuyu yenile (checksum Init Error) |

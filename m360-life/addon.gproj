@@ -11,6 +11,9 @@ GameProject {
     Default "{ADF987310AA5305C}Configs/System/M360_Input.conf"
     UiMappings "{0AD37213EFEB0B61}Configs/System/chimeraMapping.conf"
    }
+   ChimeraGlobalConfig ChimeraGlobalConfig "{ADF987310AA5305F}" {
+    DefaultPlayerController "{225E51284CC95CFA}Prefabs/Characters/Core/DefaultPlayerControllerMP.et"
+   }
   }
  }
 }

@@ -113,6 +113,48 @@ function Find-M360SteamExe {
   return $null
 }
 
+# Arma Reforger istemci exe (Steam LaunchOptions birlestirmesini atlamak icin).
+function Find-M360ReforgerClientExe {
+  $root = Find-M360SteamAppDir "Arma Reforger"
+  if (-not $root) { return $null }
+  foreach ($name in @("ArmaReforgerSteam.exe", "ArmaReforger.exe")) {
+    $p = Join-Path $root $name
+    if (Test-Path -LiteralPath $p) { return $p }
+  }
+  return $null
+}
+
+# Istemciyi yalniz M360 ile ac (Steam kalici LaunchOptions Shop/Bacon eklemesin).
+function Start-M360Istemci([string]$ServerHost = "127.0.0.1", [string]$AddonsDir = "", [string]$ModGuids = "69F4E91377BCC9A5") {
+  if (-not $AddonsDir) {
+    $AddonsDir = Join-Path (Get-M360RepoRoot) "tools\dedicated\addons"
+  }
+  [void](Set-M360SteamLaunchOptions)
+
+  $exe = Find-M360ReforgerClientExe
+  if ($exe) {
+    Write-Host ("Istemci (dogrudan exe, Steam LaunchOptions atlandi): {0}" -f $exe)
+    Write-Host ("  -client {0} -addons {1}" -f $ServerHost, $ModGuids)
+    Start-Process -FilePath $exe -ArgumentList @(
+      "-client", $ServerHost,
+      "-addonsDir", $AddonsDir,
+      "-addons", $ModGuids
+    ) -WorkingDirectory (Split-Path $exe -Parent)
+    return $true
+  }
+
+  $steam = Find-M360SteamExe
+  if (-not $steam) { throw "steam.exe / ArmaReforger istemci yok" }
+  Write-Host "UYARI: istemci exe bulunamadi; steam -applaunch kullaniliyor (LaunchOptions karisabilir)"
+  Start-Process -FilePath $steam -ArgumentList @(
+    "-applaunch", "1874880",
+    "-client", $ServerHost,
+    "-addonsDir", $AddonsDir,
+    "-addons", $ModGuids
+  )
+  return $true
+}
+
 function Get-M360PreferredServerInstallDir {
   # Oyunun oldugu Steam kutuphanesine kur (aynı disk)
   $game = Find-M360SteamAppDir "Arma Reforger"
@@ -163,4 +205,57 @@ function Sync-M360ApiKeyFromEnv {
 function Test-M360DatabaseUrlInEnv {
   $v = Read-M360EnvValue (Get-M360ApiEnvPath) "DATABASE_URL"
   return [bool]$v
+}
+
+# Steam kalici LaunchOptions: yalniz M360 GUID (Shop/Bacon/ -client YASAK).
+function Set-M360SteamLaunchOptions {
+  $modGuid = "69F4E91377BCC9A5"
+  $addonsDir = Join-Path (Get-M360RepoRoot) "tools\dedicated\addons"
+  $wanted = ('-addonsDir "{0}" -addons {1}' -f $addonsDir, $modGuid)
+  $escapedWanted = $wanted.Replace('\', '\\').Replace('"', '\"')
+
+  $steamPath = $null
+  try {
+    $steamPath = ((Get-ItemProperty -Path "HKCU:\Software\Valve\Steam" -ErrorAction Stop).SteamPath) -replace "/", "\"
+  } catch {}
+  if (-not $steamPath) { return $false }
+
+  $userdata = Join-Path $steamPath "userdata"
+  $fixed = $false
+  Get-ChildItem -LiteralPath $userdata -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+    $cfg = Join-Path $_.FullName "config\localconfig.vdf"
+    if (-not (Test-Path -LiteralPath $cfg)) { return }
+    $text = [System.IO.File]::ReadAllText($cfg)
+    if ($text -notmatch '69F4E91377BCC9A5|5D2D1436D1FA5A13|606B100247F5C709') { return }
+
+    $newText = [regex]::Replace(
+      $text,
+      '"LaunchOptions"\s+"([^"]*)"',
+      {
+        param($m)
+        $val = $m.Groups[1].Value
+        if ($val -match '69F4E91377BCC9A5|5D2D1436D1FA5A13|606B100247F5C709|M360-Life\\tools\\dedicated\\addons') {
+          return ('"LaunchOptions"' + "`t`t" + '"' + $escapedWanted + '"')
+        }
+        return $m.Value
+      }
+    )
+
+    if ($newText -eq $text) {
+      if ($text -match '69F4E91377BCC9A5' -and $text -notmatch '5D2D1436D1FA5A13|606B100247F5C709|-client\s') {
+        Write-Host "Steam LaunchOptions zaten temiz (yalniz M360)"
+        $fixed = $true
+      }
+      return
+    }
+
+    $bak = "$cfg.bak-m360-launch"
+    if (-not (Test-Path -LiteralPath $bak)) {
+      Copy-Item -LiteralPath $cfg -Destination $bak -Force
+    }
+    [System.IO.File]::WriteAllText($cfg, $newText)
+    $fixed = $true
+    Write-Host ("Steam LaunchOptions temizlendi (yalniz M360): {0}" -f $wanted)
+  }
+  return $fixed
 }

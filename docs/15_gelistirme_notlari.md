@@ -4,14 +4,14 @@
 >
 > **Yeni sohbette:** **[20](./20_kritik_kararlar.md)** → **bu dosya §C** → işe başla. Çelişince **20 kazanır**.
 >
-> **Son güncelleme:** 2026-07-29 ~11:25 (TR) — F2 ses KANITLI; hedef %85; docs/20 §1b.
+> **Son güncelleme:** 2026-07-29 ~17:10 (TR) — Arsenal/Arac nakit OK; fiyat-per-ürün sırada; gün sonu push.
 
 ---
 
 ## C. SON DURUM / el değiştirme (yeni sohbet buradan)
 
 > AI: önce **docs/20**, sonra **§C**. Kullanıcıya “oku” deme.
-> Kullanıcı: **`M360.bat`** / oyna: **`M360-Oyna.bat`**. Gün sonu: **“commit ve push”** (secrets commit etme).
+> Kullanıcı: **`M360.bat`** / oyna: **`M360-Oyna.bat`**. Gün sonu: **“commit ve push”** (secrets / `api/.env` commit etme).
 
 ### C.0 TEK ISLEM
 
@@ -31,18 +31,31 @@
 | Addon | junction → `m360-life` | aynı |
 | Script | `$env:USERPROFILE` + `Resolve-M360Paths.ps1` | sabit `C:\Users\Enes\...` **yazma** |
 
-Senkron = **yalnızca git** (Cursor sohbet senkron değil). Secrets / Server exe git’e girmez.
+Senkron = **yalnızca git** (Cursor sohbet senkron değil). Secrets / Server exe / **`api/.env`** git’e girmez (lokal kalır; production’da kullanıcı değiştirir).
 
-### C.3 Tablo — 2026-07-29 ~11:25 (F2 ses — KANITLI, %85)
+### C.3 Tablo — 2026-07-29 ~17:10 (GÜN SONU — NAKIT CALISIYOR)
 
 | | |
 |---|---|
 | **PC** | A (`Enes`) |
-| **Durum** | **KANITLI** — kullanıcı F2 çalışıyor dedi |
-| **Kök neden** | `AudioSettings` 0..100 vs `SetMasterVolume` 0..1 — detay **docs/20 §1b** |
-| **Hedef ses** | Mevcut ayarın **%85’i** (`HEDEF_CARPAN = 0.85`) |
-| **Kanıt** | Log `F2 SES LAB OK` + kullanıcı onayı |
-| **Sıradaki** | commit/push → akşam PC `M360.bat` |
+| **Durum** | Lab arsenal + arac = **M360 HUD nakit** · satin alma **calisiyor** |
+| **Addons** | yalniz M360 · istemci **dogrudan exe** (Steam LaunchOptions Shop/Bacon birlestirmez) |
+| **API** | `api/.env` lokal dolduruldu (`M360_SERVER_KEY` + `DATABASE_URL`) — **git ignore** |
+| **Siradaki** | **Fiyat per-urun:** su an HUD düsüsü her urunde ayni oranda gibi; her urunun kendi `m_iFiyat` / katalog fiyatina gore dusmeli — sonra kontrol |
+| **Cikis** | Oyun oturumundan cikis gerekmez; gun sonu = commit+push |
+
+| Obje | Prefab | Odeme |
+|---|---|---|
+| Arsenal | `ArsenalBox_US_NoAffiliation` + `M360_MagazaNakitBileseni` | HUD nakit |
+| Arac | `VehicleService_US_Small_NoAffiliation` + ayni bilesen | HUD nakit |
+
+**Fiyat / liste nasil degisir (kullanici):**
+1. `default.layer` icinde `M360_VanilArsenal` / `M360_AracServis` → `M360_MagazaNakitBileseni` → `m_aKayitlar`.
+2. `m_sPrefab` = GUID+path · `m_iFiyat` = nakit · `m_bAktif 0` = satilmaz.
+3. `m_bSadeceListedekiler 1` = sadece listedekiler; `0` = digerleri `m_iVarsayilanFiyat` (veya katalog supply).
+4. Dedicated yeniden (`M360-Oyna.bat`).
+
+**YASAK:** `default.layer` UTF-8 **BOM** → GameMode yok. · `api/.env` commit.
 
 ### C.5 I/Tab + F2 — kısa
 
@@ -51,12 +64,6 @@ Senkron = **yalnızca git** (Cursor sohbet senkron değil). Secrets / Server exe
 | I | Life HUD |
 | Tab | vanilla envanter |
 | F2 | Ses modu toggle (%85, VoiceChat aynı) |
-
-Detay I/Tab: **docs/20 §1**. F2: **docs/20 §1b** (%85, VoiceChat dokunulmaz).
-
-### C.6 Bu oturum
-
-F2 ses kilidi docs/20 §1b; kullanıcı onayı; hedef %85; push.
 
 ---
 

@@ -20,7 +20,7 @@ $here = $PSScriptRoot
 $secrets = Join-Path $here "secrets"
 $addonsDir = Join-Path $here "addons"
 $keySrc = Join-Path $secrets "M360_ApiLabKey.txt"
-$modGuid = "69F4E91377BCC9A5"
+$modGuids = "69F4E91377BCC9A5"
 $world = "{60855889A2B4FE4E}Worlds/LabDuzZemin/M360_LabDuzZemin.ent"
 $bindPort = 2001
 
@@ -40,7 +40,9 @@ if (-not (Test-Path -LiteralPath $exe)) {
   throw ("Dedicated binary yok: {0}" -f $exe)
 }
 
-if (-not (Test-Path -LiteralPath (Join-Path $addonsDir "M360-Life\addon.gproj"))) {
+if (
+  -not (Test-Path -LiteralPath (Join-Path $addonsDir "M360-Life\addon.gproj"))
+) {
   Write-Host "Addon junction yok - baglaniyor..."
   & (Join-Path $here "bagla-addon.ps1")
 }
@@ -66,7 +68,7 @@ Write-Host ("World  : {0}" -f $world)
 Write-Host ("Port   : {0}" -f $bindPort)
 Write-Host ""
 Write-Host "Istemci Steam baslatma (KALICI, -client YOK):"
-Write-Host ('  -addonsDir "{0}" -addons {1}' -f $addonsDir, $modGuid)
+Write-Host ('  -addonsDir "{0}" -addons {1}' -f $addonsDir, $modGuids)
 Write-Host "Baglanmak icin (sunucu ayaktayken):"
 Write-Host "  powershell -File tools\dedicated\baglan-istemci.ps1"
 Write-Host ""
@@ -74,7 +76,7 @@ Write-Host ""
 $launchArgs = @(
   "-server", $world,
   "-addonsDir", $addonsDir,
-  "-addons", $modGuid,
+  "-addons", $modGuids,
   "-profile", $profileName,
   "-bindPort", "$bindPort",
   "-maxFPS", "60",

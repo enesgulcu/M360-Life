@@ -59,3 +59,7 @@ tools/dedicated/secrets/**
 !tools/dedicated/secrets/.gitkeep
 tools/dedicated/addons/
 
+# Workshop paketleri (yerel; Shop System oyna/bagla ile iner)
+tools/dedicated/workshop-cache/
+tools/vendor/
+

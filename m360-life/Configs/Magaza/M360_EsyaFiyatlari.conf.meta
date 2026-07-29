@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{ADF987310AA53101}Configs/Magaza/M360_EsyaFiyatlari.conf"
+ Configurations {
+  ConfResourcePCClass PC {
+  }
+  ConfResourcePCClass XBOX_ONE : PC {
+  }
+  ConfResourcePCClass XBOX_SERIES : PC {
+  }
+  ConfResourcePCClass PS4 : PC {
+  }
+  ConfResourcePCClass PS5 : PC {
+  }
+  ConfResourcePCClass HEADLESS : PC {
+  }
+ }
+}

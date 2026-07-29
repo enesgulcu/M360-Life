@@ -48,6 +48,8 @@ class M360_CekirdekHudWidgetlari
 		m_wKok = ws.CreateWidget(WidgetType.FrameWidgetTypeID, WidgetFlags.VISIBLE, new Color(0, 0, 0, 0), 50);
 		if (!m_wKok)
 			return false;
+		// HUD hicbir durumda mouse/klik odagini kapmasin.
+		m_wKok.SetEnabled(false);
 
 		FrameSlot.SetAnchorMin(m_wKok, 0, 0);
 		FrameSlot.SetAnchorMax(m_wKok, 1, 1);

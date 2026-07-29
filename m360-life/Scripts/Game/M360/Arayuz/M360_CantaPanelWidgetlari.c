@@ -23,6 +23,7 @@ class M360_CantaSatirUi
 		m_wKok = ws.CreateWidget(WidgetType.FrameWidgetTypeID, WidgetFlags.VISIBLE, new Color(0, 0, 0, 0), 0, ebeveyn);
 		if (!m_wKok)
 			return false;
+		m_wKok.SetEnabled(false);
 
 		FrameSlot.SetAnchorMin(m_wKok, 0, 0);
 		FrameSlot.SetAnchorMax(m_wKok, 0, 0);
@@ -243,6 +244,7 @@ class M360_CantaPanelWidgetlari
 		m_wKok = ws.CreateWidget(WidgetType.FrameWidgetTypeID, WidgetFlags.VISIBLE, new Color(0, 0, 0, 0), 60);
 		if (!m_wKok)
 			return false;
+		m_wKok.SetEnabled(false);
 
 		FrameSlot.SetAnchorMin(m_wKok, 0.5, 0.5);
 		FrameSlot.SetAnchorMax(m_wKok, 0.5, 0.5);

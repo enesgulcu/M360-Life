@@ -16,6 +16,7 @@ class M360_YuvarlakBar
 		m_wKok = ws.CreateWidget(WidgetType.FrameWidgetTypeID, WidgetFlags.VISIBLE, new Color(0, 0, 0, 0), 0, ebeveyn);
 		if (!m_wKok)
 			return false;
+		m_wKok.SetEnabled(false);
 
 		m_wKok.SetName(ad);
 		FrameSlot.SetAnchorMin(m_wKok, 0, 1);

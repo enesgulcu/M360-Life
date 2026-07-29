@@ -1,5 +1,6 @@
 //------------------------------------------------------------------------------------------------
 //! M360 Life — Oyuncu is oturumu (lab envanter/para sayac)
+//! Nakit TEK KAYNAK: SCR_PlayerController RplProp (istemci OwnerOnly sync).
 //! Ileride: gercek envanter + banka ledger (Dokuman 4/5/11) ile degistirilir.
 //------------------------------------------------------------------------------------------------
 class M360_IsOturumVerisi
@@ -51,12 +52,62 @@ class M360_IsOturumlari
 		{
 			veri = new M360_IsOturumVerisi();
 			veri.m_iMaxTasima = 40;
-			veri.m_iNakit = 2750499; // lab: genis sayi ile HUD pill kayma testi
 			veri.m_fAclik = 100;
 			veri.m_fSusuzluk = 100;
 			s_mOturumlar.Insert(oyuncuId, veri);
 		}
+
+		// Nakit: PlayerController RplProp aynasi (HUD / magaza ayni rakam)
+		SCR_PlayerController pc = SCR_PlayerController.M360_ControllerBul(kullanici);
+		if (pc)
+			veri.m_iNakit = pc.M360_NakitAl();
+
 		return veri;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	static bool NakitHarca(IEntity kullanici, int miktar)
+	{
+		SCR_PlayerController pc = SCR_PlayerController.M360_ControllerBul(kullanici);
+		if (!pc)
+			return false;
+
+		if (!pc.M360_NakitHarca(miktar))
+			return false;
+
+		M360_IsOturumVerisi veri = AlVeyaOlustur(kullanici);
+		if (veri)
+			veri.m_iNakit = pc.M360_NakitAl();
+
+		return true;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	static bool NakitEkle(IEntity kullanici, int miktar)
+	{
+		SCR_PlayerController pc = SCR_PlayerController.M360_ControllerBul(kullanici);
+		if (!pc)
+			return false;
+
+		if (!pc.M360_NakitEkle(miktar))
+			return false;
+
+		M360_IsOturumVerisi veri = AlVeyaOlustur(kullanici);
+		if (veri)
+			veri.m_iNakit = pc.M360_NakitAl();
+
+		return true;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	static bool NakitYeterliMi(IEntity kullanici, int miktar)
+	{
+		SCR_PlayerController pc = SCR_PlayerController.M360_ControllerBul(kullanici);
+		if (pc)
+			return pc.M360_NakitYeterliMi(miktar);
+
+		M360_IsOturumVerisi veri = AlVeyaOlustur(kullanici);
+		return veri && veri.m_iNakit >= miktar;
 	}
 
 	//------------------------------------------------------------------------------------------------

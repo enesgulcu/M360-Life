@@ -23,7 +23,7 @@ $repo = Get-M360RepoRoot
 $oyun = Get-M360OyunKaynak
 $wb = Get-M360WorkbenchAddon
 $addonsDir = Join-Path $here "addons"
-$modGuid = "69F4E91377BCC9A5"
+$modGuids = "69F4E91377BCC9A5"
 $bindPort = 2001
 
 function Write-Adim([string]$Msg) {
@@ -157,25 +157,17 @@ if ($SadeceSunucu) {
 # --- 3) Istemci ---
 Write-Adim "3/4 Istemci (Steam)"
 
-$steam = Find-M360SteamExe
-if (-not $steam) { throw "steam.exe yok" }
-
 Get-Process -Name "ArmaReforger","ArmaReforgerSteam","ArmaReforger_BE" -ErrorAction SilentlyContinue | ForEach-Object {
   Write-Host ("Eski istemci kapatiliyor PID {0}" -f $_.Id)
   Stop-Process -Id $_.Id -Force
 }
 Start-Sleep -Seconds 2
 
-Start-Process -FilePath $steam -ArgumentList @(
-  "-applaunch", "1874880",
-  "-client", "127.0.0.1",
-  "-addonsDir", $addonsDir,
-  "-addons", $modGuid
-)
+[void](Start-M360Istemci -ServerHost "127.0.0.1" -AddonsDir $addonsDir -ModGuids $modGuids)
 
 Write-Adim "4/4 Tamam"
-Write-Host "Oyun aciliyor -> 127.0.0.1 (mod M360 Life)."
-Write-Host "Test: I = Life canta | Tab = normal envanter"
+Write-Host "Oyun aciliyor -> 127.0.0.1 (M360 Life)."
+Write-Host "Test: I = Life canta | Tab = normal envanter | NPC'de F = magaza"
 
 if ($SunucuAcikKalsin) {
   Write-Host "SunucuAcikKalsin: oyun bitsa de dedicated acik kalir."

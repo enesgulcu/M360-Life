@@ -55,7 +55,8 @@ class M360_SatisNoktasiBileseni : ScriptComponent
 
 		int gelir = miktar * birimFiyat;
 		oturum.m_iIslenmis = 0;
-		oturum.m_iNakit += gelir;
+		M360_IsOturumlari.NakitEkle(kullanici, gelir);
+		oturum = M360_IsOturumlari.AlVeyaOlustur(kullanici);
 		oturum.m_sIsAdi = m_Ayar.m_sIsAdi;
 
 		MesajGoster(string.Format("Satildi: %1 x %2 = +%3  |  Nakit=%4", miktar, birimFiyat, gelir, oturum.m_iNakit));

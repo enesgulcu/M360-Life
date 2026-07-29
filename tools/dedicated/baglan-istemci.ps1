@@ -1,4 +1,4 @@
-# Istemciyi lokal dedicated'a bagla (Steam'i dogru parametrelerle acar).
+# Istemciyi lokal dedicated'a bagla (dogrudan exe = Steam LaunchOptions karismaz).
 # resourceDatabase.rdb ASLA silme.
 
 $ErrorActionPreference = "Stop"
@@ -6,7 +6,7 @@ $here = $PSScriptRoot
 . (Join-Path $here "..\Resolve-M360Paths.ps1")
 
 $addonsDir = Join-Path $here "addons"
-$modGuid = "69F4E91377BCC9A5"
+$modGuids = "69F4E91377BCC9A5"
 
 $proc = Get-Process -Name "ArmaReforgerServer" -ErrorAction SilentlyContinue
 if (-not $proc) {
@@ -20,18 +20,6 @@ Get-Process -Name "ArmaReforger","ArmaReforgerSteam","ArmaReforger_BE" -ErrorAct
 }
 Start-Sleep -Seconds 2
 
-$steam = Find-M360SteamExe
-if (-not $steam) { throw "steam.exe yok" }
-
 Write-Host ("Dedicated OK PID {0}" -f ($proc.Id -join ","))
-Write-Host "Steam aciliyor..."
-
-Start-Process -FilePath $steam -ArgumentList @(
-  "-applaunch", "1874880",
-  "-client", "127.0.0.1",
-  "-addonsDir", $addonsDir,
-  "-addons", $modGuid
-)
-
-Write-Host "Test: I + Tab = canta | ESC mouse"
-Write-Host "Log: [M360] Inventory <- I"
+[void](Start-M360Istemci -ServerHost "127.0.0.1" -AddonsDir $addonsDir -ModGuids $modGuids)
+Write-Host "Test: I = Life canta | Tab = vanilla | Arsenal/Arac = M360 nakit"

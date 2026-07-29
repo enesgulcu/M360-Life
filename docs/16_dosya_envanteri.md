@@ -45,7 +45,7 @@
 | `Arayuz/M360_SesModuYoneticisi.c` | F2: AudioSettings → %85 + SetMasterVolume(x/100); VoiceChat dokunulmaz; ikon | TusYoneticisi + CantaHud | istemci | ürün |
 | `Arayuz/M360_PlayerControllerI.c` | Yerel `Kur()` — hijack yok | TusYoneticisi | istemci | kanitli |
 | `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + panel + SesModu.Tick | TusYoneticisi | istemci | lab |
-| `Configs/System/M360_Input.conf` | `M360_LifeCanta`+`M360_SesModu` + CharacterMovementContext ActionRefs + | gproj Default | istemci | lab |
+| `Configs/System/M360_Input.conf` | `M360_LifeCanta`+`M360_SesModu` + CharacterMovementContext ActionRefs | gproj Default | istemci | lab |
 | `Arayuz/M360_CekirdekHudWidgetlari.c` | Circle rings + nakit pill + saat + iş barı | CantaHudBileseni | lab UI | lab |
 | `Arayuz/M360_HudIkonlari.c` | Texture ResourceName + Yukle/MaskYukle | YuvarlakBar / Canta / Cekirdek | lab UI | lab |
 | `Arayuz/M360_YuvarlakBar.c` | Badge + maskeli progress ring | CekirdekHud | lab UI | lab |
@@ -78,6 +78,9 @@
 | `Prefabs/M360/Arayuz/` | İleride prefab HUD | layout’lar `UI/layouts/M360/` | taslak |
 | `Prefabs/M360/Dunya/` | İleride spawn prefab | — | taslak |
 | `Prefabs/M360/Pazarlar/` `Araclar/` | İleride | — | taslak |
+| `Configs/Magaza/M360_*.conf` | Referans katalog (opsiyonel); lab urunleri `default.layer` `m_AdditionalMerchandise` | Shop System | lab |
+| `tools/dedicated/indir-shop-system.ps1` | Workshop Shop System (packed+rdb) indir | canlı |
+| `tools/dedicated/bagla-addon.ps1` | M360 + ShopSystem (workshop oncelikli) junction | canlı |
 
 Harita değişince: aynı `Isler/*` prefab’ları yerleştir.
 
@@ -88,10 +91,10 @@ Harita değişince: aynı `Isler/*` prefab’ları yerleştir.
 | Yol | Amaç | Durum |
 |---|---|---|
 | `Worlds/LabDuzZemin/M360_LabDuzZemin.ent` | Düz zemin lab kök | lab |
-| `.../M360_LabDuzZemin_Layers/default.layer` | Pirinç + spawn + HUD | lab |
+| `.../M360_LabDuzZemin_Layers/default.layer` | Pirinç + spawn + HUD + 3 Shop System NPC + 3 Wallet | lab |
 | `.../M360_Terrain/` | GenericTerrain data | lab |
 
-Entity: `M360_PirincTopla` (~20,20) · `PirincIsle` (26,20) · `PirincSat` (~31,20) · `M360_CantaHud` · `M360_ApiTest` · FFA managers.
+Entity: `M360_PirincTopla` · `PirincIsle` · `PirincSat` · `M360_CantaHud` · `M360_ApiTest` · `M360_SilahMagaza` · `M360_AracMagaza` · `M360_KiyafetMagaza` · FFA managers.
 
 ---
 
@@ -103,6 +106,10 @@ Entity: `M360_PirincTopla` (~20,20) · `PirincIsle` (26,20) · `PirincSat` (~31,
 | `web/` | Admin panel | yer tutucu |
 | `packages/db/migrations/001_job_definitions.sql` | Neon iş tanım tablosu | canlı |
 | `tools/bagla-oyun-klasoru.ps1` (+ sync) | Junction / senkron | canlı |
+| `tools/dedicated/bagla-addon.ps1` | M360 + ShopSystem junction (workshop-cache) | canlı |
+| `tools/dedicated/indir-shop-system.ps1` | Shop System workshop paketi indir | canlı |
+| `tools/vendor/Reforger-Shop-System/` | Lab magazasinin vendor dependency'si | repoda |
+| `tools/vendor/DynamicEconomy/` / `ARGH_VEHICLE_TRADER_DE/` | Opsiyonel vendor kopyalari; labda yuklenmez | repoda |
 
 ---
 
