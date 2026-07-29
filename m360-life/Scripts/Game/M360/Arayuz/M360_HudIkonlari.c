@@ -12,6 +12,7 @@ class M360_HudIkonlari
 
 	static const ResourceName NAKIT = "{6EB67A75E83334F8}UI/Textures/M360/m360_nakit_UI.edds";
 	static const ResourceName PLUS = "{C8A10001D0E10004}UI/Textures/M360/m360_plus_UI.edds";
+	static const ResourceName SES_MUTE = "{C8A10001D0E10030}UI/Textures/M360/m360_ses_mute_UI.edds";
 	static const ResourceName PILL_L = "{C8A10001D0E10011}UI/Textures/M360/m360_pill_cap_L_UI.edds";
 	static const ResourceName PILL_R = "{C8A10001D0E10012}UI/Textures/M360/m360_pill_cap_R_UI.edds";
 	static const ResourceName PILL_MID = "{C8A10001D0E10013}UI/Textures/M360/m360_pill_mid_UI.edds";

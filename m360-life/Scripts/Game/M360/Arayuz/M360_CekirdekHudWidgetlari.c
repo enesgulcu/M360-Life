@@ -25,6 +25,10 @@ class M360_CekirdekHudWidgetlari
 	ImageWidget m_wNakitIkon;
 	TextWidget m_wNakit;
 	ImageWidget m_wNakitPlus;
+	ImageWidget m_wSesIkon;
+	float m_fSeritX;
+	float m_fSeritY;
+	float m_fSeritW;
 
 	Widget m_wSaatKart;
 	TextWidget m_wSaat;
@@ -79,6 +83,9 @@ class M360_CekirdekHudWidgetlari
 
 		float seritX = sol + (CIRCLE + CIRCLE_GAP) * 3 + 10;
 		float seritY = alt + (CIRCLE - STRIP_H) * 0.5;
+		m_fSeritX = seritX;
+		m_fSeritY = seritY;
+		m_fSeritW = STRIP_MIN_W;
 
 		m_wSerit = ws.CreateWidget(WidgetType.FrameWidgetTypeID, WidgetFlags.VISIBLE, new Color(0, 0, 0, 0), 0, m_wKok);
 		if (!m_wSerit)
@@ -133,6 +140,26 @@ class M360_CekirdekHudWidgetlari
 		}
 
 		NakitYaz(2750499);
+
+		// F2 ses kısık ikonu — nakit şeridinin sağında (gizli)
+		m_wSesIkon = ImageWidget.Cast(ws.CreateWidget(
+			WidgetType.ImageWidgetTypeID,
+			WidgetFlags.VISIBLE | WidgetFlags.STRETCH | WidgetFlags.BLEND,
+			new Color(1, 1, 1, 1),
+			0,
+			m_wKok));
+		if (m_wSesIkon)
+		{
+			m_wSesIkon.SetName("m_wSesIkon");
+			m_wSesIkon.SetIsColorInherited(false);
+			FrameSlot.SetAnchorMin(m_wSesIkon, 0, 1);
+			FrameSlot.SetAnchorMax(m_wSesIkon, 0, 1);
+			if (M360_HudIkonlari.Yukle(m_wSesIkon, M360_HudIkonlari.SES_MUTE))
+				m_wSesIkon.SetColor(new Color(0.55, 0.82, 1.0, 1));
+			m_wSesIkon.SetVisible(false);
+			SesIkonYerles();
+		}
+
 		return ok1 && ok2 && ok3 && m_wNakit != null;
 	}
 
@@ -173,6 +200,8 @@ class M360_CekirdekHudWidgetlari
 			stripW = STRIP_MIN_W;
 
 		FrameSlot.SetSize(m_wSerit, stripW, STRIP_H);
+		m_fSeritW = stripW;
+		SesIkonYerles();
 
 		// Oval pill: L + mid + R (cap kare = yukseklik)
 		float cap = STRIP_H;
@@ -343,6 +372,39 @@ class M360_CekirdekHudWidgetlari
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! F2 ses modu ikonu — nakit yaninda; yalniz ikon, yazi yok
+	void SesIkonGoster(bool goster, float alpha)
+	{
+		if (!m_wSesIkon)
+			return;
+
+		if (!goster || alpha < 0.02)
+		{
+			m_wSesIkon.SetVisible(false);
+			return;
+		}
+
+		m_wSesIkon.SetVisible(true);
+		SesIkonYerles();
+		if (alpha > 1)
+			alpha = 1;
+		m_wSesIkon.SetColor(new Color(0.55, 0.82, 1.0, alpha));
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void SesIkonYerles()
+	{
+		if (!m_wSesIkon)
+			return;
+
+		float ikon = 28;
+		float x = m_fSeritX + m_fSeritW + 10;
+		float y = m_fSeritY + (STRIP_H - ikon) * 0.5;
+		FrameSlot.SetPos(m_wSesIkon, x, y);
+		FrameSlot.SetSize(m_wSesIkon, ikon, ikon);
+	}
+
+	//------------------------------------------------------------------------------------------------
 	void SaatYaz(string saat, string tarih)
 	{
 		if (m_wSaat)
@@ -412,6 +474,7 @@ class M360_CekirdekHudWidgetlari
 		m_wNakitIkon = null;
 		m_wNakit = null;
 		m_wNakitPlus = null;
+		m_wSesIkon = null;
 		m_wSaatKart = null;
 		m_wSaat = null;
 		m_wTarih = null;

@@ -41,10 +41,11 @@
 | `Isler/M360_IsleAksiyonu.c` | F Isle | Process | UserAction | lab |
 | `Isler/M360_SatAksiyonu.c` | F Sat | Sell | UserAction | lab |
 | `Isler/M360_DurumAksiyonu.c` | F Envanter | HUD | UserAction | lab |
-| `Arayuz/M360_TusYoneticisi.c` | Tuş omurgası (`DinleyiciEkle`; yalnız UI) | Input conf + PlayerController | istemci | kanitli |
+| `Arayuz/M360_TusYoneticisi.c` | Tuş omurgası (I canta, F2 ses; yalnız UI) | Input conf + PlayerController | istemci | kanitli |
+| `Arayuz/M360_SesModuYoneticisi.c` | F2: AudioSettings → %85 + SetMasterVolume(x/100); VoiceChat dokunulmaz; ikon | TusYoneticisi + CantaHud | istemci | ürün |
 | `Arayuz/M360_PlayerControllerI.c` | Yerel `Kur()` — hijack yok | TusYoneticisi | istemci | kanitli |
-| `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + panel | TusYoneticisi | istemci | lab |
-| `Configs/System/M360_Input.conf` | `M360_LifeCanta` + CharacterMovementContext ActionRefs + | gproj Default | istemci | kanitli |
+| `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + panel + SesModu.Tick | TusYoneticisi | istemci | lab |
+| `Configs/System/M360_Input.conf` | `M360_LifeCanta`+`M360_SesModu` + CharacterMovementContext ActionRefs + | gproj Default | istemci | lab |
 | `Arayuz/M360_CekirdekHudWidgetlari.c` | Circle rings + nakit pill + saat + iş barı | CantaHudBileseni | lab UI | lab |
 | `Arayuz/M360_HudIkonlari.c` | Texture ResourceName + Yukle/MaskYukle | YuvarlakBar / Canta / Cekirdek | lab UI | lab |
 | `Arayuz/M360_YuvarlakBar.c` | Badge + maskeli progress ring | CekirdekHud | lab UI | lab |

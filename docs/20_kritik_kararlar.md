@@ -6,7 +6,7 @@
 >
 > **Çelişki:** **20 + 19 > 15** günlük not. Eski 15 bölümleri (7b Overlay, 7e hijack+Save) **geçersiz** — bu dosya geçerli.
 >
-> **Son güncelleme:** 2026-07-29 ~10:15 (TR) — 15’ten taşındı + I/Tab ürün kilidi.
+> **Son güncelleme:** 2026-07-29 ~11:25 (TR) — F2 ses kilidi + ölçek rehberi; hedef %85.
 
 ---
 
@@ -50,7 +50,59 @@
 
 Inventory / Tab’a **dokunma**.
 
+---
+
+## 1b. F2 ses modu (AudioSettings) — KİLİT 2026-07-29
+
+### Karar
+
+| Madde | Değer |
+|---|---|
+| Tuş | F2 → `M360_SesModu` (§1 omurga ile aynı) |
+| Hedef | Oyun gürültüsü **mevcut ayarın %85’i** (`HEDEF_CARPAN = 0.85`) |
+| Korunan | **VolumeVoiceChat** — dokunulmaz |
+| Kaynak | `GetEngineUserSettings().GetModule("AudioSettings")` |
+| Alanlar | `Volume`, `VolumeSfx`, `VolumeMusic`, `VolumeDialog` (**0..100**) |
+| Uygulama | `audio.Set(...)` → `UserSettingsChanged()` → `SetMasterVolume(id, x/100)` |
+| Kalıcı yazma | **SaveUserSettings YOK** (oturum içi; çıkışta oyuncu ayarı kalır) |
+| UI | Mute ikonu nakit yanı (~0.12 sn fade); ses geçişi ~0.45 sn |
+| Kanıt | Kullanıcı 2026-07-29 — F2 çalışıyor · log `F2 SES LAB OK` |
+
+### İki ölçek (tekrar karıştırma)
+
+| API / alan | Ölçek | Örnek |
+|---|---|---|
+| `AudioSettings.VolumeSfx` vb. | **0..100** (menü kaydırıcı) | 100 → F2 → 85 |
+| `AudioSystem.Get/SetMasterVolume` | **0..1** | 1.0 → F2 → 0.85 |
+
+**YASAK:** `SetMasterVolume(AudioSystem.SFX, 75)` — 75 > 1 → **clamp 1.0** → ses hiç düşmez; ikon yine görünür.
+
+### Kök neden araştırma sırası (benzer sorun rehberi)
+
+1. **Log oku** — `Documents\My Games\ArmaReforger\logs\...\script.log`  
+   - `[M360] F2 SES KIS` satırında `SFX 100->75` gibi **0..100** değerler mi?  
+   - Eski hatalı log: `SFX 1->0.75 ok=1` (SetMasterVolume yolu) + kullanıcı “ses yok” → ölçek şüphesi.
+2. **Ayar dosyası** — `profile\.save\...\settings\ReforgerEngineSettings.conf` → `VolumeSfx 100` (0..100 doğrula).
+3. **BI menü yolu** — `SCR_AudioSettingsSubMenu`: `SCR_SettingBindingEngine("AudioSettings", "VolumeSfx", ...)` — script ile aynı modül.
+4. **Uygulama sırası** — Önce `AudioSettings.Set`, sonra `UserSettingsChanged()`, sonra `SetMasterVolume(x/100)`.
+5. **Otomatik lab** — `M360_SesModuYoneticisi.LaboratuvarOlcum()` (geçici %50, geri al): log `F2 SES LAB OK | once=1 yari=0.5 geri=1` = yol sağlam.
+6. **Dedicated** — Ses **istemci yerel**; sunucu script’i işe yaramaz; test = `M360-Oyna.bat` veya `baglan-istemci.ps1`.
+
 ### Neden battı (tekrar deneme)
+
+| Deneme | Neden |
+|---|---|
+| Yalnız `SetMasterVolume` (0..1 doğru olsa bile) | Ayar motoru her frame geri yazabilir; tek başına yetmeyebilir |
+| `SetMasterVolume(75)` — ayar 0..100 sanıp | Clamp → 1.0; **ikon var, ses yok** |
+| `GetGameUserSettings` / `SCR_AudioSettings` | Oyun modülü; **ses kaydırıcıları Engine `AudioSettings`** |
+| `SaveUserSettings` her F2 | Oyuncu profilini kalıcı bozar |
+| `VolumeVoiceChat` düşürme | Ürün: konuşma aynı kalmalı |
+
+### YASAK (ses)
+
+`SetMasterVolume`’a 0..100 vermek · VoiceChat düşürmek · F2’de `SaveUserSettings` · sunucuda ses duck · tuş callback’te ekonomi yazma (§1)
+
+### Neden battı — input (tekrar deneme)
 
 | Deneme | Neden |
 |---|---|
@@ -65,7 +117,7 @@ Inventory / Tab’a **dokunma**.
 
 ### YASAK
 
-Inventory hijack · `InputBinding.Save` · Save’siz remap · `ActionInput` · text `Context` · Overlay özel context · `Debug.KeyState` ürün · `ActivateAction` köprü · Steam kalıcı `-client`
+Inventory hijack · `InputBinding.Save` · Save’siz remap · `ActionInput` · text `Context` · Overlay özel context · `Debug.KeyState` ürün · `ActivateAction` köprü · Steam kalıcı `-client` · metod parametresinde `ActionListenerCallback`/func (Enforce derleme hatası)
 
 ---
 
@@ -212,6 +264,7 @@ Canlı: `https://m360-life.vercel.app` · detay [19](./19_guvenlik.md).
 | `/MIR` sync | Monorepo silinir |
 | Boş `.ent` | Boş harita |
 | Tuş callback’te para/item | Exploit yüzeyi |
+| `SetMasterVolume`’a 0..100 | Clamp 1.0; F2 ikon var ses yok (20 §1b) |
 
 ---
 

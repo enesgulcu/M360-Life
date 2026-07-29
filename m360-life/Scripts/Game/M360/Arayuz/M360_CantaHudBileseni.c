@@ -29,6 +29,12 @@ class M360_CantaHudBileseni : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	M360_CekirdekHudWidgetlari CekirdekAl()
+	{
+		return m_Cekirdek;
+	}
+
+	//------------------------------------------------------------------------------------------------
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
@@ -44,6 +50,7 @@ class M360_CantaHudBileseni : ScriptComponent
 			s_Ornek = null;
 
 		GetGame().GetCallqueue().Remove(GirisIpucuGoster);
+		M360_SesModuYoneticisi.YokEt();
 		HudYokEt();
 		super.OnDelete(owner);
 	}
@@ -60,6 +67,7 @@ class M360_CantaHudBileseni : ScriptComponent
 		IEntity oyuncu = YerelOyuncuyuAl();
 		M360_IsOturumVerisi veri = M360_IsOturumlari.AlVeyaOlustur(oyuncu);
 		M360_IsOturumlari.VitalTick(veri, timeSlice);
+		M360_SesModuYoneticisi.Tick(timeSlice);
 		HudGuncelle(veri, oyuncu);
 	}
 
@@ -77,9 +85,10 @@ class M360_CantaHudBileseni : ScriptComponent
 
 		// PlayerController henüz Kur çağırmazsa yedek (Play / spawn sırası)
 		M360_TusYoneticisi.Kur();
+		M360_SesModuYoneticisi.HudHazirla();
 
 		if (m_bWidgetHazir)
-			Print("[M360] CantaHud baslat — Life HUD OK | I=M360_LifeCanta | Tab=vanilla Inventory", LogLevel.NORMAL);
+			Print("[M360] CantaHud baslat — Life HUD OK | I=canta | F2=ses(mute ikon) | Tab=vanilla", LogLevel.NORMAL);
 		else
 			Print("[M360] CantaHud baslat — widget FAIL, hint yedek", LogLevel.WARNING);
 	}
@@ -122,7 +131,7 @@ class M360_CantaHudBileseni : ScriptComponent
 
 		if (m_bWidgetHazir)
 			SCR_HintManagerComponent.ShowCustomHint(
-				"Nakit | Saat | Yemek/Su/Can | I = Life canta | Tab = normal envanter",
+				"I = Life canta | F2 = ses %85 (konusma ayni) | Tab = envanter",
 				"M360",
 				8);
 		else

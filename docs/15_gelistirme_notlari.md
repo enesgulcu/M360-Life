@@ -4,7 +4,7 @@
 >
 > **Yeni sohbette:** **[20](./20_kritik_kararlar.md)** → **bu dosya §C** → işe başla. Çelişince **20 kazanır**.
 >
-> **Son güncelleme:** 2026-07-29 ~10:15 (TR) — I/Tab KANITLI · kritikler **20**’ye taşındı · **akşam PC B handoff → §C.**
+> **Son güncelleme:** 2026-07-29 ~11:25 (TR) — F2 ses KANITLI; hedef %85; docs/20 §1b.
 
 ---
 
@@ -33,42 +33,33 @@
 
 Senkron = **yalnızca git** (Cursor sohbet senkron değil). Secrets / Server exe git’e girmez.
 
-### C.3 Tablo — 2026-07-29 ~10:15 (DEVİR → akşam PC B)
+### C.3 Tablo — 2026-07-29 ~11:25 (F2 ses — KANITLI, %85)
 
 | | |
 |---|---|
-| **PC şimdi** | A (`Enes`) — sabah işi bitti / handoff hazırlanıyor |
-| **Akşam** | PC B (`enesg`) + **yeni Cursor sohbet** → `git pull` / `M360.bat` → oku **20** + **bu §C** |
-| **Bugün kilit** | **I = Life HUD · Tab = vanilla** — KANITLI (ürün Input Manager yolu) |
-| **Kod** | `M360_Input.conf` · `M360_TusYoneticisi` (`DinleyiciEkle`) · `PlayerControllerI` (hijack yok) · gproj Default=M360_Input |
-| **Docs** | Kritikler **[20](./20_kritik_kararlar.md)**’de; 15 = oturum |
-| **Commit** | Handoff öncesi **push şart** (aşağı C.6). `tools/dedicated/secrets/` commit **edilmez** |
-| **rdb** | ASLA silme |
-| **Sıradaki (akşam AI)** | Faz 0 devam; yeni tuş = 20 §1 omurga; açık: Workshop, Pirinç GUID, yazma API… |
+| **PC** | A (`Enes`) |
+| **Durum** | **KANITLI** — kullanıcı F2 çalışıyor dedi |
+| **Kök neden** | `AudioSettings` 0..100 vs `SetMasterVolume` 0..1 — detay **docs/20 §1b** |
+| **Hedef ses** | Mevcut ayarın **%85’i** (`HEDEF_CARPAN = 0.85`) |
+| **Kanıt** | Log `F2 SES LAB OK` + kullanıcı onayı |
+| **Sıradaki** | commit/push → akşam PC `M360.bat` |
 
-**Steam kalıcı (`-client` YOK):**  
-enesg: `-addonsDir "C:\Users\enesg\Documents\GitHub\M360-Life\tools\dedicated\addons" -addons 69F4E91377BCC9A5`  
-Enes: `-addonsDir "C:\Users\Enes\Documents\GitHub\M360-Life\tools\dedicated\addons" -addons 69F4E91377BCC9A5`
+### C.5 I/Tab + F2 — kısa
 
-### C.5 I/Tab — kısa (detay → docs/20 §1)
-
-| | |
+| Tuş | Sonuç |
 |---|---|
-| Yol | Action `M360_LifeCanta` + `CharacterMovementContext` ActionRefs + + listener |
-| Yasak | Hijack / Save / Overlay / ActionInput / Debug ürün — **20 §1** |
-| Kanıt | 2026-07-29 kullanıcı: I=HUD, Tab=vanilla |
+| I | Life HUD |
+| Tab | vanilla envanter |
+| F2 | Ses modu toggle (%85, VoiceChat aynı) |
 
-### C.6 Bu oturum (Enes sabah → akşam devir)
+Detay I/Tab: **docs/20 §1**. F2: **docs/20 §1b** (%85, VoiceChat dokunulmaz).
 
-1. Docs derin okuma; I/Tab kök neden (Context eksik + hijack).  
-2. Ürün conf/listener uygulandı → **kullanıcı test OK**.  
-3. TusYoneticisi sıkılaştırıldı (`DinleyiciEkle`, yalnız UI).  
-4. **docs/20** açıldı; 15’teki demir kararlar 20’ye taşındı.  
-5. 00 / 16 / 19 / cursor kuralı güncellendi.  
+### C.6 Bu oturum
 
-**Akşam Cursor’a not:** Push sonrası main’de I/Tab ürün yolu + docs/20 var. Eski 15 §7b Overlay / §7e hijack+Save **geçersiz** — uyma, **20 §1** uy.
+F2 ses kilidi docs/20 §1b; kullanıcı onayı; hedef %85; push.
 
 ---
+
 ## A. Kullanıcı tercihleri (UNUTMA — kritik)
 
 Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan kurallardır. İhlal etme.

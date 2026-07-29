@@ -7,9 +7,9 @@ Akşam: git pull / M360.bat → oku docs/20 sonra docs/15 §C
 Push şart (secrets commit etme). Cursor sohbet senkron DEGIL.
 
 === KANITLI BUGUN ===
-I = Life HUD | Tab = vanilla
-Yontem: docs/20 §1 (CharacterMovementContext ActionRefs + + listener)
-Kod: M360_Input.conf, M360_TusYoneticisi, PlayerControllerI (hijack yok)
+I = Life HUD | Tab = vanilla | F2 = ses %85 (VoiceChat ayni)
+Yontem: docs/20 §1 (input) + §1b (ses)
+Kod: M360_Input.conf, M360_TusYoneticisi, M360_SesModuYoneticisi
 
 === YASAK ===
 docs/20 §9 — hijack/Save/Overlay/ActionInput/rdb/kalici -client

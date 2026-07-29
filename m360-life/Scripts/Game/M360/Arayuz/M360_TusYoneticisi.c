@@ -1,28 +1,24 @@
 //------------------------------------------------------------------------------------------------
 //! Tuş → işlev omurgası (ürün).
 //!
-//! Mimari (BI Input Manager):
+//! Mimari (BI Input Manager / docs/20 §1):
 //!   conf Action + CharacterMovementContext ActionRefs +  →  AddActionListener (bir kez)
 //!
-//! Güvenlik (docs/19 + docs/20):
-//!   - Yalnızca YEREL istemci (UpdateLocalPlayerController kapısı)
-//!   - Callback = UI aç/kapa veya sunucuya TALEP — para/item/rol ASLA burada yazılmaz
-//!   - Inventory / Tab / vanilla action hijack YASAK
+//! NOT (Enforce): metod parametresinde ActionListenerCallback / func YASAK
+//!   ("func arguments are not supported in script methods")
+//!   → AddActionListener doğrudan Kur() içinde çağrılır.
 //!
-//! Yeni tuş (3 adım):
-//!   1) M360_Input.conf → Action + ActionRefs +
-//!   2) Asagida DinleyiciEkle + callback
-//!   3) Log kanıtı
+//! Güvenlik: yalnız yerel istemci; callback'te para/item yok; Inventory hijack yok.
 //------------------------------------------------------------------------------------------------
 class M360_TusYoneticisi
 {
 	static const string TUS_LIFE_CANTA = "M360_LifeCanta";
+	static const string TUS_SES_MODU = "M360_SesModu";
 	static const string CTX_HAREKET = "CharacterMovementContext";
 
 	protected static bool s_bKuruldu;
 
 	//------------------------------------------------------------------------------------------------
-	//! Yerel oyuncu controller hazır olunca bir kez. Tekrar çağrı güvenli (no-op).
 	static void Kur()
 	{
 		if (s_bKuruldu)
@@ -36,8 +32,32 @@ class M360_TusYoneticisi
 		}
 
 		int eklenen = 0;
-		if (DinleyiciEkle(im, TUS_LIFE_CANTA, OnLifeCanta))
+
+		if (AksiyonVarMi(im, TUS_LIFE_CANTA))
+		{
+			im.AddActionListener(TUS_LIFE_CANTA, EActionTrigger.DOWN, OnLifeCanta);
+			Print(string.Format("[M360] TusYoneticisi: dinleyici + %1", TUS_LIFE_CANTA), LogLevel.NORMAL);
 			eklenen++;
+		}
+		else
+		{
+			Print(string.Format(
+				"[M360] TusYoneticisi: '%1' action YOK — M360_Input.conf Action + ActionRefs + ekle",
+				TUS_LIFE_CANTA), LogLevel.ERROR);
+		}
+
+		if (AksiyonVarMi(im, TUS_SES_MODU))
+		{
+			im.AddActionListener(TUS_SES_MODU, EActionTrigger.DOWN, OnSesModu);
+			Print(string.Format("[M360] TusYoneticisi: dinleyici + %1", TUS_SES_MODU), LogLevel.NORMAL);
+			eklenen++;
+		}
+		else
+		{
+			Print(string.Format(
+				"[M360] TusYoneticisi: '%1' action YOK — M360_Input.conf Action + ActionRefs + ekle",
+				TUS_SES_MODU), LogLevel.ERROR);
+		}
 
 		if (eklenen < 1)
 		{
@@ -52,28 +72,8 @@ class M360_TusYoneticisi
 			ctxStr = "evet";
 
 		Print(string.Format(
-			"[M360] TusYoneticisi OK | kayit=%1 | %2 aktif=%3 | Tab=vanilla | yetki=yalniz UI",
+			"[M360] TusYoneticisi OK | kayit=%1 | I=canta F2=ses | %2 aktif=%3",
 			eklenen, CTX_HAREKET, ctxStr), LogLevel.NORMAL);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	//! Yeni tuş kaydı burada toplanır (çift kayıt / eksik action yakalar).
-	protected static bool DinleyiciEkle(InputManager im, string aksiyonAdi, ActionListenerCallback callback)
-	{
-		if (!im || !aksiyonAdi || aksiyonAdi == string.Empty)
-			return false;
-
-		if (!AksiyonVarMi(im, aksiyonAdi))
-		{
-			Print(string.Format(
-				"[M360] TusYoneticisi: '%1' action YOK — M360_Input.conf Action + ActionRefs + ekle",
-				aksiyonAdi), LogLevel.ERROR);
-			return false;
-		}
-
-		im.AddActionListener(aksiyonAdi, EActionTrigger.DOWN, callback);
-		Print(string.Format("[M360] TusYoneticisi: dinleyici + %1", aksiyonAdi), LogLevel.NORMAL);
-		return true;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -89,11 +89,17 @@ class M360_TusYoneticisi
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! I → Life HUD (yalnız görsel; ekonomi yok)
 	static void OnLifeCanta()
 	{
 		Print("[M360] I → Life HUD", LogLevel.NORMAL);
 		LifeCantaAcKapa();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	static void OnSesModu()
+	{
+		Print("[M360] F2 → Ses modu", LogLevel.NORMAL);
+		M360_SesModuYoneticisi.AcKapa();
 	}
 
 	//------------------------------------------------------------------------------------------------
