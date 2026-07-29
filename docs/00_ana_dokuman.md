@@ -30,7 +30,7 @@ Bu proje, kullanıcı ile AI arasında şu şekilde yürüyor:
 - Enfusion/Reforger’da **resmi BI dökümantasyonu** birincil kaynak.
 - **EveronLife** / **Narcos Life** sürekli referans (asla dependency değil) — Döküman 14.
 - Kod isimlendirme **ANA DÜSTUR:** değiştirilebilir her şey Türkçe ASCII; motor API dokunulmaz — **11.2.1**.
-- Kanıtlanmış bulgular **Döküman 15**’e yazılır.
+- Kanıtlanmış bulgular **Döküman 15**’e; **kilit kararlar Döküman 20**’ye yazılır.
 - Ortam: **Cursor + enfusion-mcp** (önceki Claude Code oturumları arşiv). GitHub: `enesgulcu/M360-Life`.
 
 **Hızlı devam:** `docs/00`–`14` + **`15`** + **`16` (dosya envanteri)** + kök `README.md` okunur; konuşma geçmişi gerekmez.
@@ -142,11 +142,12 @@ Bunlar ilgili döküman yazılırken tek tek karara bağlanacak — şimdiden no
 | 12 | [Lisans, Ticari Model & Roadmap](./12_lisans_roadmap.md) | ✅ Hazır |
 | 13 | [Enfusion Prefab & Script Yapılandırma Prosedürü](./13_enfusion_prefab_prosedur.md) | ✅ Güncel — **üç site** model (2026-07-27) |
 | 14 | [Mevcut Modlar, Framework'ler & Geliştirme Araçları](./14_mevcut_modlar_araclar.md) | ✅ Güncel — enfusion-mcp = Cursor |
-| 15 | [Geliştirme Notları (AI oturum belleği / kanıtlanmış bulgular)](./15_gelistirme_notlari.md) | ✅ Canlı — her oturumda güncellenir |
+| 15 | [Geliştirme Notları (oturum belleği / el değiştirme)](./15_gelistirme_notlari.md) | ✅ Canlı — §C her oturum |
 | 16 | [Dosya / İçerik Envanteri (ilişki kataloğu)](./16_dosya_envanteri.md) | ✅ Canlı — her yeni dosyada güncelle |
 | 17 | [Kurulum (Neon + Vercel)](./17_yerel_kurulum.md) | ✅ Güncel — yerel PG yok |
 | 18 | [Çalışma düzeni (junction + iki yol)](./18_calisma_duzeni.md) | ✅ Workbench ↔ GitHub |
 | 19 | [Güvenlik & rate limit](./19_guvenlik.md) | ✅ Canlı API koruma + yol haritası |
+| 20 | [Kritik kararlar & kırılma noktaları](./20_kritik_kararlar.md) | ✅ Demir kararlar (15’ten ayrı) |
 
 ---
 

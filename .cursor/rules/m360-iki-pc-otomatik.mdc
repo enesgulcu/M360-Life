@@ -9,9 +9,10 @@ Kullanıcıya uzun checklist verme. **Tek kullanıcı işlemi:** repo kökü `M3
 
 ## Her yeni sohbette / işe başlamadan
 
-1. **`docs/15_gelistirme_notlari.md` §C** oku (SON DURUM + iki PC yolları).
-2. Kullanıcıya “docs/15 oku” deme — sen oku, uygula.
-3. Tercihler: §A (acemi yönetici, Türkçe tık-tık rehber, Workbench tek instance).
+1. **`docs/20_kritik_kararlar.md`** oku (demir kararlar — tuş, HUD, yetki).
+2. **`docs/15_gelistirme_notlari.md` §C** oku (SON DURUM + iki PC).
+3. Kullanıcıya “docs oku” deme — sen oku, uygula.
+4. Tercihler: 15 §A (acemi yönetici, Türkçe tık-tık rehber, Workbench tek instance).
 
 ## İki PC (otomatik yol)
 
@@ -19,7 +20,7 @@ Kullanıcıya uzun checklist verme. **Tek kullanıcı işlemi:** repo kökü `M3
 |---|---|---|
 | Repo | `C:\Users\Enes\Documents\GitHub\M360-Life` | `C:\Users\enesg\Documents\GitHub\M360-Life` |
 
-Scriptler `$env:USERPROFILE` kullanır — sabit kullanıcı yolu yazma. Senkron = git + junction (`pc-hazirla` / `M360.bat`). Cursor sohbet senkron **değil**; ortak bellek = docs/15 §C + bu kural.
+Scriptler `$env:USERPROFILE` kullanır — sabit kullanıcı yolu yazma. Senkron = git + junction (`pc-hazirla` / `M360.bat`). Cursor sohbet senkron **değil**; ortak bellek = **docs/20** + docs/15 §C + bu kural.
 
 ## Kullanıcı tek iş
 
@@ -29,11 +30,12 @@ Scriptler `$env:USERPROFILE` kullanır — sabit kullanıcı yolu yazma. Senkron
 
 ## Teknik yasaklar (kısa)
 
-- `InputBinding.Save` YASAK (profil boşalır)
+- Tuş: Inventory hijack / `InputBinding.Save` / Overlay özel context / `ActionInput` / Debug.KeyState ürün — **docs/20**
 - `resourceDatabase.rdb` silme YASAK
 - Workbench açıkken `wb_launch` YASAK → `wb_connect`
 - Steam kalıcı launch’ta `-client` YAZMA
 - Dedicated açıkken script değiştiyse sunucuyu yenile (`oyna.ps1` zaten yeniler) — yoksa checksum Init Error
+- Tuş callback’te para/item yazma YASAK (yalnız UI / talep)
 
 ## Oyun / dedicated
 

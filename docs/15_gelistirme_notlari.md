@@ -1,26 +1,26 @@
 # M360 Life — Geliştirme Notları (AI / Oturum Belleği)
 
-> **Amaç:** Oturumlar arası kaybolmaması gereken teknik bulgular + kullanıcının tercihleri. Konuşma geçmişi değil; **kanıtlanmış gerçekler** buraya yazılır.
+> **Amaç:** Oturum / el değiştirme / deneme günlüğü + kullanıcı tercihleri (§A). **Demir kararlar → [20](./20_kritik_kararlar.md).**
 >
-> **Yeni sohbette zorunlu okuma sırası:** `docs/00`–`14` → **bu dosya (15)** → sonra işe başla.
+> **Yeni sohbette:** **[20](./20_kritik_kararlar.md)** → **bu dosya §C** → işe başla. Çelişince **20 kazanır**.
 >
-> **Son güncelleme:** 2026-07-29 ~01:55 (TR) — **DEVİR:** Dedicated I≠Life / Tab=Life (yanlış). WB Play I=OK. Dual-PC push. **SON DURUM → §C.**
+> **Son güncelleme:** 2026-07-29 ~10:15 (TR) — I/Tab KANITLI · kritikler **20**’ye taşındı · **akşam PC B handoff → §C.**
 
 ---
 
 ## C. SON DURUM / el değiştirme (yeni sohbet buradan)
 
-> Yeni pencere: AI **§C** okur (kural otomatik). Kullanıcıya “oku” deme.
-> Kullanıcı tek tık: **`M360.bat`** — bkz. **C.0** / `TEK_ADIM.txt`.
+> AI: önce **docs/20**, sonra **§C**. Kullanıcıya “oku” deme.
+> Kullanıcı: **`M360.bat`** / oyna: **`M360-Oyna.bat`**. Gün sonu: **“commit ve push”** (secrets commit etme).
 
-### C.0 TEK ISLEM (kullanici)
+### C.0 TEK ISLEM
 
 | Ne zaman | Ne yapar |
 |---|---|
-| PC değişince / güne başlarken | Repo kökü **`M360.bat`** çift tık |
-| Oynamak | **`M360-Oyna.bat`** (sunucu yeniler — script checksum Init Error önler) |
-| Gün sonu / diğer PC öncesi | Cursor’a: **“commit ve push”** |
-| Yeni Cursor sohbet | **Hiçbir şey deme** — kural §C okur |
+| PC değişince / güne başlarken | **`M360.bat`** |
+| Oynamak | **`M360-Oyna.bat`** |
+| Gün sonu / diğer PC öncesi | Cursor: **“commit ve push”** → diğer PC `M360.bat` |
+| Yeni Cursor sohbet | Sessiz — kural 20 + §C okur |
 
 ### C.1 İki PC
 
@@ -28,61 +28,47 @@
 |---|---|---|
 | Windows | `Enes` | `enesg` |
 | Repo | `C:\Users\Enes\Documents\GitHub\M360-Life` | `C:\Users\enesg\Documents\GitHub\M360-Life` |
-| Addon | junction → repo `m360-life` | aynı |
-| Script yolları | `$env:USERPROFILE` + `tools\Resolve-M360Paths.ps1` | sabit `C:\Users\Enes\...` **yazma** |
+| Addon | junction → `m360-life` | aynı |
+| Script | `$env:USERPROFILE` + `Resolve-M360Paths.ps1` | sabit `C:\Users\Enes\...` **yazma** |
 
-Senkron = **yalnızca git**. Secrets / Server exe git’e girmez.
+Senkron = **yalnızca git** (Cursor sohbet senkron değil). Secrets / Server exe git’e girmez.
 
-### C.3 Tablo — 2026-07-29 ~01:55 (DEVİR / KIRIK)
+### C.3 Tablo — 2026-07-29 ~10:15 (DEVİR → akşam PC B)
 
 | | |
 |---|---|
-| **PC** | B (`enesg`) — kullanıcı yattı; **sabah PC A** devam |
-| **Hedef (ürün)** | **I** = Life HUD · **Tab** = **vanilla** envanter (HUD yok) · istemciye ekonomi güvenme (docs/19) |
-| **WB Play** | **I → Life HUD KANITLI** (`Debug.KeyState` / `#ifdef WORKBENCH`) |
-| **Dedicated + Steam (son test)** | **BAŞARISIZ — kullanıcı:** Tab → Life HUD · **I tepki yok** |
-| **Log (01:55)** | `Tus (Save=YOK) Inventory=[]` · `Inventory → Life HUD` (Tab) · `I → Life` **yok** · HUD boot OK |
-| **API** | health OK; jobs 401 = `$profile:M360_ApiLabKey.txt` eksik (lab; çanta ile ilgisiz) |
-| **rdb** | **ASLA silme** |
-| **Sıradaki** | Dedicated’da I=Life + Tab=vanilla **kalıcı**. §C.5 yasakları tekrarlama. |
+| **PC şimdi** | A (`Enes`) — sabah işi bitti / handoff hazırlanıyor |
+| **Akşam** | PC B (`enesg`) + **yeni Cursor sohbet** → `git pull` / `M360.bat` → oku **20** + **bu §C** |
+| **Bugün kilit** | **I = Life HUD · Tab = vanilla** — KANITLI (ürün Input Manager yolu) |
+| **Kod** | `M360_Input.conf` · `M360_TusYoneticisi` (`DinleyiciEkle`) · `PlayerControllerI` (hijack yok) · gproj Default=M360_Input |
+| **Docs** | Kritikler **[20](./20_kritik_kararlar.md)**’de; 15 = oturum |
+| **Commit** | Handoff öncesi **push şart** (aşağı C.6). `tools/dedicated/secrets/` commit **edilmez** |
+| **rdb** | ASLA silme |
+| **Sıradaki (akşam AI)** | Faz 0 devam; yeni tuş = 20 §1 omurga; açık: Workshop, Pirinç GUID, yazma API… |
 
 **Steam kalıcı (`-client` YOK):**  
 enesg: `-addonsDir "C:\Users\enesg\Documents\GitHub\M360-Life\tools\dedicated\addons" -addons 69F4E91377BCC9A5`  
 Enes: `-addonsDir "C:\Users\Enes\Documents\GitHub\M360-Life\tools\dedicated\addons" -addons 69F4E91377BCC9A5`
 
-### C.5 I + Tab — kök neden / yasaklar (TEKRARLAMA)
+### C.5 I/Tab — kısa (detay → docs/20 §1)
 
-| Kök | Açıklama |
+| | |
 |---|---|
-| Hijack | `ActionOpenInventory` → Life → Inventory’deki **her** tuş Life. Tab hâlâ Inventory’deyse Tab=HUD. |
-| Save (enesg) | `InputBinding.Save()` → `InputUserSettings` **boşalabiliyor** → Tab default Inventory → Life. **YASAK bu PC.** |
-| Save yok | `RemoveBinding` + `AddBinding` Save’siz → log `Inventory=[]` → **I bağlanmıyor**. |
-| Custom action | `M360_LifeCanta` + ActivateAction/listener dedicated’da **tetiklenmedi**. |
-| Text Context | `Contexts { Context … }` → `Unknown class` / ESC. Overlay → ESC mouse. |
+| Yol | Action `M360_LifeCanta` + `CharacterMovementContext` ActionRefs + + listener |
+| Yasak | Hijack / Save / Overlay / ActionInput / Debug ürün — **20 §1** |
+| Kanıt | 2026-07-29 kullanıcı: I=HUD, Tab=vanilla |
 
-| Yasak | Neden |
-|---|---|
-| `InputBinding.Save` (enesg) | Profil boşalması |
-| Text `Context` / Overlay spam | ESC / input ölüm |
-| `ActionInput` | Tüm input kırılır |
-| rdb silmek | Wrong GUID |
-| Hijack + Tab hâlâ Inventory | Tab=Life |
-| ActivateAction “köprü” sonsuz deneme | Dedicated’da kanıtsız |
-| Steam Oyna / kalıcı `-client` | Eski oturum / Init Error |
+### C.6 Bu oturum (Enes sabah → akşam devir)
 
-**Eski kanıt (2026-07-28 sabah PC — hedef DEĞİŞTİ):** Inventory hijack + I bind + **Save** → Tab+I ikisi Life. O gün hedef buydu; **şimdi Tab vanilla olmalı** — o yol tek başına yetmez.
+1. Docs derin okuma; I/Tab kök neden (Context eksik + hijack).  
+2. Ürün conf/listener uygulandı → **kullanıcı test OK**.  
+3. TusYoneticisi sıkılaştırıldı (`DinleyiciEkle`, yalnız UI).  
+4. **docs/20** açıldı; 15’teki demir kararlar 20’ye taşındı.  
+5. 00 / 16 / 19 / cursor kuralı güncellendi.  
 
-**Kod (şu an — dedicated kırık):**  
-`M360_PlayerControllerI.c` · `M360_TusYoneticisi.c` · `M360_CantaHudBileseni.c` (Play=Debug I) · `addon.gproj` Input=vanilla · `M360_Input.conf` yedek `M360_LifeCanta`
-
-**Sabah AI önerilen yol:** Workbench Config Editor ile action’ı `CharacterMovementContext`’e ekle + `AddActionListener` bir kez; **hijack kaldır** veya Inventory’de yalnız I kalıcı (Save’siz tutan yol). Tab Inventory’den ayrı. Log kanıtı olmadan “çalıştı” deme.
-
-### C.6 Bu oturum (enesg gece)
-
-Dual-PC (`M360.bat` / `M360-Oyna.bat` / `pc-hazirla`) · junction · yapı TR iskelet · I/Tab lab (yukarı) · kullanıcı: gece bitti, sabah işte bakar.
+**Akşam Cursor’a not:** Push sonrası main’de I/Tab ürün yolu + docs/20 var. Eski 15 §7b Overlay / §7e hijack+Save **geçersiz** — uyma, **20 §1** uy.
 
 ---
-
 ## A. Kullanıcı tercihleri (UNUTMA — kritik)
 
 Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan kurallardır. İhlal etme.
@@ -98,16 +84,16 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | **Resmi döküman hakimiyeti** | Enfusion/Reforger’da varsayım yasak. `api_search` / `wiki_search` / BI wiki. EveronLife yalnızca fikir; bağımlılık değil. |
 | **Basit Türkçe** | Teknik terim varsa parantez içinde; açıklama anlaşılır olsun. |
 | **Ekran görüntüsü / hata** | Kullanıcı Play sonucu ve VM exception gönderir → önce kök neden, sonra net adım. |
-| **Öğrenme notları** | Her önemli keşif **docs/15**’e yazılır. |
-| **Dosya envanteri** | Her yeni/değişen dosya **docs/16**’ya işlenir (amaç, ilişki, istemci/sunucu/API). İşlem bitince kontrol et. |
-| **Test konumu** | Spawn/spawner/istasyon **0,0’da olmasın** — X/Z ~20 civarı (kenar/dip hissi olmasın). |
-| **Play’e odak** | Mümkünse AI script reload + dünya hazırlığını yapsın; kullanıcı sadece Play ile test etsin. NET API yoksa AI uzaktan reload yapamaz — kullanıcıya tek adım bırak. |
-| **Önceki süreç** | Tasarım + ilk kod **Claude Agent / Claude Code** ile yapıldı. Şimdi **Cursor + enfusion-mcp**. Klasör: `...\addons\M360-Life`. |
+| **Öğrenme notları** | Oturum/deneme → **docs/15**. **Kilit karar** → **docs/20**. |
+| **Dosya envanteri** | Her yeni/değişen dosya **docs/16**’ya işlenir. |
+| **Test konumu** | Spawn/spawner/istasyon **0,0’da olmasın** — X/Z ~20 civarı. |
+| **Play’e odak** | Mümkünse AI hazırlar; kullanıcı Play ile test eder. |
+| **Önceki süreç** | Claude → şimdi **Cursor + enfusion-mcp**. |
 | **Docker istemiyor** | Neon hosted PG; yerel PG yok. Docker yok. |
-| **Kapsam büyüdü ama acele yok** | MVP geniş (15 iş, polis/doktor, klan); süre esnek. Faz sırası önemli. |
-| **Life envanter tuşu** | **Hedef:** **I** = Life HUD · **Tab** = **vanilla** (HUD değil). WB Play’de I kanıtlı (`Debug.KeyState`). Dedicated çözüm **açık** (§C.5). Custom text Context / Overlay / enesg’de `Save()` **yasak**. |
-| **Kod dili / isim (ANA DÜSTUR)** | Değiştirilebilir her şey **Türkçe ASCII**: class, metod, üye, Attribute, dosya adı, oyuncu metni. **Yorumlar Türkçe**. Motor override/API İngilizce dokunulmaz. Prefab + `.et` birlikte. `EnfusionMCP` araç kodu hariç. Bkz. **11.2.1 / 13.2**. |
-| **Oyun içi HUD** | Hedef: Life tarzı kenar HUD. **Lab yolu (kanıtlı):** `CreateWidget` + `FrameSlot` + alpha texture. Elle `.layout` + `CreateWidgets` = **Play/WB donması** — yasak. Ürün hedefi ileride Layout Editor. HTML/NUI yok. Detay: **10.8** + **7c**. |
+| **Kapsam büyüdü ama acele yok** | MVP geniş; süre esnek; faz sırası önemli. |
+| **Life envanter tuşu** | **I** = Life · **Tab** = vanilla → **docs/20 §1**. |
+| **Kod dili / isim (ANA DÜSTUR)** | Türkçe ASCII (11.2.1 / 13.2); motor API İngilizce. |
+| **Oyun içi HUD** | `CreateWidget` lab; `CreateWidgets` yasak → **docs/20 §2**. |
 | **Özen / tekrar etme** | Aynı UI ayarını 5 kez deneme. Önce doğru teknik (9-slice, soft AA, CreateWidgets yasak), sonra bir net sonuç. Kullanıcı güven + yol arkadaşı ister. |
 | **Lab 3. şahıs kamera** | Lab düz zeminde Enter sonrası zoom/kayma → **M360 kamera kodu yok**; vanilla 3P collision + lab. Lab testte **1. şahıs** kullan. |
 
@@ -129,7 +115,7 @@ Bu bölüm, kullanıcının açıkça söylediği ve davranışından çıkan ku
 | NET API | `File → Options → General → Net API` |
 | Kaynak sırası | Docs + bu not → enfusion-mcp → BI wiki → EveronLife (sadece referans) |
 | Ürün koru / test ayır | Jobs = ürün; `Scripts\|Prefabs/.../Test` = geçici |
-| Döküman | Büyük karar → ilgili docs + **bu dosya** |
+| Döküman | Büyük karar → **docs/20** + ilgili docs; oturum → **bu dosya §C** |
 
 ---
 
@@ -239,7 +225,7 @@ Uretim Pirinc (docs 5.7): isleme~180, parti~100 — Attribute ile yukseltilir.
 
 **UserAction:** her prefab’da `additionalActions` + `ParentContextList` (Bolum 7).
 
-**HUD:** `M360_CantaHudBileseni` — Life listesi ipucu; yuzde sayaci; **I** = `Debug.KeyState(KC_I)`.
+**HUD:** `M360_CantaHudBileseni` — I tuşu ürün yolu **docs/20 §1** (Debug.KeyState değil).
 
 **Henuz yok:** gercek envanter, banka ledger, replication, DB. Oturum sayac bunlarin yerine gecer.
 
@@ -247,9 +233,9 @@ Uretim Pirinc (docs 5.7): isleme~180, parti~100 — Attribute ile yukseltilir.
 
 ---
 
-## 7b. HUD / Life envanter — KANITLANDI (deneme → başarı)
+## 7b. HUD / Life envanter — TARİHÇE (ürün yolu değil)
 
-Kullanıcı Play: **yüzde sayacı** + **I ile M360 çanta listesi** çalıştı (önce Tab ile kanıtlandı, sonra I’ye taşındı).
+> **Geçerli kilit: [docs/20 §1](./20_kritik_kararlar.md).** Overlay / Debug / eski conf aşağıda **tarihçe** — akşam AI bunları ürün diye uygulama.
 
 ### Başarısız denemeler (ne işe yaramadı)
 
@@ -399,58 +385,30 @@ Lab → portable dedicated → istemci bağlandı; HUD/API/I tuşu/ışık düze
 | **Silince ne olur** | Sert gölge/specular yok; düz ambient. Çok karanlıksa sonra **düşük LV** soft ışık eklenir (Lighting_Default değil). |
 | **Sıfırdan** | İleride kendi soft prefab; default Lighting alma. |
 
-### I tuşu dedicated — kritik kırılma (SON: 2026-07-28 17:10 KANITLI)
+### I tuşu dedicated — ESKİ (2026-07-28 hijack+Save) — GEÇERSİZ
+
+> **Ürün: docs/20 §1** (CharacterMovementContext + listener). Hijack+Save **tekrarlama.**
 
 | | |
 |---|---|
-| **Belirti (eski)** | I ölü; ESC’de mouse yok; bazen sadece Tab |
-| **Çalışan çözüm** | (1) `ActionOpenInventory` → Life çanta. (2) `InputBinding.AddBinding("Inventory","keyboard:KC_I")+Save()`. Vanilla InputManager. |
-| **Neden Tab yetti** | Inventory action = Tab; hijack Life’a gider. |
-| **Neden I de oldu** | Aynı Inventory action’a I eklendi; Save profilde kaldı (dedicated). WB Play’de Save tutmuyordu — yanıltıcı not eski. |
-| **Yanlış yollar** | M360_EnvanterAc + Context Overlay; ActivateAction her frame; ActionInput; rdb silmek; gproj’u M360_Input’a zorlamak (client conf yüklemeyebiliyor). |
-| **Doğrula** | `baglan-istemci` → I ve Tab çanta; ESC mouse; log `[M360] Inventory <- I` |
-
-### Input conf — doğru / yanlış
-
-```
-# CANLI dedicated DOĞRU (kod; conf şart değil)
-# M360_PlayerControllerI.c:
-#   ActionOpenInventory → EnvanterAcKapa
-#   InputBinding AddBinding Inventory <- keyboard:KC_I + Save
-# addon.gproj Default = chimeraInputCommon (vanilla)
-
-# YANLIŞ — ESC olumu
-Contexts { Context ... Flags Overlay } + her frame ActivateContext
-
-# YANLIŞ — tum input kirilir
-Actions { ActionInput Inventory { ... } }
-```
-### Bilinen uyarılar (şimdilik OK)
+| **Eski (iptal)** | `ActionOpenInventory` hijack + Inventory←I + Save — Tab+I ikisi Life (o günkü hedef) |
 
 - Pirinç prefab `Wrong GUID/name` / `inherited-name` — resource rebuild / Workbench teyidi sonra.
 - Direct Join / workshop listing — publish sonrası.
 
 ---
 
-## B. Kritik özet kartı (hızlı bakış — 2026-07-28)
+## B. Hızlı bakış — detay [docs/20](./20_kritik_kararlar.md)
 
-| Konu | Kural |
+| Konu | Kısa |
 |---|---|
-| `CreateWidgets` + elle `.layout` | **YASAK** (Play/WB donar) |
-| Lab UI | `CreateWidget` + `FrameSlot` |
-| Texture | Gerçek alpha; köşe **sabit** (9-slice / pill L-mid-R); soft AA |
-| I tuşu (WB) | `Debug.KeyState` yedek |
-| I tuşu (dedicated) | **AÇIK BUG (01:55):** Tab=Life, I ölü. Hedef I=Life / Tab=vanilla. §C.5. Overlay/ActionInput/enesg Save yasak |
-| Dedicated bağlan | Önce sunucu; Steam’de `-client` kalıcı **yazma**; `baglan-istemci.ps1` |
-| Dedicated lokal start | `-server world` + `-addonsDir` + `-addons` (`-config` ile birlikte değil) |
-| Lab ışık | **Tepeden:** `angles -90 0 0` + saat 12 + Cloudy; eğince parlama = yan güneş (§7e) |
-| HUD stil | Circle rings + nakit pill + canta panel; HTML yok |
-| Lab 3P kamera | M360 değil; labda 1. şahıs |
-| Git | junction / `sync-game-to-github.ps1` → push (`/MIR` yasak) |
-| Kod isim | Türkçe ASCII (11.2.1) |
+| I / Tab | 20 §1 — conf + CharacterMovementContext + listener |
+| HUD widget | 20 §2 — CreateWidgets yasak |
+| Dedicated | 20 §3 — önce sunucu; `-client` kalıcı yazma |
+| Lab dünya | 20 §4 — terrain, `.ent`, ışık, 1. şahıs |
+| Yasaklar | 20 §9 |
 
 ---
-
 ## 7. UserAction dersleri (araç spawn testi TEMİZLENDİ)
 
 Test script/prefab/entity **silindi** (2026-07-27). Zemin + Play lab kaldı. Pirinç siteleri aynı UserAction kalıbıyla bağlandı (Bölüm 6).
@@ -511,14 +469,15 @@ Wiki: `Action_Context_Setup`.
 - [x] TEST spawner: F + scroll UserAction — Play teyidi + **temizlik yapıldı**
 - [x] JobStation Topla/İşle/Sat F menüsü — lab’a yerleştirildi
 - [x] HUD: yüzde sayacı + M360 envanter listesi (Play teyidi)
-- [x] Inventory tuşu **I** — WB: Debug; dedicated: `M360_EnvanterAc` (§7b/7e); Tab M360 açmaz
-- [x] Life tarzı `.layout` HUD çerçevesi lab v1 (CekirdekHud + CantaPanel — docs 10.8 / 7c)
-- [x] Dedicated lokal ilk çalıştırma + istemci bağlanma (2026-07-28 §7e)
+- [x] Inventory tuşu **I** — ürün: docs/20 §1 (2026-07-29 kanıtlı); Tab vanilla
+- [x] Life HUD lab CreateWidget (docs/20 §2)
+- [x] Dedicated lokal MP (docs/20 §3)
 - [ ] Workshop publish → `-config` + Direct Join / dış oyuncu
 - [ ] Pirinç prefab GUID / resource rebuild uyarıları
+- [ ] Yazma API + idempotency + audit
+- [ ] NET API + `wb_connect` kalıcı yeşil
 
 ---
-
 ## 11. Oturum günlüğü
 
 ### 2026-07-27
@@ -573,7 +532,7 @@ Layer default {
 
 ---
 
-*İlgili: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [14](./14_mevcut_modlar_araclar.md) · [16](./16_dosya_envanteri.md) · [17](./17_yerel_kurulum.md) · [18](./18_calisma_duzeni.md) · [19](./19_guvenlik.md)*
+*İlgili: [00](./00_ana_dokuman.md) · [20](./20_kritik_kararlar.md) · [11](./11_teknik_mimari.md) · [16](./16_dosya_envanteri.md) · [18](./18_calisma_duzeni.md) · [19](./19_guvenlik.md)*
 
 ---
 
@@ -630,4 +589,4 @@ Layer default {
 
 ---
 
-*İlgili: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [14](./14_mevcut_modlar_araclar.md) · [16](./16_dosya_envanteri.md) · [17](./17_yerel_kurulum.md) · [18](./18_calisma_duzeni.md) · [19](./19_guvenlik.md)*
+*İlgili: [00](./00_ana_dokuman.md) · [20](./20_kritik_kararlar.md) · [11](./11_teknik_mimari.md) · [16](./16_dosya_envanteri.md) · [18](./18_calisma_duzeni.md) · [19](./19_guvenlik.md)*

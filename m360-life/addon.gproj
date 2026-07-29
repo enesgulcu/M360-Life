@@ -8,7 +8,7 @@ GameProject {
  Configurations {
   GameProjectConfig PC {
    InputManagerSettings InputManagerSettings "{ADF987310AA5305D}" {
-    Default "{795184CF9AD764DB}Configs/System/chimeraInputCommon.conf"
+    Default "{ADF987310AA5305C}Configs/System/M360_Input.conf"
     UiMappings "{0AD37213EFEB0B61}Configs/System/chimeraMapping.conf"
    }
   }

@@ -15,8 +15,6 @@ class M360_CantaHudBileseni : ScriptComponent
 	protected bool m_bAcik;
 	protected bool m_bIpucuGosterildi;
 	protected bool m_bWidgetHazir;
-	protected bool m_bIOnceki;
-	protected bool m_bInputLog;
 	protected int m_iSonNakit = -1;
 	protected int m_iSonIpucuYuzde = -1;
 	protected int m_iSonSaatDakika = -1;
@@ -59,8 +57,6 @@ class M360_CantaHudBileseni : ScriptComponent
 		if (!m_bBaslatildi)
 			Baslat();
 
-		ITusunuKontrolEt();
-
 		IEntity oyuncu = YerelOyuncuyuAl();
 		M360_IsOturumVerisi veri = M360_IsOturumlari.AlVeyaOlustur(oyuncu);
 		M360_IsOturumlari.VitalTick(veri, timeSlice);
@@ -79,36 +75,13 @@ class M360_CantaHudBileseni : ScriptComponent
 		m_bWidgetHazir = HudOlustur();
 		GetGame().GetCallqueue().CallLater(GirisIpucuGoster, 2000, false);
 
+		// PlayerController henüz Kur çağırmazsa yedek (Play / spawn sırası)
+		M360_TusYoneticisi.Kur();
+
 		if (m_bWidgetHazir)
-			Print("[M360] CantaHud baslat — Life HUD OK | I=M360_LifeCanta | Tab=vanilla", LogLevel.NORMAL);
+			Print("[M360] CantaHud baslat — Life HUD OK | I=M360_LifeCanta | Tab=vanilla Inventory", LogLevel.NORMAL);
 		else
 			Print("[M360] CantaHud baslat — widget FAIL, hint yedek", LogLevel.WARNING);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	//! Dedicated I: PlayerController (Inventory+Save). Play: Debug.KeyState.
-	protected void ITusunuKontrolEt()
-	{
-		if (!m_bInputLog)
-		{
-			m_bInputLog = true;
-			Print("[M360] CantaHud: dedicated=PlayerController Inventory | Play=Debug I", LogLevel.NORMAL);
-		}
-
-#ifdef WORKBENCH
-		if (Debug.KeyState(KeyCode.KC_I))
-		{
-			Debug.ClearKey(KeyCode.KC_I);
-			OnLifeCantaTusu();
-		}
-#endif
-	}
-
-	//------------------------------------------------------------------------------------------------
-	protected void OnLifeCantaTusu()
-	{
-		Print("[M360] I → Life HUD", LogLevel.NORMAL);
-		M360_TusYoneticisi.LifeCantaAcKapa();
 	}
 
 	//------------------------------------------------------------------------------------------------

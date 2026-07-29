@@ -1,39 +1,19 @@
-M360 Life — dedicated paket (guncel)
-Tarih: 2026-07-29 ~01:55 Europe/Istanbul
-DEVIR: kullanici yatti; sabah PC A devam. Detay: docs/15 §C.
-
-=== IKI PC ===
-Cift tik: M360.bat / M360-Oyna.bat
-Kayit: TEK_ADIM.txt
-Senkron: yalnizca git (pull/push). Secrets git'e girmez.
-
-=== CANTA / TUS — SON TEST (BASARISIZ) ===
-Hedef: I = Life HUD | Tab = vanilla envanter
-
-[x] Workbench Play: I -> Life HUD (Debug.KeyState / WORKBENCH)
-[ ] Dedicated+Steam: BASARISIZ (kullanici 01:55)
-      Tab -> Life HUD (yanlis)
-      I -> tepki yok
-      Log: Inventory=[] | Inventory -> Life HUD | I -> Life YOK
-
-Kok:
-  1) ActionOpenInventory hijack -> Inventory her tus Life
-  2) AddBinding Save yok -> Inventory=[] (I baglanmiyor)
-  3) enesg'de InputBinding.Save profil bosaltiyor — YASAK
-  4) M360_LifeCanta / ActivateAction dedicated'da tetiklenmedi
-
-=== YASAK (tekrarlama) ===
-rdb silme | text Context / Overlay | InputBinding.Save (enesg)
-| kalici -client | secrets commit | hijack + Tab hala Inventory
-| ActivateAction sonsuz deneme | "calisti" demek logsuz
-
-=== SABAH AI ===
-Dedicated I=Life + Tab=vanilla kalici cozum.
-Tercihen WB Config Editor + CharacterMovementContext + listener;
-hijack kaldir veya Inventory'de yalniz I (Save'siz tutan yol).
-docs/15 §C.5 oku — eski "Tab+I ikisi Life" hedefi GECTI.
-
-=== BU PC (enesg) ===
-[x] Dedicated + junction + MP
-[x] dual-PC scriptleri (bu push)
-[ ] Dedicated I/Tab dogru
+M360 Life — dedicated paket (guncel)
+Tarih: 2026-07-29 ~10:15 Europe/Istanbul
+DEVIR: sabah PC A → akşam PC B + yeni Cursor. Detay: docs/15 §C + docs/20
+
+=== SENKRON ===
+Akşam: git pull / M360.bat → oku docs/20 sonra docs/15 §C
+Push şart (secrets commit etme). Cursor sohbet senkron DEGIL.
+
+=== KANITLI BUGUN ===
+I = Life HUD | Tab = vanilla
+Yontem: docs/20 §1 (CharacterMovementContext ActionRefs + + listener)
+Kod: M360_Input.conf, M360_TusYoneticisi, PlayerControllerI (hijack yok)
+
+=== YASAK ===
+docs/20 §9 — hijack/Save/Overlay/ActionInput/rdb/kalici -client
+
+=== SONRAKI ===
+Faz 0 devam; yeni tus = 20 §1 omurga
+Acik: Workshop, Pirinc GUID, yazma API

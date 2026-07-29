@@ -40,7 +40,17 @@ Lab’da anahtar boş bırakılabilir; **üretimde `M360_SERVER_KEY` zorunlu**.
 - Panel: `/istatistik`
 - Bellek içi (instance); cold start sıfırlar — kalıcı metrik sonra (Neon veya Analytics)
 
-## Oyun tarafı
+## Oyun tarafı — tuş / girdi
+
+`M360_TusYoneticisi` (I → Life HUD) **güven sınırı değildir**:
+
+| Olabilir | Olamaz |
+|---|---|
+| Yerel UI aç/kapa | Para, item, rol, iş sonucu yazmak |
+| Sunucuya “talep” RPC/HTTP başlatmak | İstemcinin gönderdiği fiyat/miktarı gerçek saymak |
+| Yalnız `m_bIsLocalPlayerController` | Dedicated headless’ta dinleyici |
+
+Kritik hat değişmez: **UI → rate limit → idempotency → sunucu doğrulama → DB → audit**.
 
 `Scripts/Game/M360/Ag/M360_ApiIstemci.c` — `BaglantiTesti()` → `/api/health` + `/api/jobs`.  
 Bileşen: `M360_ApiBaglantiTestiBileseni` (Play’de otomatik test).

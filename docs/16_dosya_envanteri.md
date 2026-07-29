@@ -1,8 +1,8 @@
 # Döküman 16 — Dosya / İçerik Envanteri (ilişki kataloğu)
 
-*Bağlı: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [15](./15_gelistirme_notlari.md) · [17](./17_yerel_kurulum.md)*
+*Bağlı: [00](./00_ana_dokuman.md) · [11](./11_teknik_mimari.md) · [13](./13_enfusion_prefab_prosedur.md) · [15](./15_gelistirme_notlari.md) · [17](./17_yerel_kurulum.md) · [20](./20_kritik_kararlar.md)*
 
-> Her yeni/değişen dosyada güncelle. Okuma: `00` → tasarım → **16** → **15**.
+> Her yeni/değişen dosyada güncelle. Okuma: `00` → **20 (kilit)** → tasarım → **16** → **15 §C**.
 
 ---
 
@@ -41,9 +41,10 @@
 | `Isler/M360_IsleAksiyonu.c` | F Isle | Process | UserAction | lab |
 | `Isler/M360_SatAksiyonu.c` | F Sat | Sell | UserAction | lab |
 | `Isler/M360_DurumAksiyonu.c` | F Envanter | HUD | UserAction | lab |
-| `Arayuz/M360_TusYoneticisi.c` | Tuş→panel omurgası (I Life, Tab vanilla; ileride genişler) | PlayerControllerI | lab UI | lab |
-| `Arayuz/M360_PlayerControllerI.c` | InputBinding oturum (Save yok) + ActionOpenInventory | TusYoneticisi | lab UI | lab |
-| `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + panel | TusYoneticisi | lab UI | lab |
+| `Arayuz/M360_TusYoneticisi.c` | Tuş omurgası (`DinleyiciEkle`; yalnız UI) | Input conf + PlayerController | istemci | kanitli |
+| `Arayuz/M360_PlayerControllerI.c` | Yerel `Kur()` — hijack yok | TusYoneticisi | istemci | kanitli |
+| `Arayuz/M360_CantaHudBileseni.c` | Life HUD boot + panel | TusYoneticisi | istemci | lab |
+| `Configs/System/M360_Input.conf` | `M360_LifeCanta` + CharacterMovementContext ActionRefs + | gproj Default | istemci | kanitli |
 | `Arayuz/M360_CekirdekHudWidgetlari.c` | Circle rings + nakit pill + saat + iş barı | CantaHudBileseni | lab UI | lab |
 | `Arayuz/M360_HudIkonlari.c` | Texture ResourceName + Yukle/MaskYukle | YuvarlakBar / Canta / Cekirdek | lab UI | lab |
 | `Arayuz/M360_YuvarlakBar.c` | Badge + maskeli progress ring | CekirdekHud | lab UI | lab |
