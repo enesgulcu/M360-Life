@@ -6,7 +6,7 @@
 >
 > **Çelişki:** **20 + 19 > 15** günlük not. Eski 15 bölümleri (7b Overlay, 7e hijack+Save) **geçersiz** — bu dosya geçerli.
 >
-> **Son güncelleme:** 2026-07-30 ~00:40 (TR) — Kıyafet sol dikey kategori + zoom/scroll/satın-alma önizleme.
+> **Son güncelleme:** 2026-08-04 ~15:00 (TR) — Kıyafet prova+sepet YEŞİL; mouse orbit FrameSlot P3 devam.
 
 ---
 
@@ -145,11 +145,26 @@ Inventory hijack · `InputBinding.Save` · Save’siz remap · `ActionInput` · 
 
 > **ARGH UI tıklama (2026-07-29 ~22:30):** İç içe `ButtonWidget` / dekor katmanına ayrı click handler güvenilmez. Tek ana `ButtonWidget`; içindeki renk-yazı hiyerarşisi `WidgetFlags.IGNORE_CURSOR`; işlem `OnMouseButtonDown` ile başlar. Async satın almada istemci kilidi + geri sayım, sunucuda bakiye/doğrulama/spawn, sonuç RPC’si ve kesin tutarlı bakiye gösterimi birlikte olmalı.
 
-> **Kıyafet mağazası (B, 2026-07-29 / güncel 2026-07-30):** Gerçek `MenuBase` + `MenuManager`. Sol panel **dikey**: kategori sütunu (`CategoryList`) + yan yana ürün listesi (`ItemScroll`/`ItemList`). Üst yatay kategori şeridi kullanılmaz (taşma). Liste tıklaması **prova**; **SATIN AL** provadakilerin hepsini tek RPC ile giydirir. Geri sayım yok. Satın alma sonrası önizleme `m_aSonAlinan` ile yeni kıyafetleri tutar (istemci loadout sync gecikmesine karşı) + 450 ms `CallLater` yenileme. Kategori değişince `ItemScroll.SetSliderPos(0,0)`. Karakter prova: oyuncu loadout kopyası + son alınan + prova. Vergys yalnız içerik.
+> **Kıyafet mağazası — KİLİT 2026-08-04 ~16:35:**  
+> **Yeşil:** prova sepet + SATIN AL + mouse.  
+> **Kırmızı (P2):** full-body kadraj.  
+> **Yeni deneme (envanter birebir):** `SCR_CharacterInventoryStorageComponent.GetAttributes()` → `FindAttribute(SCR_CharacterInventoryPreviewAttributes)` + `SetPreviewItem(player, attrs, force)`.  
+> **Yasak:** `new PreviewRenderAttributes()` / `null` attrs (bel-zoom item kadrajı).
 
-> **Kıyafet mouse/kamera kanıtı:** Ürün yolu MenuManager. İlk kadraj `SetPreviewItem(..., null, true)`. Kullanıcı döndür/zoom: yaw/zoom state tutulur, her seferinde **yeni** `PreviewRenderAttributes` + `forceRefresh`. Handler hem `PreviewContainer` hem root’ta. Sağ tık null’a sıfırlar. Kümülatif ZoomCamera biriktirme **yasak** (FOV kaçar).
+> **Kıyafet prova — yeşilin nedeni (2026-08-04, demir):**  
+> 1. **Tek repo yolu:** yalnız `Documents\GitHub\M360-Life` (`M360-Oyna.bat`). `Downloads\M360-Life-main` ZIP kopyası → eski/boş paket; “hiçbir değişiklik yansımıyor”.  
+> 2. **Vergys `data.pak` tam boy:** FORM header **483073873** byte (~460.7 MB). 0 byte veya ~409 MB = `not valid pak file` + `resource gecersiz`. `kur-vergys.ps1` FORM boyutu doğrular (yalnız ≥400MB **yetmez**).  
+> 3. **Script derleme:** Enforce tipi **`typename`** (küçük). `TypeName` → `Can't compile Game` / Init Error → madol hiç yüklenmez.  
+> 4. **Prova attach:** `LoadoutAreaType` (kategori stringi değil) · `LoadoutSlotInfo.AttachEntity` · preview prefab default children sil · “giyildi” yalnız `PreviewdePrefabVarMi` · log `[M360] PROVA …`.  
+> 5. **Alım:** sepet yığını + sunucu RPC (`M360_KiyafetSatinAlRpc`); tuş/callback’te para yazılmaz.
 
-> **Vergys prefab kanıtı:** `*_item.et` yasak. Katalog ~97 wrapper (`Uniform_Base` / `Footwear_Base` / `Headgear_Base` / `Vest_Base`).
+> **Kıyafet 3D / kamera (motor gerçekleri):**  
+> - Envanter full-body = `SCR_CharacterInventoryPreviewAttributes` (character storage attrs). **`new PreviewRenderAttributes` / null = item bel-zoom.**  
+> - Mutate same attr object (Rotate/Zoom delta); force true only refresh/dress.  
+> - Handler Workspace; raw mouse menüde.  
+> - Sepet = `m_aProvaPrefab` (highlight ≠ sepet).
+
+> **Vergys prefab:** `*_item.et` yasak (PreviewModel). Katalog yalnız giyilebilir wrapper; `Wrong GUID/name` → satır katalogdan çıkar veya path düzelt.
 >
 > ~~Magaza denemesi (~15:35): Shop/DE/Reloadz…~~ · ~~Shop System (~14:10)~~ (gecersiz)
 

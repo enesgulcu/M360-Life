@@ -68,7 +68,8 @@ class M360_KiyafetButonHandler : ScriptedWidgetEventHandler
 }
 
 //------------------------------------------------------------------------------------------------
-//! Preview alaninda sinirli orbit + zoom; input action kullanmaz.
+//! Preview mouse: Workspace handler (vanilla SCR_InventoryCharacterWidgetHelper gibi).
+//! Input action / Inventory context GEREKMEZ — ham mouse delta + FrameSlot pan/zoom.
 //------------------------------------------------------------------------------------------------
 class M360_KiyafetOnizlemeHandler : ScriptedWidgetEventHandler
 {
@@ -83,8 +84,12 @@ class M360_KiyafetOnizlemeHandler : ScriptedWidgetEventHandler
 	{
 		if (!m_Menu || !m_Menu.OnizlemeNoktasiMi(x, y))
 			return false;
+
+		// Sol = orbit, orta = pan, sag = sifirla.
 		if (button == 0)
-			m_Menu.OnizlemeSurukleBaslat(x, y);
+			m_Menu.OnizlemeSurukleBaslat(x, y, false);
+		else if (button == 2)
+			m_Menu.OnizlemeSurukleBaslat(x, y, true);
 		else if (button == 1)
 			m_Menu.OnizlemeKamerayiSifirla();
 		return true;
@@ -92,14 +97,7 @@ class M360_KiyafetOnizlemeHandler : ScriptedWidgetEventHandler
 
 	override bool OnMouseButtonUp(Widget w, int x, int y, int button)
 	{
-		if (m_Menu && button == 0)
-			m_Menu.OnizlemeSurukleBitir();
-		return true;
-	}
-
-	override bool OnMouseLeave(Widget w, Widget enterW, int x, int y)
-	{
-		if (m_Menu)
+		if (m_Menu && (button == 0 || button == 2))
 			m_Menu.OnizlemeSurukleBitir();
 		return false;
 	}
@@ -121,8 +119,8 @@ class M360_KiyafetOnizlemeHandler : ScriptedWidgetEventHandler
 //------------------------------------------------------------------------------------------------
 class M360_KiyafetMagazaUI : MenuBase
 {
-	protected static const ResourceName CATEGORY_LAYOUT = "{ADF987310AA53260}UI/layouts/M360/M360_KiyafetKategori.layout";
-	protected static const ResourceName ROW_LAYOUT = "{ADF987310AA53261}UI/layouts/M360/M360_KiyafetSatir.layout";
+	protected static const ResourceName CATEGORY_LAYOUT = "UI/layouts/M360/M360_KiyafetKategori.layout";
+	protected static const ResourceName ROW_LAYOUT = "UI/layouts/M360/M360_KiyafetSatir.layout";
 	protected static const ResourceName PREVIEW_MANAGER = "{9F18C476AB860F3B}Prefabs/World/Game/ItemPreviewManager.et";
 	protected static M360_KiyafetMagazaUI s_Aktif;
 
@@ -141,16 +139,33 @@ class M360_KiyafetMagazaUI : MenuBase
 	protected Widget m_wBuyPanel;
 	protected TextWidget m_wBuyText;
 
+	// Envanter (SCR_InventoryMenuUI) yolu: karakterin kendi SCR_CharacterInventoryPreviewAttributes.
+	// new PreviewRenderAttributes() / null = kiyafet item kadrajina kilit (bel zoom).
 	protected ItemPreviewManagerEntity m_PreviewManager;
-	protected ref PreviewRenderAttributes m_PreviewAttributes;
+	protected PreviewRenderAttributes m_CharacterPreviewAttrs;
 	protected ref M360_KiyafetOnizlemeHandler m_PreviewHandler;
+	protected WorkspaceWidget m_Workspace;
 	protected IEntity m_PreviewEntity;
 	protected ResourceName m_sKarakterPrefab;
 	protected bool m_bOnizlemeSurukleniyor;
-	protected bool m_bOnizlemeDokunuldu;
+	protected bool m_bOnizlemePan;
+	protected bool m_bFrameBazHazir;
+	protected bool m_bSurukleLog;
+	protected bool m_bFullBodyFitOk;
+	protected int m_iFullBodyDeneme;
+	//! Canli oyuncu prova: kapanista eski kiyafetlere donmek icin prefab listesi.
+	protected ref array<ResourceName> m_aLoadoutSnapshot = {};
+	protected bool m_bSnapshotAlindi;
+	protected bool m_bSatinAlindiBuOturum;
 	protected int m_iSonMouseX;
-	protected float m_fOnizlemeYaw;
-	protected float m_fOnizlemeZoom;
+	protected int m_iSonMouseY;
+	protected float m_fFrameBaseX;
+	protected float m_fFrameBaseY;
+	protected float m_fFrameBaseW;
+	protected float m_fFrameBaseH;
+	protected float m_fPanX;
+	protected float m_fPanY;
+	protected float m_fOlcek;
 
 	protected ref array<ref M360_KiyafetUrun> m_aGorunen = {};
 	protected ref array<string> m_aProvaAlan = {};
@@ -226,25 +241,40 @@ class M360_KiyafetMagazaUI : MenuBase
 
 		TextWidget previewHint = TextWidget.Cast(m_wRoot.FindAnyWidget("PreviewHint"));
 		if (previewHint)
-			previewHint.SetText("SOL TIK SURUKLE: DONDUR  |  TEKERLEK: ZOOM  |  SAG TIK: SIFIRLA");
+		{
+			previewHint.SetText("SOL: DONDUR  |  ORTA: KAYDIR  |  TEKERLEK: YAKIN/UZAK  |  SAG: FULL BODY");
+			previewHint.SetFlags(WidgetFlags.IGNORE_CURSOR);
+		}
 
-		// Ilk kadraj motor otomatigi: attributes null. Kullanici dondurunce/zoomlayinca olusur.
-		m_PreviewAttributes = null;
-		m_bOnizlemeDokunuldu = false;
-		m_fOnizlemeYaw = 0;
-		m_fOnizlemeZoom = 0;
+		Widget previewBg = m_wRoot.FindAnyWidget("PreviewBackground");
+		if (previewBg)
+			previewBg.SetFlags(WidgetFlags.IGNORE_CURSOR);
+
+		// Envanter: karakter attribute koleksiyonundan full-body kadraj.
+		m_CharacterPreviewAttrs = null;
+		m_bOnizlemeSurukleniyor = false;
+		m_bOnizlemePan = false;
+		m_bFrameBazHazir = false;
+		m_bFullBodyFitOk = false;
+		m_iFullBodyDeneme = 0;
+		m_fPanX = 0;
+		m_fPanY = 0;
+		m_fOlcek = 1.0;
 		m_aProvaAlan.Clear();
 		m_aProvaPrefab.Clear();
 		m_aSonAlinan.Clear();
-		WorkspaceWidget workspace = GetGame().GetWorkspace();
+		m_aLoadoutSnapshot.Clear();
+		m_bSnapshotAlindi = false;
+		m_bSatinAlindiBuOturum = false;
+		m_Workspace = GetGame().GetWorkspace();
 
 		m_PreviewHandler = new M360_KiyafetOnizlemeHandler();
 		m_PreviewHandler.Init(this);
-		// Preview container + root: tekerlek/surukleme kaybolmasin.
-		if (m_wPreviewInputArea)
-			m_wPreviewInputArea.AddHandler(m_PreviewHandler);
-		if (m_wRoot)
-			m_wRoot.AddHandler(m_PreviewHandler);
+		// Vanilla envanter gibi: handler Workspace'te — menu leaf event yutsa bile gelisin.
+		if (m_Workspace)
+			m_Workspace.AddHandler(m_PreviewHandler);
+		if (m_wPreview)
+			m_wPreview.AddHandler(m_PreviewHandler);
 
 		m_InputManager = GetGame().GetInputManager();
 		if (m_InputManager)
@@ -274,16 +304,25 @@ class M360_KiyafetMagazaUI : MenuBase
 			m_wCloseButton.AddHandler(m_CloseHandler);
 		}
 
+		// SCR_InventoryMenuUI.RefreshPlayerWidget ile ayni: canli player + CharacterInventoryPreviewAttributes
+		LoadoutSnapshotKaydet();
+		OnizlemeKarakterAttrAl();
 		KarakterPrefabHazirla();
 		KategorileriDoldur();
 		ListeyiDoldur();
 		ProvaOzetGuncelle();
-		OnizlemeYenile();
+		int acOk, acFail;
+		string acHata;
+		OnizlemeYenileSonuc(acOk, acFail, acHata);
 		BakiyeyiGuncelle();
 		DurumYaz("Bastikca uzerine giyer. SATIN AL = provadaki hepsi.");
 
-		if (workspace && m_wCloseButton)
-			workspace.SetFocusedWidget(m_wCloseButton, true);
+		if (m_Workspace && m_wCloseButton)
+			m_Workspace.SetFocusedWidget(m_wCloseButton, true);
+
+		// Layout otursun; envanter InitQueue sonrasi force refresh gibi.
+		GetGame().GetCallqueue().CallLater(OnizlemeFullBodyYenile, 80, false);
+		GetGame().GetCallqueue().CallLater(OnizlemeFullBodyYenile, 200, false);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -291,19 +330,35 @@ class M360_KiyafetMagazaUI : MenuBase
 	{
 		m_bKilitli = false;
 		m_fSonucBekleme = 0;
-		m_bOnizlemeDokunuldu = false;
-		m_fOnizlemeYaw = 0;
-		m_fOnizlemeZoom = 0;
+		m_bOnizlemeSurukleniyor = false;
+		m_bOnizlemePan = false;
+		m_bFrameBazHazir = false;
+		m_fPanX = 0;
+		m_fPanY = 0;
+		m_fOlcek = 1.0;
 		m_aProvaAlan.Clear();
 		m_aProvaPrefab.Clear();
 		m_aSonAlinan.Clear();
 		PreviewTemizle();
 		GetGame().GetCallqueue().Remove(OnizlemeYenileGecikmeli);
-		if (m_wPreviewInputArea && m_PreviewHandler)
-			m_wPreviewInputArea.RemoveHandler(m_PreviewHandler);
-		if (m_wRoot && m_PreviewHandler)
-			m_wRoot.RemoveHandler(m_PreviewHandler);
+		GetGame().GetCallqueue().Remove(OnizlemeFullBodyYenile);
+		GetGame().GetCallqueue().Remove(OnizlemeFrameBaziHazirla);
+		if (m_Workspace && m_PreviewHandler)
+			m_Workspace.RemoveHandler(m_PreviewHandler);
+		if (m_wPreview && m_PreviewHandler)
+			m_wPreview.RemoveHandler(m_PreviewHandler);
 		m_PreviewHandler = null;
+		m_Workspace = null;
+
+		// Satin almadan kapattiysa canli oyuncuyu acilis kiyafetine dondur.
+		if (!m_bSatinAlindiBuOturum && m_bSnapshotAlindi)
+			LoadoutSnapshotGeriYukle();
+
+		// Envanter attribute delta birikimini sifirla (canli player entity uzerinde).
+		if (m_CharacterPreviewAttrs)
+			m_CharacterPreviewAttrs.ResetDeltaRotation();
+		m_CharacterPreviewAttrs = null;
+
 		if (m_InputManager)
 		{
 			m_InputManager.RemoveActionListener(UIConstants.MENU_ACTION_BACK, EActionTrigger.DOWN, OnMenuBack);
@@ -312,7 +367,6 @@ class M360_KiyafetMagazaUI : MenuBase
 #endif
 		}
 		m_InputManager = null;
-		m_PreviewAttributes = null;
 		m_wRoot = null;
 
 		if (s_Aktif == this)
@@ -337,28 +391,40 @@ class M360_KiyafetMagazaUI : MenuBase
 	}
 
 	//------------------------------------------------------------------------------------------------
-	void OnizlemeSurukleBaslat(int x, int y)
+	void OnizlemeSurukleBaslat(int x, int y, bool pan)
 	{
 		m_bOnizlemeSurukleniyor = true;
+		m_bOnizlemePan = pan;
+		m_bSurukleLog = false;
 		m_iSonMouseX = x;
+		m_iSonMouseY = y;
+		if (!m_bFrameBazHazir)
+			OnizlemeFrameBaziHazirla();
 	}
 
 	//------------------------------------------------------------------------------------------------
 	bool OnizlemeNoktasiMi(int x, int y)
 	{
-		if (!m_wPreviewInputArea)
+		// Tum PreviewContainer (orta panel) — dar 400x500 kutuya sikisma yok.
+		Widget hit = m_wPreviewInputArea;
+		if (!hit)
+			hit = m_wPreview;
+		if (!hit)
 			return false;
 
 		float posX, posY, sizeX, sizeY;
-		m_wPreviewInputArea.GetScreenPos(posX, posY);
-		m_wPreviewInputArea.GetScreenSize(sizeX, sizeY);
-		return x >= posX && x <= posX + sizeX && y >= posY && y <= posY + sizeY;
+		hit.GetScreenPos(posX, posY);
+		hit.GetScreenSize(sizeX, sizeY);
+		return sizeX > 1 && sizeY > 1
+			&& x >= posX && x <= posX + sizeX
+			&& y >= posY && y <= posY + sizeY;
 	}
 
 	//------------------------------------------------------------------------------------------------
 	void OnizlemeSurukleBitir()
 	{
 		m_bOnizlemeSurukleniyor = false;
+		m_bOnizlemePan = false;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -370,12 +436,49 @@ class M360_KiyafetMagazaUI : MenuBase
 		int x, y;
 		WidgetManager.GetMousePos(x, y);
 		int farkX = x - m_iSonMouseX;
+		int farkY = y - m_iSonMouseY;
 		m_iSonMouseX = x;
-		if (farkX == 0)
+		m_iSonMouseY = y;
+		if (farkX == 0 && farkY == 0)
 			return;
 
-		m_fOnizlemeYaw = Math.Clamp(m_fOnizlemeYaw + farkX * 0.55, -180, 180);
-		OnizlemeAttributesUygula();
+		if (m_bOnizlemePan)
+		{
+			float px = farkX;
+			float py = farkY;
+			WorkspaceWidget ww = GetGame().GetWorkspace();
+			if (ww)
+			{
+				px = ww.DPIUnscale(px);
+				py = ww.DPIUnscale(py);
+			}
+			m_fPanX += px;
+			m_fPanY += py;
+			float maxPanX = Math.Max(20, m_fFrameBaseW * 0.25);
+			float maxPanY = Math.Max(20, m_fFrameBaseH * 0.25);
+			m_fPanX = Math.Clamp(m_fPanX, -maxPanX, maxPanX);
+			m_fPanY = Math.Clamp(m_fPanY, -maxPanY, maxPanY);
+			OnizlemeFrameUygula();
+			return;
+		}
+
+		// Envanter: ayni attribute nesnesine DELTA RotateItemCamera (yeniden new YASAK).
+		if (!m_CharacterPreviewAttrs)
+			OnizlemeKarakterAttrAl();
+		if (!m_CharacterPreviewAttrs)
+			return;
+
+		// inventory limits: "-30 -180 0" .. "0 180 0"
+		vector rot = Vector(farkY * 0.35, farkX * 0.55, 0);
+		vector limMin = Vector(-30, -180, 0);
+		vector limMax = Vector(0, 180, 0);
+		m_CharacterPreviewAttrs.RotateItemCamera(rot, limMin, limMax);
+		OnizlemeRenderGuncelle(false);
+		if (!m_bSurukleLog)
+		{
+			m_bSurukleLog = true;
+			Print("[M360] PROVA SURUKLE character-attrs delta", LogLevel.NORMAL);
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -384,49 +487,121 @@ class M360_KiyafetMagazaUI : MenuBase
 		if (wheel == 0)
 			return;
 
-		// Tekerlek: + yakinlas, - uzaklas.
-		m_fOnizlemeZoom = Math.Clamp(m_fOnizlemeZoom + wheel * 4.0, -30, 30);
-		OnizlemeAttributesUygula();
+		if (!m_CharacterPreviewAttrs)
+			OnizlemeKarakterAttrAl();
+		if (!m_CharacterPreviewAttrs)
+			return;
+
+		// Envanter ZoomCamera(delta). Tekerlek asagi = uzaklas (FOV+).
+		m_CharacterPreviewAttrs.ZoomCamera(-wheel * 4.0, 25.0, 120.0);
+		OnizlemeFrameUygula();
+		OnizlemeRenderGuncelle(false);
+		Print(string.Format("[M360] PROVA ZOOM character-attrs wheel=%1", wheel), LogLevel.NORMAL);
 	}
 
 	//------------------------------------------------------------------------------------------------
 	void OnizlemeKamerayiSifirla()
 	{
 		m_bOnizlemeSurukleniyor = false;
-		m_bOnizlemeDokunuldu = false;
-		m_fOnizlemeYaw = 0;
-		m_fOnizlemeZoom = 0;
-		m_PreviewAttributes = null;
-		OnizlemeRenderYenile();
+		m_bOnizlemePan = false;
+		m_fPanX = 0;
+		m_fPanY = 0;
+		m_fOlcek = 1.0;
+		if (m_CharacterPreviewAttrs)
+			m_CharacterPreviewAttrs.ResetDeltaRotation();
+		OnizlemeFullBodyYenile();
+		Print("[M360] PROVA kamera sifir (character-attrs + force)", LogLevel.NORMAL);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void OnizlemeAttributesUygula()
+	//! SCR_InventoryMenuUI OnMenuOpen ile birebir: storage attribute = full-body kadraj.
+	protected void OnizlemeKarakterAttrAl()
 	{
-		// Her seferinde sifirdan: ZoomCamera/Rotate delta biriktirir, mutlak state isteriz.
-		m_PreviewAttributes = new PreviewRenderAttributes();
-		m_bOnizlemeDokunuldu = true;
+		m_CharacterPreviewAttrs = null;
+		IEntity player = SCR_PlayerController.GetLocalControlledEntity();
+		if (!player)
+			return;
 
-		if (m_fOnizlemeYaw != 0)
-			m_PreviewAttributes.RotateItemCamera(Vector(0, m_fOnizlemeYaw, 0), "0 -180 0", "0 180 0");
+		SCR_CharacterInventoryStorageComponent storage =
+			SCR_CharacterInventoryStorageComponent.Cast(player.FindComponent(SCR_CharacterInventoryStorageComponent));
+		if (!storage)
+		{
+			Print("[M360] PROVA attr: CharacterInventoryStorage yok", LogLevel.WARNING);
+			return;
+		}
 
-		// Pozitif m_fOnizlemeZoom = yakinlas (FOV dusur).
-		if (m_fOnizlemeZoom != 0)
-			m_PreviewAttributes.ZoomCamera(-m_fOnizlemeZoom, 28.0, 85.0);
+		ItemAttributeCollection collection = storage.GetAttributes();
+		if (!collection)
+		{
+			Print("[M360] PROVA attr: GetAttributes null", LogLevel.WARNING);
+			return;
+		}
 
-		OnizlemeRenderYenile();
+		m_CharacterPreviewAttrs = PreviewRenderAttributes.Cast(
+			collection.FindAttribute(SCR_CharacterInventoryPreviewAttributes));
+		if (m_CharacterPreviewAttrs)
+		{
+			m_CharacterPreviewAttrs.ResetDeltaRotation();
+			Print("[M360] PROVA attr: SCR_CharacterInventoryPreviewAttributes OK", LogLevel.NORMAL);
+		}
+		else
+			Print("[M360] PROVA attr: CharacterInventoryPreviewAttributes YOK", LogLevel.WARNING);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! force true = envanter RefreshPlayerWidget; false = UpdateCharacterPreview.
+	protected void OnizlemeRenderGuncelle(bool forceRefresh)
+	{
+		if (!m_PreviewManager || !m_wPreview || !m_PreviewEntity)
+			return;
+
+		OnizlemeFrameUygula();
+		if (m_CharacterPreviewAttrs)
+			m_PreviewManager.SetPreviewItem(m_wPreview, m_PreviewEntity, m_CharacterPreviewAttrs, forceRefresh);
+		else
+			m_PreviewManager.SetPreviewItem(m_wPreview, m_PreviewEntity, null, forceRefresh);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	void OnizlemeFrameBaziHazirla()
+	{
+		if (!m_wPreview)
+			return;
+
+		FrameSlot.SetAnchorMin(m_wPreview, 0, 0);
+		FrameSlot.SetAnchorMax(m_wPreview, 1, 1);
+		FrameSlot.SetOffsets(m_wPreview, 8, 8, 8, 36);
+		m_bFrameBazHazir = true;
+
+		float sw, sh;
+		m_wPreview.GetScreenSize(sw, sh);
+		m_fFrameBaseW = sw;
+		m_fFrameBaseH = sh;
+		Print(string.Format("[M360] PROVA FRAME fill px=%1x%2 aspect=%3", sw, sh, sw / Math.Max(1, sh)), LogLevel.NORMAL);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void OnizlemeFrameUygula()
+	{
+		if (!m_wPreview)
+			return;
+
+		if (!m_bFrameBazHazir)
+			OnizlemeFrameBaziHazirla();
+
+		float l = 8 + m_fPanX;
+		float t = 8 + m_fPanY;
+		float r = 8 - m_fPanX;
+		float b = 36 - m_fPanY;
+		FrameSlot.SetAnchorMin(m_wPreview, 0, 0);
+		FrameSlot.SetAnchorMax(m_wPreview, 1, 1);
+		FrameSlot.SetOffsets(m_wPreview, l, t, r, b);
 	}
 
 	//------------------------------------------------------------------------------------------------
 	protected void OnizlemeRenderYenile()
 	{
-		if (!m_PreviewManager || !m_wPreview || !m_PreviewEntity)
-			return;
-
-		if (m_bOnizlemeDokunuldu && m_PreviewAttributes)
-			m_PreviewManager.SetPreviewItem(m_wPreview, m_PreviewEntity, m_PreviewAttributes, true);
-		else
-			m_PreviewManager.SetPreviewItem(m_wPreview, m_PreviewEntity, null, true);
+		OnizlemeRenderGuncelle(false);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -458,16 +633,47 @@ class M360_KiyafetMagazaUI : MenuBase
 
 		m_iSecim = index;
 		M360_KiyafetUrun u = m_aGorunen[index];
-		if (!ProvaEkle(u.m_sPrefab))
+
+		string ekHata;
+		if (!ProvaEkle(u.m_sPrefab, ekHata))
 		{
-			DurumYaz("Bu kiyafet prova edilemedi.");
+			Print(string.Format("[M360] PROVA EKLE FAIL %1 | %2", FilePath.StripPath(u.m_sPrefab), ekHata), LogLevel.WARNING);
+			DurumYaz("Prova eklenemedi: " + ekHata);
 			return;
 		}
 
+		// Canli oyuncu (envanter full-body). Attach + refresh.
+		if (!m_PreviewEntity || !m_PreviewManager)
+		{
+			int okAdet;
+			int failAdet;
+			string lastFail;
+			OnizlemeYenileSonuc(okAdet, failAdet, lastFail);
+		}
+
+		IEntity hedef = m_PreviewEntity;
+		if (!hedef)
+			hedef = SCR_PlayerController.GetLocalControlledEntity();
+
+		string hGiy;
+		if (!KiyafetiDene(hedef, u.m_sPrefab, hGiy))
+		{
+			ProvaKaldir(u.m_sPrefab);
+			ListeyiDoldur();
+			ProvaOzetGuncelle();
+			DurumYaz("3D'ye giydirilemedi: " + hGiy);
+			Print(string.Format("[M360] PROVA TIK FAIL %1 | %2", FilePath.StripPath(u.m_sPrefab), hGiy), LogLevel.WARNING);
+			return;
+		}
+
+		m_PreviewEntity = hedef;
+		// Envanter RefreshPlayerWidget: force true + character attrs.
+		OnizlemeRenderGuncelle(true);
+
 		ListeyiDoldur();
 		ProvaOzetGuncelle();
-		OnizlemeYenile();
 		DurumYaz(u.m_sAd + " uzerine giyildi. Digerlerini de sec, sonra SATIN AL.");
+		Print(string.Format("[M360] PROVA TIK OK %1 character-attrs", FilePath.StripPath(u.m_sPrefab)), LogLevel.NORMAL);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -509,6 +715,10 @@ class M360_KiyafetMagazaUI : MenuBase
 		if (!basarili)
 			return;
 
+		// Satin alinanlar artik gercek loadout; snapshot guncelle, kapanista bozma.
+		m_bSatinAlindiBuOturum = true;
+		LoadoutSnapshotKaydet();
+
 		// Satin alinanlari onizlemede tut (istemci loadout sync gecikebilir).
 		m_aSonAlinan.Clear();
 		array<ResourceName> prova = {};
@@ -516,7 +726,9 @@ class M360_KiyafetMagazaUI : MenuBase
 		foreach (ResourceName rn : prova)
 			m_aSonAlinan.Insert(rn);
 
-		OnizlemeYenile();
+		int ok, fail;
+		string hata;
+		OnizlemeYenileSonuc(ok, fail, hata);
 
 		m_aProvaAlan.Clear();
 		m_aProvaPrefab.Clear();
@@ -533,7 +745,9 @@ class M360_KiyafetMagazaUI : MenuBase
 	{
 		if (!s_Aktif || s_Aktif != this)
 			return;
-		OnizlemeYenile();
+		int ok, fail;
+		string hata;
+		OnizlemeYenileSonuc(ok, fail, hata);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -693,14 +907,79 @@ class M360_KiyafetMagazaUI : MenuBase
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void OnizlemeYenile()
+	//! Prefab'in gercek loadout alan anahtari (kask/sapka carpismaz).
+	protected string PrefabLoadoutAlan(ResourceName prefab, out string hata)
 	{
-		if (!m_wPreview)
-			return;
+		hata = string.Empty;
+		if (!prefab)
+		{
+			hata = "prefab bos";
+			return string.Empty;
+		}
+
+		Resource res = Resource.Load(prefab);
+		if (!res.IsValid())
+		{
+			hata = "resource yuklenemedi (Wrong GUID/name?)";
+			Print(string.Format("[M360] PROVA RESOURCE FAIL %1", prefab), LogLevel.ERROR);
+			return string.Empty;
+		}
 
 		ChimeraWorld world = GetGame().GetWorld();
 		if (!world)
+		{
+			hata = "world yok";
+			return string.Empty;
+		}
+
+		IEntity tmp = GetGame().SpawnEntityPrefabLocal(res, world);
+		if (!tmp)
+		{
+			hata = "spawn olmadi";
+			return string.Empty;
+		}
+
+		BaseLoadoutClothComponent clothComp = BaseLoadoutClothComponent.Cast(tmp.FindComponent(BaseLoadoutClothComponent));
+		if (!clothComp)
+		{
+			delete tmp;
+			hata = "BaseLoadoutClothComponent yok (*_item.et / yanlis prefab)";
+			return string.Empty;
+		}
+
+		LoadoutAreaType area = clothComp.GetAreaType();
+		if (!area)
+		{
+			delete tmp;
+			hata = "LoadoutAreaType yok";
+			return string.Empty;
+		}
+
+		string key = string.Format("%1", area.Type());
+		delete tmp;
+		return key;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Canli oyuncu + SCR_CharacterInventoryPreviewAttributes (vanilla envanter).
+	protected void OnizlemeYenileSonuc(out int okAdet, out int failAdet, out string lastFail)
+	{
+		okAdet = 0;
+		failAdet = 0;
+		lastFail = string.Empty;
+
+		if (!m_wPreview)
+		{
+			lastFail = "playerRender widget yok";
 			return;
+		}
+
+		ChimeraWorld world = GetGame().GetWorld();
+		if (!world)
+		{
+			lastFail = "world yok";
+			return;
+		}
 
 		m_PreviewManager = world.GetItemPreviewManager();
 		if (!m_PreviewManager)
@@ -712,48 +991,214 @@ class M360_KiyafetMagazaUI : MenuBase
 		}
 		if (!m_PreviewManager)
 		{
+			lastFail = "ItemPreviewManager yok";
 			DurumYaz("3D onizleme yoneticisi yok.");
 			return;
 		}
 
-		if (!m_sKarakterPrefab)
+		IEntity player = SCR_PlayerController.GetLocalControlledEntity();
+		if (!player)
 		{
-			if (m_iSecim >= 0 && m_iSecim < m_aGorunen.Count())
-				m_PreviewManager.SetPreviewItemFromPrefab(m_wPreview, m_aGorunen[m_iSecim].m_sPrefab);
+			lastFail = "oyuncu yok";
 			return;
 		}
 
-		IEntity preview = m_PreviewManager.ResolvePreviewEntityForPrefab(m_sKarakterPrefab);
-		if (!preview)
-		{
-			DurumYaz("Karakter onizlemesi olusturulamadi.");
-			return;
-		}
+		m_PreviewEntity = player;
+		if (!m_CharacterPreviewAttrs)
+			OnizlemeKarakterAttrAl();
 
-		m_PreviewEntity = preview;
-
-		OyuncuKiyafetleriniKopyala(preview);
-
-		// Son satin alinanlar: oyuncu sync gecikse bile onizleme dogru kalsin.
 		foreach (ResourceName alinan : m_aSonAlinan)
-			KiyafetiDene(preview, alinan);
+		{
+			string h;
+			if (KiyafetiDene(player, alinan, h))
+				okAdet++;
+			else
+			{
+				failAdet++;
+				lastFail = h;
+			}
+		}
 
 		array<ResourceName> prova = {};
 		ProvaListesiAl(prova);
 		foreach (ResourceName rn : prova)
-			KiyafetiDene(preview, rn);
+		{
+			string h;
+			if (KiyafetiDene(player, rn, h))
+				okAdet++;
+			else
+			{
+				failAdet++;
+				lastFail = h;
+				Print(string.Format("[M360] PROVA GIY FAIL %1 | %2", FilePath.StripPath(rn), h), LogLevel.WARNING);
+			}
+		}
 
-		OnizlemeRenderYenile();
+		OnizlemeFrameBaziHazirla();
+		// RefreshPlayerWidget: force true + character attrs
+		OnizlemeRenderGuncelle(true);
+		m_bFullBodyFitOk = true;
+
+		string attrDurum = "YOK";
+		if (m_CharacterPreviewAttrs)
+			attrDurum = "SCR_CharacterInventoryPreviewAttributes";
+		Print(string.Format("[M360] PROVA RENDER envanter-yolu ok=%1 fail=%2 attr=%3", okAdet, failAdet, attrDurum), LogLevel.NORMAL);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected bool ProvaEkle(ResourceName prefab)
+	void OnizlemeFullBodyYenile()
 	{
-		M360_KiyafetUrun urun = M360_KiyafetKatalogu.Bul(prefab);
-		if (!urun)
+		if (!m_wPreview)
+			return;
+
+		if (!m_PreviewManager)
+		{
+			ChimeraWorld world = GetGame().GetWorld();
+			if (world)
+				m_PreviewManager = world.GetItemPreviewManager();
+		}
+		if (!m_PreviewManager)
+			return;
+
+		IEntity player = SCR_PlayerController.GetLocalControlledEntity();
+		if (!player)
+			return;
+
+		m_PreviewEntity = player;
+		if (!m_CharacterPreviewAttrs)
+			OnizlemeKarakterAttrAl();
+		if (m_CharacterPreviewAttrs)
+			m_CharacterPreviewAttrs.ResetDeltaRotation();
+
+		OnizlemeFrameBaziHazirla();
+		OnizlemeRenderGuncelle(true);
+		m_bFullBodyFitOk = true;
+
+		float sw, sh;
+		m_wPreview.GetScreenSize(sw, sh);
+		Print(string.Format("[M360] PROVA FULLBODY envanter-yolu px=%1x%2 attr=%3", sw, sh, m_CharacterPreviewAttrs != null), LogLevel.NORMAL);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void LoadoutSnapshotKaydet()
+	{
+		m_aLoadoutSnapshot.Clear();
+		m_bSnapshotAlindi = false;
+		IEntity player = SCR_PlayerController.GetLocalControlledEntity();
+		if (!player)
+			return;
+
+		EquipedLoadoutStorageComponent lo = EquipedLoadoutStorageComponent.Cast(player.FindComponent(EquipedLoadoutStorageComponent));
+		if (!lo)
+			return;
+
+		int count = lo.GetSlotsCount();
+		for (int i = 0; i < count; i++)
+		{
+			IEntity cloth = lo.Get(i);
+			if (!cloth)
+				continue;
+			if (!BaseLoadoutClothComponent.Cast(cloth.FindComponent(BaseLoadoutClothComponent)))
+				continue;
+			EntityPrefabData pd = cloth.GetPrefabData();
+			if (!pd)
+				continue;
+			ResourceName rn = pd.GetPrefabName();
+			if (rn)
+				m_aLoadoutSnapshot.Insert(rn);
+		}
+		m_bSnapshotAlindi = true;
+		Print(string.Format("[M360] PROVA snapshot n=%1", m_aLoadoutSnapshot.Count()), LogLevel.NORMAL);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void LoadoutSnapshotGeriYukle()
+	{
+		IEntity player = SCR_PlayerController.GetLocalControlledEntity();
+		if (!player)
+			return;
+
+		EquipedLoadoutStorageComponent lo = EquipedLoadoutStorageComponent.Cast(player.FindComponent(EquipedLoadoutStorageComponent));
+		if (!lo)
+			return;
+
+		// Prova spawn'larini temizle (yalniz kiyafet slotlari).
+		int count = lo.GetSlotsCount();
+		for (int i = 0; i < count; i++)
+		{
+			InventoryStorageSlot slot = lo.GetSlot(i);
+			if (!slot)
+				continue;
+			IEntity mevcut = slot.GetAttachedEntity();
+			if (!mevcut)
+				continue;
+			if (!BaseLoadoutClothComponent.Cast(mevcut.FindComponent(BaseLoadoutClothComponent)))
+				continue;
+			slot.DetachEntity(false);
+			if (!mevcut.IsDeleted())
+				delete mevcut;
+		}
+
+		foreach (ResourceName rn : m_aLoadoutSnapshot)
+		{
+			string h;
+			KiyafetiDene(player, rn, h);
+		}
+
+		Print(string.Format("[M360] PROVA snapshot restore n=%1", m_aLoadoutSnapshot.Count()), LogLevel.NORMAL);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Preview entity slotlarinda bu prefab takili mi?
+	protected bool PreviewdePrefabVarMi(ResourceName prefab)
+	{
+		if (!m_PreviewEntity || !prefab)
 			return false;
 
-		string alan = urun.m_sKategori;
+		EquipedLoadoutStorageComponent dst = EquipedLoadoutStorageComponent.Cast(m_PreviewEntity.FindComponent(EquipedLoadoutStorageComponent));
+		if (!dst)
+			return false;
+
+		int count = dst.GetSlotsCount();
+		for (int i = 0; i < count; i++)
+		{
+			IEntity cloth = dst.Get(i);
+			if (!cloth)
+				continue;
+
+			EntityPrefabData pdata = cloth.GetPrefabData();
+			if (!pdata)
+				continue;
+
+			if (M360_MagazaYardim.PrefabEslesir(pdata.GetPrefabName(), prefab))
+				return true;
+		}
+		return false;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected bool ProvaEkle(ResourceName prefab, out string hata)
+	{
+		hata = string.Empty;
+		M360_KiyafetUrun urun = M360_KiyafetKatalogu.Bul(prefab);
+		if (!urun)
+		{
+			hata = "katalogda yok";
+			return false;
+		}
+
+		// Ayni fiziksel slot: gercek LoadoutAreaType (kategori degil).
+		string alan = PrefabLoadoutAlan(prefab, hata);
+		if (alan.Length() < 1)
+		{
+			// Fall-back: en azinda yigin kaydi kategoriden tutulsun ama basarisizlik loglu.
+			alan = "kat:" + urun.m_sKategori;
+			Print(string.Format("[M360] PROVA ALAN FALLBACK %1 -> %2 | %3", FilePath.StripPath(prefab), alan, hata), LogLevel.WARNING);
+			if (hata.Length() > 0 && hata.Contains("resource"))
+				return false;
+			hata = string.Empty;
+		}
+
 		int idx = m_aProvaAlan.Find(alan);
 		if (idx >= 0)
 		{
@@ -764,6 +1209,30 @@ class M360_KiyafetMagazaUI : MenuBase
 		m_aProvaAlan.Insert(alan);
 		m_aProvaPrefab.Insert(prefab);
 		return true;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void ProvaKaldir(ResourceName prefab)
+	{
+		array<string> kalanAlan = {};
+		array<ResourceName> kalanPrefab = {};
+
+		for (int i = 0; i < m_aProvaPrefab.Count(); i++)
+		{
+			if (M360_MagazaYardim.PrefabEslesir(m_aProvaPrefab[i], prefab))
+				continue;
+
+			kalanPrefab.Insert(m_aProvaPrefab[i]);
+			if (i < m_aProvaAlan.Count())
+				kalanAlan.Insert(m_aProvaAlan[i]);
+		}
+
+		m_aProvaPrefab.Clear();
+		m_aProvaAlan.Clear();
+		foreach (ResourceName rn : kalanPrefab)
+			m_aProvaPrefab.Insert(rn);
+		foreach (string al : kalanAlan)
+			m_aProvaAlan.Insert(al);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -843,11 +1312,13 @@ class M360_KiyafetMagazaUI : MenuBase
 		EquipedLoadoutStorageComponent src = EquipedLoadoutStorageComponent.Cast(player.FindComponent(EquipedLoadoutStorageComponent));
 		EquipedLoadoutStorageComponent dst = EquipedLoadoutStorageComponent.Cast(preview.FindComponent(EquipedLoadoutStorageComponent));
 		if (!src || !dst)
+		{
+			Print("[M360] PROVA kopya: loadout storage yok", LogLevel.WARNING);
 			return;
-
-		PreviewLoadoutTemizle(dst);
+		}
 
 		int count = src.GetSlotsCount();
+		int kopyaOk = 0;
 		for (int i = 0; i < count; i++)
 		{
 			IEntity cloth = src.Get(i);
@@ -859,20 +1330,16 @@ class M360_KiyafetMagazaUI : MenuBase
 				continue;
 
 			ResourceName rn = pdata.GetPrefabName();
-			Resource res = Resource.Load(rn);
-			if (!res.IsValid())
+			// Silah / el esyasi loadout kiyafet degilse yoksay: sivil prova gorunsun.
+			if (!BaseLoadoutClothComponent.Cast(cloth.FindComponent(BaseLoadoutClothComponent)))
 				continue;
 
-			IEntity kopya = GetGame().SpawnEntityPrefabLocal(res, preview.GetWorld());
-			if (!kopya)
-				continue;
-
-			InventoryStorageSlot slot = dst.GetSlot(i);
-			if (slot)
-				slot.AttachEntity(kopya);
-			else
-				delete kopya;
+			string h;
+			if (KiyafetiDene(preview, rn, h))
+				kopyaOk++;
 		}
+
+		Print(string.Format("[M360] PROVA oyuncu kopya ok=%1 / slot=%2", kopyaOk, count), LogLevel.NORMAL);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -899,57 +1366,141 @@ class M360_KiyafetMagazaUI : MenuBase
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void KiyafetiDene(IEntity preview, ResourceName prefab)
+	//! Alan uzerindeki takimlari bosalt (kask / sapka ayni aile).
+	protected void AlanSlotlariniTemizle(EquipedLoadoutStorageComponent loadout, typename areaType)
 	{
-		if (!preview || !prefab)
+		if (!loadout)
 			return;
+
+		// 1) Alan API — birincil slot
+		LoadoutSlotInfo birincil = loadout.GetSlotFromArea(areaType);
+		if (birincil)
+		{
+			IEntity eskiB = birincil.GetAttachedEntity();
+			if (eskiB)
+			{
+				birincil.DetachEntity(false);
+				if (!eskiB.IsDeleted())
+					delete eskiB;
+			}
+		}
+
+		// 2) Tum slot taramasi (ayni tip adi)
+		string sWant = string.Format("%1", areaType);
+		int count = loadout.GetSlotsCount();
+		for (int i = 0; i < count; i++)
+		{
+			InventoryStorageSlot invSlot = loadout.GetSlot(i);
+			if (!invSlot)
+				continue;
+
+			LoadoutSlotInfo si = LoadoutSlotInfo.Cast(invSlot);
+			if (!si)
+				continue;
+
+			LoadoutAreaType slotArea = si.GetAreaType();
+			if (!slotArea)
+				continue;
+
+			string sSlot = string.Format("%1", slotArea.Type());
+			if (sSlot != sWant)
+				continue;
+
+			IEntity eski = si.GetAttachedEntity();
+			if (!eski)
+				continue;
+
+			si.DetachEntity(false);
+			if (!eski.IsDeleted())
+				delete eski;
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected bool KiyafetiDene(IEntity preview, ResourceName prefab, out string hata)
+	{
+		hata = string.Empty;
+		if (!preview || !prefab)
+		{
+			hata = "preview/prefab null";
+			return false;
+		}
 
 		EquipedLoadoutStorageComponent dst = EquipedLoadoutStorageComponent.Cast(preview.FindComponent(EquipedLoadoutStorageComponent));
 		if (!dst)
-			return;
+		{
+			hata = "preview loadout yok";
+			return false;
+		}
 
 		Resource res = Resource.Load(prefab);
 		if (!res.IsValid())
-			return;
+		{
+			hata = "resource gecersiz " + FilePath.StripPath(prefab);
+			return false;
+		}
 
 		IEntity cloth = GetGame().SpawnEntityPrefabLocal(res, preview.GetWorld());
 		if (!cloth)
-			return;
+		{
+			hata = "spawn null " + FilePath.StripPath(prefab);
+			return false;
+		}
 
 		BaseLoadoutClothComponent clothComp = BaseLoadoutClothComponent.Cast(cloth.FindComponent(BaseLoadoutClothComponent));
 		if (!clothComp)
 		{
 			delete cloth;
-			return;
+			hata = "cloth component yok";
+			return false;
 		}
 
 		LoadoutAreaType area = clothComp.GetAreaType();
 		if (!area)
 		{
 			delete cloth;
-			return;
+			hata = "area yok";
+			return false;
 		}
 
-		LoadoutSlotInfo slotInfo = dst.GetSlotFromArea(area.Type());
+		typename areaType = area.Type();
+
+		// Ayni alan ailesindeki tum takimlari kaldir (asker kask vs sivil sapka).
+		AlanSlotlariniTemizle(dst, areaType);
+
+		LoadoutSlotInfo slotInfo = dst.GetSlotFromArea(areaType);
 		if (!slotInfo)
 		{
 			delete cloth;
-			return;
+			hata = string.Format("slot yok area=%1", areaType);
+			return false;
 		}
 
-		IEntity eski = slotInfo.GetAttachedEntity();
-		if (eski)
+		// LoadoutSlotInfo dogrudan AttachEntity destekler.
+		slotInfo.AttachEntity(cloth);
+
+		IEntity takili = slotInfo.GetAttachedEntity();
+		if (takili != cloth)
 		{
-			slotInfo.DetachEntity(false);
-			if (!eski.IsDeleted())
-				delete eski;
+			// Cast yolu yedek (eski kodda yalniz cast vardi)
+			InventoryStorageSlot invSlot = InventoryStorageSlot.Cast(slotInfo);
+			if (invSlot)
+			{
+				invSlot.AttachEntity(cloth);
+				takili = invSlot.GetAttachedEntity();
+			}
 		}
 
-		InventoryStorageSlot slot = InventoryStorageSlot.Cast(slotInfo);
-		if (slot)
-			slot.AttachEntity(cloth);
-		else
-			delete cloth;
+		if (takili != cloth)
+		{
+			if (!cloth.IsDeleted())
+				delete cloth;
+			hata = string.Format("AttachEntity red area=%1", areaType);
+			return false;
+		}
+
+		Print(string.Format("[M360] PROVA GIY OK area=%1 prefab=%2", areaType, FilePath.StripPath(prefab)), LogLevel.NORMAL);
+		return true;
 	}
 
 	//------------------------------------------------------------------------------------------------

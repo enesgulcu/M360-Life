@@ -113,6 +113,34 @@ function Find-M360SteamExe {
   return $null
 }
 
+function Ensure-M360SteamRunning {
+  $proc = Get-Process -Name "Steam" -ErrorAction SilentlyContinue
+  if ($proc) { return $true }
+
+  $steam = Find-M360SteamExe
+  if (-not $steam) {
+    Write-Host "UYARI: steam.exe bulunamadi; Steam kapaliysa oyun Init Error verebilir."
+    return $false
+  }
+
+  Write-Host "Steam kapali gorundu - aciliyor..."
+  Start-Process -FilePath $steam -ArgumentList @("-silent")
+
+  $deadline = (Get-Date).AddSeconds(45)
+  while ((Get-Date) -lt $deadline) {
+    $proc = Get-Process -Name "Steam" -ErrorAction SilentlyContinue
+    if ($proc) {
+      Start-Sleep -Seconds 5
+      Write-Host "Steam hazir."
+      return $true
+    }
+    Start-Sleep -Seconds 1
+  }
+
+  Write-Host "UYARI: Steam 45 sn icinde acik gorunmedi; oyun yine deneniyor."
+  return $false
+}
+
 # Arma Reforger istemci exe (Steam LaunchOptions birlestirmesini atlamak icin).
 function Find-M360ReforgerClientExe {
   $root = Find-M360SteamAppDir "Arma Reforger"
@@ -130,6 +158,7 @@ function Start-M360Istemci([string]$ServerHost = "127.0.0.1", [string]$AddonsDir
     $AddonsDir = Join-Path (Get-M360RepoRoot) "tools\dedicated\addons"
   }
   [void](Set-M360SteamLaunchOptions)
+  [void](Ensure-M360SteamRunning)
 
   $exe = Find-M360ReforgerClientExe
   if ($exe) {

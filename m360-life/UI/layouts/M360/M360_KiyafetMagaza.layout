@@ -124,7 +124,7 @@ FrameWidgetClass {
           Padding 0 0 14 0
          }
          AllowWidthOverride 1
-         WidthOverride 460
+         WidthOverride 400
          {
           OverlayWidgetClass "{M360-CLOTH-LEFT}" {
            Name "LeftPanel"
@@ -223,7 +223,7 @@ FrameWidgetClass {
           FillWeight 1
          }
          {
-          OverlayWidgetClass "{M360-CLOTH-PREVIEW-OVERLAY}" {
+          FrameWidgetClass "{M360-CLOTH-PREVIEW-OVERLAY}" {
            Name "PreviewContainer"
            Slot FrameWidgetSlot "{M360-CLOTH-PREVIEW-OVERLAY-SLOT}" {
             Anchor 0 0 1 1
@@ -233,32 +233,40 @@ FrameWidgetClass {
            {
             ImageWidgetClass "{M360-CLOTH-PREVIEW-BG}" {
              Name "PreviewBackground"
-             Slot OverlayWidgetSlot "{M360-CLOTH-PREVIEW-BG-SLOT}" {
-              HorizontalAlign 3
-              VerticalAlign 3
+             Slot FrameWidgetSlot "{M360-CLOTH-PREVIEW-BG-SLOT}" {
+              Anchor 0 0 1 1
+              OffsetRight 0
+              OffsetBottom 0
              }
              Color 0.025 0.035 0.05 1
+             "Is Enabled" 0
             }
             ItemPreviewWidgetClass "{M360-CLOTH-PREVIEW}" {
              Name "playerRender"
-             Slot OverlayWidgetSlot "{M360-CLOTH-PREVIEW-SLOT}" {
-              HorizontalAlign 3
-              VerticalAlign 3
-              Padding 22 18 22 18
+             Slot FrameWidgetSlot "{M360-CLOTH-PREVIEW-SLOT}" {
+              Anchor 0 0 1 1
+              OffsetLeft 8
+              OffsetTop 8
+              OffsetRight 8
+              OffsetBottom 36
              }
              Color 0.025 0.035 0.05 1
             }
             TextWidgetClass "{M360-CLOTH-PREVIEW-HINT}" {
              Name "PreviewHint"
-             Slot OverlayWidgetSlot "{M360-CLOTH-PREVIEW-HINT-SLOT}" {
-              HorizontalAlign 1
-              VerticalAlign 2
-              Padding 0 0 0 18
+             Slot FrameWidgetSlot "{M360-CLOTH-PREVIEW-HINT-SLOT}" {
+              Anchor 0 1 1 1
+              OffsetLeft 0
+              OffsetTop -36
+              OffsetRight 0
+              OffsetBottom 8
+              SizeY 28
              }
              Color 0.48 0.54 0.64 1
              Text "3D KARAKTER PROVASI"
              "Font Size" 13
              "Horizontal Alignment" Center
+             "Is Enabled" 0
             }
            }
           }
@@ -269,7 +277,7 @@ FrameWidgetClass {
          Slot LayoutSlot "{M360-CLOTH-RIGHT-SIZE-SLOT}" {
          }
          AllowWidthOverride 1
-         WidthOverride 310
+         WidthOverride 280
          {
           OverlayWidgetClass "{M360-CLOTH-RIGHT}" {
            Name "RightPanel"

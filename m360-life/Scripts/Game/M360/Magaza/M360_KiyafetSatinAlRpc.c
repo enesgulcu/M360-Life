@@ -296,14 +296,11 @@ modded class SCR_PlayerController
 		}
 
 		InventoryStorageSlot slot = InventoryStorageSlot.Cast(slotInfo);
-		if (!slot)
-		{
-			delete cloth;
-			return false;
-		}
+		slotInfo.AttachEntity(cloth);
+		if (slotInfo.GetAttachedEntity() != cloth && slot)
+			slot.AttachEntity(cloth);
 
-		slot.AttachEntity(cloth);
-		if (slot.GetAttachedEntity() != cloth)
+		if (slotInfo.GetAttachedEntity() != cloth)
 		{
 			Print("[M360] Kiyafet giydir hata: slot yeni parcayi kabul etmedi", LogLevel.ERROR);
 			delete cloth;

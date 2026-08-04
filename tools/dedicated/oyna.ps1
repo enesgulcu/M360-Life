@@ -69,6 +69,23 @@ Write-Host "M360 Oyna - hizli baslat"
 Write-Host ("PC   : {0}" -f $env:USERNAME)
 Write-Host ("Repo : {0}" -f $repo)
 
+if ($repo -match '(?i)[\\/]Downloads[\\/]M360-Life-main') {
+  $dogru = Join-Path $env:USERPROFILE "Documents\GitHub\M360-Life"
+  Write-Host ""
+  Write-Host "HATA: Oyun Downloads ZIP kopyasindan baslatiliyor."
+  Write-Host ("  {0}" -f $repo)
+  Write-Host ("Dogru bat: {0}\M360-Oyna.bat" -f $dogru)
+  throw "Yanlis M360 klasoru (Downloads ZIP). GitHub yolunu kullan."
+}
+
+# Vergys data.pak dogrulama (0 byte = 3D kiyafet asla calismaz)
+$vergysPak = Join-Path $repo "tools\vendor-workshop\addons\VergysCustomClothing_59B70A5A19E9B51E\data.pak"
+if (-not (Test-Path -LiteralPath $vergysPak) -or ((Get-Item -LiteralPath $vergysPak).Length -lt 400MB)) {
+  $len = 0
+  if (Test-Path -LiteralPath $vergysPak) { $len = (Get-Item -LiteralPath $vergysPak).Length }
+  Write-Host ("UYARI: Vergys data.pak eksik/kucuk ({0} byte). kur-vergys calisacak..." -f $len)
+}
+
 # --- 1) Kaynak + junction ---
 Write-Adim "1/4 Senkron kontrol (junction)"
 

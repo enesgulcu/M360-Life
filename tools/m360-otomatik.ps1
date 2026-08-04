@@ -14,6 +14,22 @@ param(
 $ErrorActionPreference = "Stop"
 $tools = $PSScriptRoot
 $repo = (Resolve-Path (Join-Path $tools "..")).Path
+
+# Yanlis kopya trap: GitHub ZIP "Downloads\M360-Life-main" uzerinden oyna = bos Vergys + eski kod
+if ($repo -match '(?i)[\\/]Downloads[\\/]M360-Life-main') {
+  $dogru = Join-Path $env:USERPROFILE "Documents\GitHub\M360-Life"
+  Write-Host ""
+  Write-Host "HATA: Yanlis klasorden calisiyorsun:"
+  Write-Host ("  {0}" -f $repo)
+  Write-Host ""
+  Write-Host "Bu Downloads ZIP kopyasi. Kiyafet paketi burada BOS kalir, kod degisiklikleri yansimaz."
+  Write-Host ""
+  Write-Host "DOGRU: su bat dosyasina cift tikla:"
+  Write-Host ("  {0}\M360-Oyna.bat" -f $dogru)
+  Write-Host ""
+  throw "Yanlis M360 klasoru (Downloads ZIP). GitHub yolunu kullan."
+}
+
 Set-Location -LiteralPath $repo
 
 function Write-Adim([string]$Msg) {

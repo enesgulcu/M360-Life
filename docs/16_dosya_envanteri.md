@@ -52,9 +52,10 @@
 | `Arayuz/M360_CantaPanelWidgetlari.c` | I canta v3 soft9 (9-slice + satır havuzu) | CantaHudBileseni | lab UI | lab |
 | `Arayuz/M360_HudYazi.c` | NakitFormat (binlik nokta) | Cekirdek + Canta | lab UI | lab |
 | `Magaza/M360_ARGH_NakitKoprusu.c` | Hazır ARGH galerisi ödeme/refund ve bakiye görünümü → M360 HUD nakit | ARGH dealer servisi/UI | dedicated + istemci | kanıtlı |
-| `Magaza/M360_KiyafetKatalogu.c` + `M360_KiyafetMagazaUI.c` + aksiyon/RPC | Vergys 97 wrapper + prova yığını + anında toplu alım | MenuManager layout | lab | güncel |
+| `Magaza/M360_KiyafetKatalogu.c` + `M360_KiyafetMagazaUI.c` + aksiyon/RPC | Vergys 97 wrapper + path-only katalog yükleme + prova yığını + vanilla-style preview çocuk temizliği + sınırsız FrameSlot kadraj kontrolü + anında toplu alım | MenuManager layout | lab | güncel |
+| `Lab/M360_LabOrtamBileseni.c` | Lab saat/hava: Clear öncelikli parlak gündüz + düşük LV diffuse-only soft güneş | TimeAndWeatherManager + LightEntity | lab | güncel |
 | `Prefabs/M360/Magaza/M360_KiyafetMagaza.et` | Kıyafet mağaza terminali | lab layer | lab | yeni |
-| `UI/layouts/M360/M360_KiyafetMagaza.layout` + `M360_KiyafetSatir.layout` + `M360_KiyafetKategori.layout` | Tam ekran kıyafet menüsü, düzenli ürün/kategori satırları | Overlay UI | lab | yeni |
+| `UI/layouts/M360/M360_KiyafetMagaza.layout` + `M360_KiyafetSatir.layout` + `M360_KiyafetKategori.layout` | Tam ekran kıyafet menüsü, ürün/kategori satırları, preview kadraj kontrol butonları | Overlay UI | lab | güncel |
 
 ---
 
@@ -91,7 +92,7 @@ Harita değişince: aynı `Isler/*` prefab’ları yerleştir.
 | Yol | Amaç | Durum |
 |---|---|---|
 | `Worlds/LabDuzZemin/M360_LabDuzZemin.ent` | Düz zemin lab kök | lab |
-| `.../M360_LabDuzZemin_Layers/default.layer` | Pirinç + spawn + HUD + arsenal + ARGH araç galerisi/spawn noktası | lab |
+| `.../M360_LabDuzZemin_Layers/default.layer` | Pirinç + spawn + HUD + arsenal + ARGH araç galerisi/spawn noktası + parlak gündüz LabOrtam | lab |
 | `.../M360_Terrain/` | GenericTerrain data | lab |
 
 Entity: `M360_PirincTopla` · `PirincIsle` · `PirincSat` · `M360_CantaHud` · `M360_ApiTest` · `M360_VanilArsenal` · `M360_ARGHAracGalerisi` · FFA managers.
